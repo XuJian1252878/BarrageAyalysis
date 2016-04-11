@@ -5,6 +5,8 @@ import argparse
 import codecs
 import os
 import re
+import sched
+import time
 from multiprocessing import Pool
 
 from db.dao.barragedao import BarrageDao
@@ -138,7 +140,7 @@ class BilibiliSpider(BarrageSpider):
                 ConsoleUtil.print_console_info(u"Error，弹幕格式有误，无法两条弹幕是否相同。")
                 continue
             is_same = True
-            for index in xrange(0, len(last_barrage)):
+            for index in xrange(1, len(last_barrage)):
                 if last_barrage[index] != barrage[index]:
                     is_same = False
                     break
@@ -184,17 +186,21 @@ def grab_barrage_task(video_url):
 def main():
     arg_parser = argparse.ArgumentParser(u"BilibiliSpider", description=u"grabs the barrages from bilibili video" +
                                                                         u" and store barrages to db.")
-    arg_parser.add_argument("-u", "-urls", required=False, action="append", metavar="BILIBILI_VIDEO_URLS", default=[], dest="video_urls",
-                            help="the bilibili video urls.")
+    arg_parser.add_argument("-u", "-urls", required=False, action="append", metavar="BILIBILI_VIDEO_URLS", default=[],
+                            dest="video_urls", help="the bilibili video urls.")
     arg_parser.add_argument("-i", "--internal", required=False, metavar="INTERNAL_TIME", default=5,
                             dest="internal_time",
                             help="the internal minute for grabing the bilibili barrages")
     opts = arg_parser.parse_args()
     video_urls = opts.video_urls  # 获得url的list列表。
+    video_urls = ["http://www.bilibili.com/video/av1502166/", "http://www.bilibili.com/video/av624985/",
+                  "http://www.bilibili.com/video/av4258089/", "http://www.bilibili.com/video/av1206074/",
+                  "http://www.bilibili.com/video/av80193/", "http://www.bilibili.com/video/av1818288/",
+                  "http://www.bilibili.com/video/av3470183/"]
     print video_urls
 
     ConsoleUtil.print_console_info(u"开始抓取弹幕信息。\n父进程id：%s" % os.getpid())
-    pool = Pool()
+    pool = Pool(7)
     for video_url in video_urls:
         print video_url
         pool.apply_async(grab_barrage_task, args=(video_url,))
@@ -203,7 +209,16 @@ def main():
     ConsoleUtil.print_console_info(u"弹幕信息抓取结束！")
 
 
-if __name__ == "__main__":
+def scheme_task(my_sched, interval_time=60):
     main()
-    # b_spider = BilibiliSpider()
-    # b_spider.start("http://www.bilibili.com/video/av4139540/")
+    my_sched.enter(interval_time, 0, scheme_task, (my_sched, interval_time))
+
+
+def scheme_main(interval_time=60):
+    s = sched.scheduler(time.time, time.sleep)
+    s.enter(interval_time, 0, scheme_task, (s, interval_time))
+    s.run()
+
+
+if __name__ == "__main__":
+    scheme_main(120)

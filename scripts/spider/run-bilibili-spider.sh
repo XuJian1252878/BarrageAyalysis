@@ -1,9 +1,9 @@
 #!/bin/bash
 
 CURDIR=$(cd `dirname $0`; pwd)
-TSCTOOLS_HOME=$(cd "${CURDIR}/.."; pwd)
-SPIDER_HOME=${TSCTOOLS_HOME}/spider
-DATA_HOME=${TSCTOOLS_HOME}/data
+BARRAGE_ANALYSIS_HOME=$(cd "${CURDIR}/../.."; pwd)
+SPIDER_HOME=${BARRAGE_ANALYSIS_HOME}/spider
+DATA_HOME=${BARRAGE_ANALYSIS_HOME}/data
 SPIDER_LOG_HOME=${SPIDER_HOME}/log
 VIDEO_LIST_FILE=${SPIDER_HOME}/video-list.txt
 LOCAL_BARRAGE_HOME=${DATA_HOME}/local
@@ -19,7 +19,7 @@ fi
 BILI_SPIDER_LOG=${SPIDER_LOG_HOME}/bili-spider.log
 
 # 将python项目根目录赋值PYTHONPATH，否则会报Import Error错误。
-export PYTHONPATH=${TSCTOOLS_HOME}
+export PYTHONPATH=${BARRAGE_ANALYSIS_HOME}
 PYTHON=`which python`
 # 获得b站视频信息的弹幕列表。
 VIDEO_ARGS=`cat ${VIDEO_LIST_FILE} | awk -F "\t" 'BEGIN{args="";} {args=args" -u "$0;} END{print substr(args, 1);}'`

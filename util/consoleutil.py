@@ -18,5 +18,5 @@ class ConsoleUtil(object):
         if unicode_str_msg is None:
             print None
         else:
-            # print unicode_str_msg
-            print unicode_str_msg.encode(cls.FILESYSTEMENCODING, "ignore")
+            print unicode_str_msg
+            # print unicode_str_msg.encode(cls.FILESYSTEMENCODING, "ignore")

@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from db.model import BASE_MODEL
+from db.model import BaseModel
 
 """
 数据库操作模块，提供连接数据库，打开session等数据库操作的基本方法。
@@ -23,6 +23,7 @@ class DBUtil(object):
     # create a configured "Session" class
     __SESSION = None
     __ENGINE = None
+    __BASE_MODEL = BaseModel.get_base_model()
 
     # 构建数据库链接
     @staticmethod
@@ -40,7 +41,7 @@ class DBUtil(object):
         if DBUtil.__ENGINE is None:
             # engine 作为编程语言与数据库的接口，conn_str 中需要一致 数据库与 编程语言的字符编码，这样才不会出现乱码。这里双方都是
             # utf8mb4
-            DBUtil.__ENGINE = create_engine(conn_str, echo=True)
+            DBUtil.__ENGINE = create_engine(conn_str)
         return DBUtil.__ENGINE  # engine对象和session对象都可作用于数据库的增删改查操作。
 
     # 创建一个配置好的Session类，产生session对象，用于数据库的增删改查。
@@ -87,7 +88,7 @@ class DBUtil(object):
         codecs.register(lambda name: codecs.lookup('utf8') if name == 'utf8mb4' else None)
         # 创建对应的数据库表。
         engine = DBUtil.create_engine()
-        BASE_MODEL.metadata.create_all(engine)
+        DBUtil.__BASE_MODEL.metadata.create_all(engine)
 
 if __name__ == "__main__":
     db_util = DBUtil()

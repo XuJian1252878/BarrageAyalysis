@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from db.dbutil import DBUtil
-from db.model import Video
+from db.model.video import Video
 
 """
 对movie数据库表进行存取操作

@@ -4,14 +4,17 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Text
 from sqlalchemy.orm import relationship, backref
 
-from db.model import BASE_MODEL
-from db.model.video import Movie
+from db.model import BaseModel
+from db.model.video import Video
 
 __author__ = "htwxujian@gmail.com"
 
 
+__BASE_MODEL = BaseModel.get_base_model()
+
+
 # 定义Barrage对象，存储弹幕的全部相关信息
-class Barrage(BASE_MODEL):
+class Barrage(__BASE_MODEL):
     __tablename__ = "barrage"
 
     row_id = Column(String(30), primary_key=True)  # 弹幕在弹幕数据库中rowID 用于“历史弹幕”功能。
@@ -24,6 +27,23 @@ class Barrage(BASE_MODEL):
     sender_id = Column(String(20), nullable=False)  # 发送者的ID，用于“屏蔽此弹幕的发送者”功能
     content = Column(Text, nullable=False)  # 弹幕内容
     # 外键信息
-    movie_cid = Column(String(30), ForeignKey("movie.cid"))
-    # 这样就可以使用movie.barrages获得该视频的所有弹幕信息。
-    movie = relationship(Movie, backref=backref("barrages", uselist=True, cascade="delete, all"))
+    video_cid = Column(String(30), ForeignKey("video.cid"))
+    # 这样就可以使用video.barrages获得该视频的所有弹幕信息。
+    video = relationship("Video", backref=backref("barrages", uselist=True, cascade="delete, all"))
+
+    # http://docs.sqlalchemy.org/en/latest/orm/constructors.html
+    # 在构建数据库行对象的时候是不会调用__init__来创建对象的，而会调用更底层的__new__。那么它们是怎么对应起来的？
+    def __init__(self, play_timestamp, type, font_size, font_color, unix_timestamp, pool, sender_id, row_id, content):
+        self.play_timestamp = play_timestamp
+        self.type = type
+        self.font_size = font_size
+        self.font_color = font_color
+        self.unix_timestamp = unix_timestamp
+        self.pool = pool
+        self.sender_id = sender_id
+        self.row_id = row_id
+        self.content = content
+        # 因为类变量中申明了video 是关于类Video的外键，所以该模块中必须import Video，否则会报错：
+        # failed to locate a name ("Video" name  is not defined"). If this is a class name....
+        self.video = Video()
+        self.video_cid = None
