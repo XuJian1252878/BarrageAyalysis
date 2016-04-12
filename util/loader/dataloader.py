@@ -3,7 +3,10 @@
 
 import codecs
 from decimal import Decimal, getcontext
+
+import wordsegment.wordseg as wordseg
 from db.model.barrage import Barrage
+from util.fileutil import FileUtil
 
 """
 从本地的txt弹幕文件（本地项目根目录data/local/文件夹下。）中加载弹幕数据。或者是从数据库中加载弹幕数据。
@@ -40,10 +43,16 @@ def get_barrage_from_txt_file(txt_file_path, order_flag=False):
                               split_info[6], split_info[7], split_info[8])
             barrages.append(barrage)
     barrages = sort_barrages(barrages, order_flag)
+    # barrages = sorted(barrages, key=lambda barrage: barrage.play_timestamp)
     return barrages
 
 
 if __name__ == "__main__":
-    barrages = get_barrage_from_txt_file("../../data/local/920120.txt")
-    for barrage in barrages:
-        print barrage.play_timestamp, u"\t", barrage.content
+    barrages = get_barrage_from_txt_file("../../data/local/9.txt")
+    file_path = FileUtil.get_word_segment_result_file_path("../../data/local/9.txt")
+    barrage_seg_list = wordseg.segment_barrages(barrages)
+    wordseg.save_segment_barrages(file_path, barrage_seg_list)
+    barrage_seg_list = wordseg.load_segment_barrages(file_path)
+    for barrage_seg in barrage_seg_list:
+        print str(barrage_seg.play_timestamp), u"\t", u"\t".join([seg.word + u"\t" + seg.flag for seg
+                                                                  in barrage_seg.sentence_seg_list])

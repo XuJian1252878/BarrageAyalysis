@@ -99,6 +99,24 @@ class FileUtil(object):
             last_lines[index] = last_lines[index].decode("utf-8", "ignore")
         return last_lines
 
+    # 构建分词结果文件的文件名称（根据本地txt弹幕文件的名称 加上
+    # -seg-result.txt 问分词结果的文件名。即cid-seg-result.txt）
+    @staticmethod
+    def get_word_segment_result_file_path(local_barrage_file_path):
+        (local_barrage_dir, local_barrage_file_name) = os.path.split(local_barrage_file_path)
+        split_info = local_barrage_file_name.split(".")
+        word_segment_result_file_path = u"".join([split_info[0], "-seg-result.txt"])
+        word_segment_result_file_path = os.path.join(FileUtil.get_word_segment_dir(), word_segment_result_file_path)
+        return word_segment_result_file_path
+
+    # 获得分词结果的路径。
+    @staticmethod
+    def get_word_segment_dir():
+        project_root_path = FileUtil.get_project_root_path()
+        word_segment_dir = os.path.join(project_root_path, "data", "wordsegment")
+        FileUtil.create_dir_if_not_exist(word_segment_dir)
+        return word_segment_dir
+
 
 if __name__ == "__main__":
     print FileUtil.get_local_data_dir()
