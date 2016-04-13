@@ -7,6 +7,8 @@ from decimal import Decimal, getcontext
 import wordsegment.wordseg as wordseg
 from db.model.barrage import Barrage
 from util.fileutil import FileUtil
+from util.datetimeutil import DateTimeUtil
+import os
 
 """
 从本地的txt弹幕文件（本地项目根目录data/local/文件夹下。）中加载弹幕数据。或者是从数据库中加载弹幕数据。
@@ -47,12 +49,28 @@ def get_barrage_from_txt_file(txt_file_path, order_flag=False):
     return barrages
 
 
+# 将本地txt弹幕文件中数据读出，排好序，并将play_timestamp转化为 xx minute xx s的格式，再写入当前的文件夹下
+def gen_sorted_barrage_file(barrage_file_path):
+    barrages = get_barrage_from_txt_file(barrage_file_path)  # 弹幕信息已经按照降序进行排好序。
+    sorted_file_name = FileUtil.get_cid_from_barrage_file_path(barrage_file_path) + "-sorted.txt"
+    with codecs.open(sorted_file_name, "wb", "utf-8") as output_file:
+        for barrage in barrages:
+            barrage_str = DateTimeUtil.format_barrage_play_timestamp(barrage.play_timestamp) + u"\t" + barrage.play_timestamp \
+                          + u"\t" + barrage.type + u"\t" + barrage.font_size + u"\t" + barrage.font_color + u"\t" \
+                          + barrage.unix_timestamp + u"\t" + barrage.pool + u"\t" + barrage.sender_id + u"\t" \
+                          + barrage.row_id + u"\t" + barrage.content + u"\n"
+            output_file.write(barrage_str)
+    return barrages
+
+
 if __name__ == "__main__":
-    barrages = get_barrage_from_txt_file("../../data/local/9.txt")
-    file_path = FileUtil.get_word_segment_result_file_path("../../data/local/9.txt")
-    barrage_seg_list = wordseg.segment_barrages(barrages)
-    wordseg.save_segment_barrages(file_path, barrage_seg_list)
-    barrage_seg_list = wordseg.load_segment_barrages(file_path)
-    for barrage_seg in barrage_seg_list:
-        print str(barrage_seg.play_timestamp), u"\t", u"\t".join([seg.word + u"\t" + seg.flag for seg
-                                                                  in barrage_seg.sentence_seg_list])
+    # barrages = get_barrage_from_txt_file("../../data/local/9.txt")
+    # file_path = FileUtil.get_word_segment_result_file_path("../../data/local/9.txt")
+    # barrage_seg_list = wordseg.segment_barrages(barrages)
+    # wordseg.save_segment_barrages(file_path, barrage_seg_list)
+    # barrage_seg_list = wordseg.load_segment_barrages(file_path)
+    # for barrage_seg in barrage_seg_list:
+    #     print str(barrage_seg.play_timestamp), u"\t", u"\t".join([seg.word + u"\t" + seg.flag for seg
+    #                                                               in barrage_seg.sentence_seg_list])
+    gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "920120.txt"))
+

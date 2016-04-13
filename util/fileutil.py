@@ -44,6 +44,13 @@ class FileUtil(object):
         (project_root_path, util_path) = os.path.split(FileUtil._get_cur_dir())
         return project_root_path
 
+    # 获得项目数据根目录
+    @staticmethod
+    def get_data_root_dir():
+        base_path = FileUtil.get_project_root_path()
+        data_root_path = os.path.join(base_path, "data")
+        return data_root_path
+
     # 获得本地数据目录。
     @staticmethod
     def get_local_data_dir():
@@ -116,6 +123,14 @@ class FileUtil(object):
         word_segment_dir = os.path.join(project_root_path, "data", "wordsegment")
         FileUtil.create_dir_if_not_exist(word_segment_dir)
         return word_segment_dir
+
+    # 从弹幕的文件路径中获得cid信息
+    @staticmethod
+    def get_cid_from_barrage_file_path(barrage_file_path):
+        (barrage_file_dir, barrage_file_name) = os.path.split(barrage_file_path)
+        split_info = barrage_file_name.split(".")
+        cid = split_info[0]
+        return cid
 
 
 if __name__ == "__main__":
