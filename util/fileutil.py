@@ -132,6 +132,14 @@ class FileUtil(object):
         cid = split_info[0]
         return cid
 
+    # 获得相似度矩阵的结果存储路径
+    @staticmethod
+    def get_similarity_matrix_dir():
+        data_dir = FileUtil.get_data_root_dir()
+        similarity_matrix_dir = os.path.join(data_dir, "matrix")
+        FileUtil.create_dir_if_not_exist(similarity_matrix_dir)
+        return similarity_matrix_dir
+
 
 if __name__ == "__main__":
     print FileUtil.get_local_data_dir()

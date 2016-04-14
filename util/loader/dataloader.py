@@ -8,7 +8,9 @@ import wordsegment.wordseg as wordseg
 from db.model.barrage import Barrage
 from util.fileutil import FileUtil
 from util.datetimeutil import DateTimeUtil
+from analysis.model.barrageinfo import BarrageInfo
 import os
+import re
 
 """
 从本地的txt弹幕文件（本地项目根目录data/local/文件夹下。）中加载弹幕数据。或者是从数据库中加载弹幕数据。
@@ -46,6 +48,8 @@ def get_barrage_from_txt_file(txt_file_path, order_flag=False):
             barrages.append(barrage)
     barrages = sort_barrages(barrages, order_flag)
     # barrages = sorted(barrages, key=lambda barrage: barrage.play_timestamp)
+    # 将 barrage 中所有的 sender_id 信息存储起来。以备后期生成相似度矩阵。
+    BarrageInfo.collect_barrage_sender_id(barrages)
     return barrages
 
 
@@ -63,6 +67,26 @@ def gen_sorted_barrage_file(barrage_file_path):
     return barrages
 
 
+# 解析出xml文件中的弹幕信息，文件名称必须是以 cid.xml命名的，否则无法读取弹幕信息。
+def parse_barrage_xml_to_txt(xml_file_path):
+    # 获取xml文件中的全部内容。
+    with codecs.open(xml_file_path, "rb", "utf-8") as input_file:
+        content = []
+        for line in input_file:
+            content.append(line)
+    content = u"\n".join(content)
+    # 弹幕出现的播放时间，弹幕类型，字体大小，字体颜色，弹幕出现的unix时间戳，弹幕池，弹幕创建者id，弹幕id
+    pattern = re.compile(r'<d p="(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?)">(.*?)</d>', re.S)
+    barrages = re.findall(pattern, content)
+    if len(barrages) <= 0:
+        return None
+    txt_file_name = FileUtil.get_cid_from_barrage_file_path(xml_file_path) + ".txt"
+    with codecs.open(txt_file_name, "wb", "utf-8") as output_file:
+        for barrage in barrages:
+            output_file.write(u"\t".join(barrage) + u"\n")
+    return barrages
+
+
 if __name__ == "__main__":
     # barrages = get_barrage_from_txt_file("../../data/local/9.txt")
     # file_path = FileUtil.get_word_segment_result_file_path("../../data/local/9.txt")
@@ -72,5 +96,7 @@ if __name__ == "__main__":
     # for barrage_seg in barrage_seg_list:
     #     print str(barrage_seg.play_timestamp), u"\t", u"\t".join([seg.word + u"\t" + seg.flag for seg
     #                                                               in barrage_seg.sentence_seg_list])
-    gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "920120.txt"))
 
+    gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "2065063.txt"))
+
+    # parse_barrage_xml_to_txt("E:\\Workspace\\PycharmProjects\\BarrageAyalysis\\util\\loader\\2065063.xml")

@@ -26,7 +26,7 @@ class BilibiliXmlParser(object):
     @staticmethod
     def parse_xml(xml_file_path):
         # 获取xml文件中的全部内容。
-        with codecs.open(xml_file_path, "rb", "xml") as input_file:
+        with codecs.open(xml_file_path, "rb", "utf-8") as input_file:
             content = []
             for line in input_file:
                 content.append(line)

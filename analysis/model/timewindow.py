@@ -4,6 +4,8 @@
 import util.loader.dataloader as dataloader
 import wordsegment.wordseg as wordseg
 import logging
+from analysis.similarity.matrix import SimMatrix
+import codecs
 
 """
 记录每个时间窗口内的弹幕分词结果，以及时间窗口划分的配置信息。
@@ -20,8 +22,8 @@ class TimeWindow(object):
         self.time_window_index = time_window_index
         self.start_timestamp = start_timestamp
         self.end_timestamp = end_timestamp
-        self.barrage_or_seg_list = []  # 该时间窗口内对应的弹幕分词列表，或是原始的弹幕列表。
-        self.user_word_frequency = {}  # dict {key=user_id, value = {key=word, value="frequency"}}
+        self.barrage_seg_list = []  # 该时间窗口内对应的弹幕分词列表，或是原始的弹幕列表。
+        self.user_word_frequency_dict = {}  # dict {key=user_id, value = {key=word, value="frequency"}}
 
     @classmethod
     def get_time_window_size(cls):
@@ -34,6 +36,37 @@ class TimeWindow(object):
     @classmethod
     def get_analysis_unit_capacity(cls):
         return cls.__ANALYSIS_UNIT_CAPACITY
+
+    # 对于时间窗口本身，在其barrage_or_seg_list 被填充的情况下，统计词频。
+    # 返回：dict {key=user_id, value = {key=word, value="frequency"}} 格式的字典
+    def gen_user_word_frequency(self):
+        user_word_frequency = {}
+        for barrage_seg in self.barrage_seg_list:
+            user_id = barrage_seg.sender_id
+            word_frequency_dict = {}  # key为词语，value为词频的字典。
+            if user_id in user_word_frequency.keys():
+                word_frequency_dict = user_word_frequency[user_id]
+            else:
+                user_word_frequency[user_id] = word_frequency_dict
+            for word_seg in barrage_seg.sentence_seg_list:
+                word = word_seg.word
+                word_count = 0
+                if word in word_frequency_dict.keys():
+                    word_count = word_frequency_dict[word]
+                else:
+                    word_frequency_dict[word] = word_count
+                word_frequency_dict[word] = word_count + 1  # 统计词频
+            user_word_frequency[user_id] = word_frequency_dict
+        self.user_word_frequency_dict = user_word_frequency
+        return user_word_frequency
+
+    # 获得该时间窗口内 所有弹幕信息 发送用户的id。
+    def gen_all_barrage_sender_id(self):
+        sender_id_list = []
+        for barrage_seg in self.barrage_seg_list:
+            if barrage_seg.sender_id not in sender_id_list:
+                sender_id_list.append(barrage_seg.sender_id)
+        return sender_id_list
 
     # 将弹幕的信息按照时间窗口分类
     # 参数：barrage_seg_list 一个已经排好序的，已经切好词的barrage_seg_list列表，或者是原始的未切词的弹幕列表（已排好序）。
@@ -54,35 +87,13 @@ class TimeWindow(object):
             logging.info(u"建立第 " + str(time_window_index) + u" 个时间窗口！！")
             # 产生一个新的timewindow对象
             time_window = TimeWindow(time_window_index, start_timestamp, end_timestamp)
-            time_window.barrage_or_seg_list = temp_seg_list
+            time_window.barrage_seg_list = temp_seg_list
             time_window_list.append(time_window)
 
             start_timestamp += cls.__SLIDE_TIME_INTERVAL
             end_timestamp = start_timestamp + cls.__TIME_WINDOW_SIZE
             time_window_index += 1
         return time_window_list
-
-    # 对于时间窗口本身，在其barrage_or_seg_list 被填充的情况下，统计词频。
-    # 返回：dict {key=user_id, value = {key=word, value="frequency"}} 格式的字典
-    def gen_user_word_frequency(self):
-        user_word_frequency = {}
-        for barrage_seg in self.barrage_or_seg_list:
-            user_id = barrage_seg.sender_id
-            word_frequency_dict = {}  # key为词语，value为词频的字典。
-            if user_id in user_word_frequency.keys():
-                word_frequency_dict = user_word_frequency[user_id]
-            else:
-                user_word_frequency[user_id] = word_frequency_dict
-            for word_seg in barrage_seg.sentence_seg_list:
-                word = word_seg.word
-                word_count = 0
-                if word in word_frequency_dict.keys():
-                    word_count = word_frequency_dict[word]
-                else:
-                    word_frequency_dict[word] = word_count
-                word_frequency_dict[word] = word_count + 1  # 统计词频
-        self.user_word_frequency = user_word_frequency
-        return user_word_frequency
 
     # 获得每一个时间窗口内，以用户为维度，统计用户所发弹幕的词频。
     # 参数：已经按照play_timestamp升序排序好的弹幕（已做好中文分词）列表。
@@ -96,7 +107,7 @@ class TimeWindow(object):
 
 
 if __name__ == "__main__":
-    barrages = dataloader.get_barrage_from_txt_file("../../data/local/920120.txt")
+    barrages = dataloader.get_barrage_from_txt_file("../../data/local/2065063.txt")
     barrage_seg_list = wordseg.segment_barrages(barrages)
     # time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list)
     # for time_window in time_window_list:
@@ -106,11 +117,17 @@ if __name__ == "__main__":
     #             str_info += (sentence_seg.word + sentence_seg.flag + u"\t")
     #     print str(time_window.time_window_index), u"\t", str(time_window.start_timestamp), u"\t",\
     #         str(time_window.end_timestamp), u"\t", str_info
+
+    # time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
+    # with codecs.open("seg-result.txt", "wb", "utf-8") as output_file:
+    #     for time_window in time_window_list:
+    #         str_info = str(time_window.time_window_index) + u"\t"
+    #         for user_id, word_frequency in time_window.user_word_frequency_dict.items():
+    #             str_info += (user_id + u"\t")
+    #             for word, frequency in word_frequency.items():
+    #                 str_info += (word + u"\t" + str(frequency) + u"\t")
+    #         print str_info
+    #         output_file.write(str_info)
+
     time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
-    for time_window in time_window_list:
-        str_info = str(time_window.time_window_index) + u"\t"
-        for user_id, word_frequency in time_window.user_word_frequency.items():
-            str_info += (user_id + u"\t")
-            for word, frequency in word_frequency.items():
-                str_info += (word + u"\t" + str(frequency) + u"\t")
-        print str_info
+    SimMatrix.gen_jaccard_sim_matrix_by_word_frequency(time_window_list)
