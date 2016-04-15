@@ -140,6 +140,14 @@ class FileUtil(object):
         FileUtil.create_dir_if_not_exist(similarity_matrix_dir)
         return similarity_matrix_dir
 
+    # 获得项目字典数据的存储路径
+    @staticmethod
+    def get_dict_dir():
+        data_dir = FileUtil.get_data_root_dir()
+        dict_dir = os.path.join(data_dir, "dict")
+        FileUtil.create_dir_if_not_exist(dict_dir)
+        return dict_dir
+
 
 if __name__ == "__main__":
     print FileUtil.get_local_data_dir()
