@@ -11,6 +11,7 @@ from util.datetimeutil import DateTimeUtil
 from analysis.model.barrageinfo import BarrageInfo
 import os
 import re
+from analysis.model.dictconfig import DictConfig
 
 """
 从本地的txt弹幕文件（本地项目根目录data/local/文件夹下。）中加载弹幕数据。或者是从数据库中加载弹幕数据。
@@ -35,6 +36,9 @@ def sort_barrages(barrages, order_flag=False):
 # 参数：txt_file_path  本地弹幕文件的路径。
 #      order_flag True 返回的按照play_timestamp降序排列；False 按照play_timestamp升序排列
 def get_barrage_from_txt_file(txt_file_path, order_flag=False):
+    # 首先 初始化我们需要的字典信息，如停用词词典、情感词典等等，为将来的处理步骤做准备。
+    DictConfig.build_dicts()
+
     barrages = []
     with codecs.open(txt_file_path, "rb", "utf-8") as input_file:
         for barrage in input_file:

@@ -118,16 +118,16 @@ if __name__ == "__main__":
     #     print str(time_window.time_window_index), u"\t", str(time_window.start_timestamp), u"\t",\
     #         str(time_window.end_timestamp), u"\t", str_info
 
-    # time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
-    # with codecs.open("seg-result.txt", "wb", "utf-8") as output_file:
-    #     for time_window in time_window_list:
-    #         str_info = str(time_window.time_window_index) + u"\t"
-    #         for user_id, word_frequency in time_window.user_word_frequency_dict.items():
-    #             str_info += (user_id + u"\t")
-    #             for word, frequency in word_frequency.items():
-    #                 str_info += (word + u"\t" + str(frequency) + u"\t")
-    #         print str_info
-    #         output_file.write(str_info)
-
     time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
-    SimMatrix.gen_jaccard_sim_matrix_by_word_frequency(time_window_list)
+    with codecs.open("seg-result.txt", "wb", "utf-8") as output_file:
+        for time_window in time_window_list:
+            str_info = str(time_window.time_window_index) + u"\t"
+            for user_id, word_frequency in time_window.user_word_frequency_dict.items():
+                str_info += (user_id + u"\t")
+                for word, frequency in word_frequency.items():
+                    str_info += (word + u"\t" + str(frequency) + u"\t")
+            print str_info
+            output_file.write(str_info + u"\n")
+
+    # time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
+    # SimMatrix.gen_jaccard_sim_matrix_by_word_frequency(time_window_list)

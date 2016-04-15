@@ -5,8 +5,15 @@ import codecs
 import json
 
 import jieba.posseg as pseg
+import wordsegment.filterwords as filterwords
 
 from util.consoleutil import ConsoleUtil
+import logging
+
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+
 
 """
 记录弹幕的分词结果信息，格式为词，以及词的词性。
@@ -87,10 +94,14 @@ def segment_barrages(barrages):
 # 返回：包含该句子分词结果的列表，列表中的对象为WordSeg对象。
 def __segment_sentence(sentence):
     sentence_seg = []
-    ConsoleUtil.print_console_info(u"正在分词：" + sentence)
+    logging.info(u"正在分词：" + sentence)
     words = pseg.cut(sentence)
     for word, flag in words:
-        sentence_seg.append(WordSeg(word, flag))
+        if filterwords.is_stopwords(word):  # 判断该词是否是停用词，不是停用词才给予收录。
+            continue
+        # 如果词语在替换词词典中，那么返回(True, 替换之后的词)，否则返回(Flase, 原词)
+        flag, replace_word = filterwords.format_word(word)
+        sentence_seg.append(WordSeg(replace_word, flag))
     return sentence_seg
 
 
