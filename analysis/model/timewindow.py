@@ -6,6 +6,9 @@ import wordsegment.wordseg as wordseg
 import logging
 from analysis.similarity.matrix import SimMatrix
 import codecs
+from gensim import corpora, models
+import os
+from util.fileutil import FileUtil
 
 """
 记录每个时间窗口内的弹幕分词结果，以及时间窗口划分的配置信息。
@@ -24,6 +27,7 @@ class TimeWindow(object):
         self.end_timestamp = end_timestamp
         self.barrage_seg_list = []  # 该时间窗口内对应的弹幕分词列表，或是原始的弹幕列表。
         self.user_word_frequency_dict = {}  # dict {key=user_id, value = {key=word, value="frequency"}}
+        self.user_token_tfidf_dict = {}  # dict {key=user_id, value={key=token, value="tfidf weight"}}
 
     @classmethod
     def get_time_window_size(cls):
@@ -60,6 +64,23 @@ class TimeWindow(object):
         self.user_word_frequency_dict = user_word_frequency
         return user_word_frequency
 
+    # 对于时间窗口本身，在其barrage_or_seg_list 被填充的情况下，统计该词频下的tfidf信息。
+    # 前提：需要在 user_word_frequency_dict 变量被填充之后调用。
+    # 返回：dict {key=user_id, value={key=token, value="tfidf weight"}}
+    def gen_user_token_tfidf(self):
+        dictionary = corpora.Dictionary.load(os.path.join(FileUtil.get_tfidf_dir(), "barrage-words.dict"))
+        tfidf_model = models.TfidfModel.load(os.path.join(FileUtil.get_tfidf_dir(), "barrage-tfidf.model"))
+        for user_id, word_frequency in self.user_word_frequency_dict.items():
+            token_weight_list = []
+            for word, frequency in word_frequency.items():
+                token = dictionary.token2id[word]
+                token_weight_list.append((token, frequency))
+            tfidf_weight_list = tfidf_model[token_weight_list]
+            tfidf_weight_dict = {}
+            for item in tfidf_weight_list:
+                tfidf_weight_dict[str(item[0])] = item[1]
+            self.user_token_tfidf_dict[user_id] = tfidf_weight_dict
+
     # 获得该时间窗口内 所有弹幕信息 发送用户的id。
     def gen_all_barrage_sender_id(self):
         sender_id_list = []
@@ -95,7 +116,7 @@ class TimeWindow(object):
             time_window_index += 1
         return time_window_list
 
-    # 获得每一个时间窗口内，以用户为维度，统计用户所发弹幕的词频。
+    # 获得每一个时间窗口内，以用户为维度，统计用户所发弹幕词语的词频。
     # 参数：已经按照play_timestamp升序排序好的弹幕（已做好中文分词）列表。
     # 返回：time_window列表，每个TimeWindow对象中的 user_word_frequency 用户词频信息已被填充。
     @classmethod
@@ -103,6 +124,17 @@ class TimeWindow(object):
         time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list)
         for time_window in time_window_list:
             time_window.gen_user_word_frequency()  # 产生该时间窗口内的用户词频信息。
+        return time_window_list
+
+    # 获得每一个时间窗口内，以用户为维度，统计用户所发弹幕词语的tfidf权重。
+    # 参数：已经按照play_timestamp升序排序好的弹幕（已做好中文分词）列表。
+    # 返回：time_window列表，每个TimeWindow对象中的 user_token_tfidf_dict 用户词频信息已被填充。
+    @classmethod
+    def gen_user_token_tfidf_by_time_window(cls, barrage_seg_list):
+        time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list)
+        for time_window in time_window_list:
+            time_window.gen_user_word_frequency()  # 产生该时间窗口内的用户词频信息。
+            time_window.gen_user_token_tfidf()  # 产生该时间窗口内的用户所发词语的tfidf权重信息。
         return time_window_list
 
 
@@ -118,16 +150,19 @@ if __name__ == "__main__":
     #     print str(time_window.time_window_index), u"\t", str(time_window.start_timestamp), u"\t",\
     #         str(time_window.end_timestamp), u"\t", str_info
 
-    time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
-    with codecs.open("seg-result.txt", "wb", "utf-8") as output_file:
-        for time_window in time_window_list:
-            str_info = str(time_window.time_window_index) + u"\t"
-            for user_id, word_frequency in time_window.user_word_frequency_dict.items():
-                str_info += (user_id + u"\t")
-                for word, frequency in word_frequency.items():
-                    str_info += (word + u"\t" + str(frequency) + u"\t")
-            print str_info
-            output_file.write(str_info + u"\n")
+    # time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
+    # with codecs.open("seg-result.txt", "wb", "utf-8") as output_file:
+    #     for time_window in time_window_list:
+    #         str_info = str(time_window.time_window_index) + u"\t"
+    #         for user_id, word_frequency in time_window.user_word_frequency_dict.items():
+    #             str_info += (user_id + u"\t")
+    #             for word, frequency in word_frequency.items():
+    #                 str_info += (word + u"\t" + str(frequency) + u"\t")
+    #         print str_info
+    #         output_file.write(str_info + u"\n")
 
     # time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
     # SimMatrix.gen_jaccard_sim_matrix_by_word_frequency(time_window_list)
+
+    time_window_list = TimeWindow.gen_user_token_tfidf_by_time_window(barrage_seg_list)
+    SimMatrix.gen_cosine_sim_matrix(time_window_list)

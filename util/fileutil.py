@@ -148,6 +148,14 @@ class FileUtil(object):
         FileUtil.create_dir_if_not_exist(dict_dir)
         return dict_dir
 
+    # 获得tfidf字典数据的路径
+    @staticmethod
+    def get_tfidf_dir():
+        data_dir = FileUtil.get_data_root_dir()
+        tfidf_dir = os.path.join(data_dir, "tfidf")
+        FileUtil.create_dir_if_not_exist(tfidf_dir)
+        return tfidf_dir
+
 
 if __name__ == "__main__":
     print FileUtil.get_local_data_dir()

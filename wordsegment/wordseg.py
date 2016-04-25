@@ -6,8 +6,10 @@ import json
 
 import jieba.posseg as pseg
 import wordsegment.filterwords as filterwords
+import os
+from util.fileutil import FileUtil
+from analysis.model.dictconfig import DictConfig
 
-from util.consoleutil import ConsoleUtil
 import logging
 
 
@@ -86,6 +88,10 @@ def segment_barrages(barrages):
         sentence_seg = __segment_sentence(barrage.content)
         barrage_seg.sentence_seg_list = sentence_seg
         barrage_seg_list.append(barrage_seg)
+    # 将分词结果写入测试文件中，检查分词情况
+    __save_segment_word_to_file(barrage_seg_list)
+    # 建立 tf-idf 相关的词典信息
+    DictConfig.gen_tfidf_dict(barrage_seg_list)
     return barrage_seg_list
 
 
@@ -100,9 +106,26 @@ def __segment_sentence(sentence):
         if filterwords.is_stopwords(word):  # 判断该词是否是停用词，不是停用词才给予收录。
             continue
         # 如果词语在替换词词典中，那么返回(True, 替换之后的词)，否则返回(Flase, 原词)
-        flag, replace_word = filterwords.format_word(word)
-        sentence_seg.append(WordSeg(replace_word, flag))
+        is_replace, word = filterwords.format_word(word)
+        # 判断该词的词性是否为接受的词性，如果不是，那么不加入分词结果。
+        # if not filterwords.is_accept_nominal(flag):
+        #     # 测试一下滤出的都是什么词
+        #     with codecs.open("not_accept.txt", "ab", "utf-8") as output_file:
+        #         str_info = word + u"\t" + str(flag) + u"\n"
+        #         output_file.write(str_info)
+        #     continue
+        sentence_seg.append(WordSeg(word, flag))
     return sentence_seg
+
+
+# 将分词的结果写入文件中，可以查看分词的效果。主要用于测试。
+def __save_segment_word_to_file(barrage_seg_list):
+    # barrage_seg_list -> barrage_seg -> sentence_seg_list -> sentence_seg
+    word_segment_file = os.path.join(FileUtil.get_word_segment_dir(), "seg-result.txt")
+    with codecs.open(word_segment_file, "wb", "utf-8") as output_file:
+        for barrage_seg in barrage_seg_list:
+            for word_seg in barrage_seg.sentence_seg_list:
+                output_file.write(word_seg.word + u"\t" + word_seg.flag + u"\t")
 
 
 # 将切词的结果写入文件中，json的形式。
