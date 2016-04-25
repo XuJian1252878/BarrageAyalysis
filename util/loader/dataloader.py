@@ -2,16 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import codecs
-from decimal import Decimal, getcontext
-
-import wordsegment.wordseg as wordseg
-from db.model.barrage import Barrage
-from util.fileutil import FileUtil
-from util.datetimeutil import DateTimeUtil
-from analysis.model.barrageinfo import BarrageInfo
+import datetime
 import os
 import re
+from decimal import Decimal, getcontext
+
+from gensim import corpora
+
+from analysis.model.barrageinfo import BarrageInfo
 from analysis.model.dictconfig import DictConfig
+from db.model.barrage import Barrage
+from util.datetimeutil import DateTimeUtil
+from util.fileutil import FileUtil
 
 """
 从本地的txt弹幕文件（本地项目根目录data/local/文件夹下。）中加载弹幕数据。或者是从数据库中加载弹幕数据。
@@ -91,6 +93,38 @@ def parse_barrage_xml_to_txt(xml_file_path):
     return barrages
 
 
+# 解析出bilibili直播的弹幕数据。
+def get_barrage_from_live_text_file(file_path):
+    with codecs.open(file_path, "rb", "utf-8") as input_file:
+        (folder, file_name) = os.path.split(file_path)
+        barrage_start_datetime_str = file_name.split(".")[0] + " 12:00:00"  # 每场围棋比赛是当天12点开始的。
+        barrage_start_datetime = datetime.datetime.strptime(barrage_start_datetime_str, "%Y-%m-%d %H:%M:%S")
+        sender_name_list = []
+        barrages = []
+        for line in input_file:
+            split_info = line.strip().split("\t")
+            if len(split_info) < 3:
+                continue
+            datetime_str = split_info[0]
+            sender_name = split_info[1]
+            content = split_info[2]
+            barrage_datetime = datetime.datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+            if barrage_datetime < barrage_start_datetime:
+                continue  # 比赛还未开始的弹幕略去
+            barrage_timestamp = str((barrage_datetime - barrage_start_datetime).total_seconds())
+            sender_name_list.append([sender_name])
+            # 创建barrage对象
+            barrage = Barrage(play_timestamp=barrage_timestamp, sender_id=sender_name, content=content)
+            barrages.append(barrage)
+        # 为每一个用户的名称对应一个唯一的数字表示
+        dictionary = corpora.Dictionary(sender_name_list)
+        dictionary.save("live_sender_name.dict")
+        # 在将barrages中的barrage用户名称替换为刚刚生成的对应数字表示
+        for barrage in barrages:
+            barrage.sender_id = str(dictionary.token2id[barrage.sender_id])
+        return barrages
+
+
 if __name__ == "__main__":
     # barrages = get_barrage_from_txt_file("../../data/local/9.txt")
     # file_path = FileUtil.get_word_segment_result_file_path("../../data/local/9.txt")
@@ -101,6 +135,11 @@ if __name__ == "__main__":
     #     print str(barrage_seg.play_timestamp), u"\t", u"\t".join([seg.word + u"\t" + seg.flag for seg
     #                                                               in barrage_seg.sentence_seg_list])
 
-    gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "2065063.txt"))
+    # gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "2065063.txt"))
 
     # parse_barrage_xml_to_txt("E:\\Workspace\\PycharmProjects\\BarrageAyalysis\\util\\loader\\2065063.xml")
+
+    barrages = get_barrage_from_live_text_file(os.path.join(FileUtil.get_project_root_path(), "data", "AlphaGo",
+                                                            "bilibili", "2016-03-09.txt"))
+    for barrage in barrages:
+        print barrage.play_timestamp, u"\t", barrage.sender_id, u"\t", barrage.content, u"\n"

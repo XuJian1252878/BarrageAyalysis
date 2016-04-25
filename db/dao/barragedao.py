@@ -52,8 +52,8 @@ class BarrageDao(object):
             return False
         barrage = Barrage(play_timestamp=play_timestamp, type=type, font_size=font_size, font_color=font_color,
                           unix_timestamp=unix_timestamp, pool=pool, sender_id=sender_id,
-                          row_id=row_id, content=content)
-        barrage.video = video
+                          row_id=row_id, content=content, video=video)
+        # barrage.video = video  # bug 在这里就无法将video外键信息写入。
         print barrage.content  # 调试信息
         session = DBUtil.open_session()
         try:
