@@ -33,8 +33,8 @@ class BarrageDao(object):
             for barrage in barrages:
                 b = Barrage(row_id=barrage[7], play_timestamp=barrage[0], type=barrage[1], font_size=barrage[2],
                             font_color=barrage[3], unix_timestamp=barrage[4], pool=barrage[5], sender_id=barrage[6],
-                            content=barrage[8])
-                b.video = video
+                            content=barrage[8], video=video)
+                # b.video = video
                 session.add(b)
             session.commit()
             return True
@@ -85,7 +85,11 @@ class BarrageDao(object):
 
 
 if __name__ == "__main__":
-    barrages = BarrageDao.get_all_barrages_by_cid("2835798")
-    # 将 decimal 的精度设置为30
-    for barrage in barrages:
-        print barrage.play_timestamp
+    # barrages = BarrageDao.get_all_barrages_by_cid("2835798")
+    # # 将 decimal 的精度设置为30
+    # for barrage in barrages:
+    #     print barrage.play_timestamp
+    barrage1 = ["22.243", 1, 25, "16777215", "1461370507", 0, "Df923e29", "1782397153", "陈冠希好帅"]
+    barrage2 = ["67.362", 1, 25, "16777215", "1461375766", 0, "Df923e29", "1782537123", "字幕呢"]
+    barrages = [barrage1, barrage2]
+    BarrageDao.add_barrages(barrages, 5512275)

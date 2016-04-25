@@ -33,7 +33,8 @@ class Barrage(__BASE_MODEL):
 
     # http://docs.sqlalchemy.org/en/latest/orm/constructors.html
     # 在构建数据库行对象的时候是不会调用__init__来创建对象的，而会调用更底层的__new__。那么它们是怎么对应起来的？
-    def __init__(self, play_timestamp, type, font_size, font_color, unix_timestamp, pool, sender_id, row_id, content):
+    def __init__(self, play_timestamp, type, font_size, font_color, unix_timestamp, pool, sender_id, row_id, content,
+                 video=None):
         self.play_timestamp = play_timestamp
         self.type = type
         self.font_size = font_size
@@ -45,5 +46,8 @@ class Barrage(__BASE_MODEL):
         self.content = content
         # 因为类变量中申明了video 是关于类Video的外键，所以该模块中必须import Video，否则会报错：
         # failed to locate a name ("Video" name  is not defined"). If this is a class name....
-        self.video = Video()
+        if video is None:
+            self.video = Video()
+        else:
+            self.video = video
         self.video_cid = None

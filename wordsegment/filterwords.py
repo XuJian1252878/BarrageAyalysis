@@ -30,6 +30,17 @@ def format_word(word):
     return False, word
 
 
+# 判断一个词的词性是否为接受的词性，若是，那么返回true；否则返回false。
+def is_accept_nominal(nominal):
+    accept_nominal_set = DictConfig.get_accept_nominal()
+    for accept_nominal in accept_nominal_set:
+        # 因为词性都是大类之内再分为小类，如w、n等等；结巴分词的结果可能直接把小类分了出来，如wp、wn等等
+        # 所以词性判断需要使用startwith来判断。
+        if accept_nominal.startswith(nominal):
+            return True
+    return False
+
+
 if __name__ == "__main__":
     DictConfig.build_dicts()
     print format_word("22333333")
