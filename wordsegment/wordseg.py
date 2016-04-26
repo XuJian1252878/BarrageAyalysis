@@ -3,15 +3,14 @@
 
 import codecs
 import json
+import logging
+import os
 
 import jieba.posseg as pseg
+
 import wordsegment.filterwords as filterwords
-import os
-from util.fileutil import FileUtil
 from analysis.model.dictconfig import DictConfig
-
-import logging
-
+from util.fileutil import FileUtil
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
@@ -103,10 +102,20 @@ def __segment_sentence(sentence):
     logging.info(u"正在分词：" + sentence)
     words = pseg.cut(sentence)
     for word, flag in words:
+        if flag == "eng":
+            # 如果切出来的词语是英文，那么需要将其转换成小写，因为替换词典中所有关于英文的模式都是小写的。
+            word = word.lower()
         if filterwords.is_stopwords(word):  # 判断该词是否是停用词，不是停用词才给予收录。
             continue
         # 如果词语在替换词词典中，那么返回(True, 替换之后的词)，否则返回(Flase, 原词)
-        is_replace, word = filterwords.format_word(word)
+        # 这个必须先于replace_emoji_to_word调用，因为存在QQWWWWWWQQQ这样的颜表情，需要替换为QWQ之后，再替换为对应情感色彩的汉字。
+        is_word_replace, word = filterwords.format_word(word)
+        if is_word_replace:
+            logging.debug(u"word 替换成功：" + word)
+        # 查看该词是否颜文字表情，进行颜文字表情的替换操作
+        is_emoji_replace, word = filterwords.replace_emoji_to_word(word)
+        if is_emoji_replace:
+            logging.debug(u"emoji 替换成功：" + word)
         # 判断该词的词性是否为接受的词性，如果不是，那么不加入分词结果。
         # if not filterwords.is_accept_nominal(flag):
         #     # 测试一下滤出的都是什么词

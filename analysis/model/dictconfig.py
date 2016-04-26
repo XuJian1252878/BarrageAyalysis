@@ -1,12 +1,14 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
-import os
-from util.fileutil import FileUtil
 import codecs
 import logging
+import os
+
 import jieba
 from gensim import corpora, models
+
+from util.fileutil import FileUtil
 
 """
 保存所用字典的信息，停用词词典，情感词典等等。
@@ -26,6 +28,9 @@ class DictConfig(object):
     # 替换词词典信息
     __REPLACE_WORDS = {}
     __REPLACE_WORDS_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "replace-dict.txt")])
+    # 替换颜表情词典信息
+    __REPLACE_EMOJI = {}
+    __REPLACE_EMOJI_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "emoji-dict.txt")])
     # 接受词性词典
     __ACCEPT_NOMINAL = set([])
     __ACCEPT_NOMINAL_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "accept-nominal-dict.txt")])
@@ -43,8 +48,12 @@ class DictConfig(object):
         return cls.__REPLACE_WORDS
 
     @classmethod
-    def get_accept_nominal(cls):
+    def get_accept_nominal_set(cls):
         return cls.__ACCEPT_NOMINAL
+
+    @classmethod
+    def get_emoji_replace_dict(cls):
+        return cls.__REPLACE_EMOJI
 
     # 初始化填充停用词列表信息。
     @classmethod
@@ -81,6 +90,22 @@ class DictConfig(object):
                     cls.__ACCEPT_NOMINAL.add(accept_nominal)
         logging.debug(u"接受词性词典加载成功！！！")
 
+    @classmethod
+    def __init_emoji_replace_dict(cls):
+        cls.__REPLACE_EMOJI = {}
+        for emoji_dict_path in cls.__REPLACE_EMOJI_PATH_SET:
+            with codecs.open(emoji_dict_path, "rb", "utf-8") as input_file:
+                for line in input_file:
+                    split_info = line.strip().split("\t")
+                    if len(split_info) < 2:
+                        # 一般情况下emoji表情都包含两列，一列为表情，另一列为替换词，这两列必须有；第三列为表情说明，可有可无。
+                        continue
+                    # emoji替换词典里的表情是可能重复的，因为表情太复杂来不及检查，这里将会出现以最后一个定义为准。
+                    emoji = split_info[0]
+                    replace_word = split_info[1]
+                    cls.__REPLACE_EMOJI[emoji] = replace_word
+        logging.debug(u"emoji 替换词典加载完成！！！")
+
     # 根据分好词的barrage_seg_list（分好词、过滤好停词）
     @classmethod
     def gen_tfidf_dict(cls, barrage_seg_list):
@@ -109,7 +134,7 @@ class DictConfig(object):
     # 初始化所有的字典信息。
     @classmethod
     def build_dicts(cls):
-        # 载入自定义的弹幕词典
+        # 载入自定义的弹幕词典，优化弹幕特有词语的切词，以及颜表情的切词
         jieba.load_userdict(os.path.join(FileUtil.get_dict_dir(), "barrage-word-dict.txt"))
         logging.debug(u"自定义弹幕词典加载成功！！！")
         # 初始化停用词列表
@@ -118,6 +143,8 @@ class DictConfig(object):
         cls.__init_replace_words()
         # 初始化接受词性的词典
         cls.__init_accept_nominal()
+        # 初始化emoji替换词典
+        cls.__init_emoji_replace_dict()
 
 
 if __name__ == "__main__":
