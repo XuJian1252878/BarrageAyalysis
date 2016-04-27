@@ -95,6 +95,9 @@ def parse_barrage_xml_to_txt(xml_file_path):
 
 # 解析出bilibili直播的弹幕数据。
 def get_barrage_from_live_text_file(file_path):
+    # 首先 初始化我们需要的字典信息，如停用词词典、情感词典等等，为将来的处理步骤做准备。
+    DictConfig.build_dicts()
+
     with codecs.open(file_path, "rb", "utf-8") as input_file:
         (folder, file_name) = os.path.split(file_path)
         barrage_start_datetime_str = file_name.split(".")[0] + " 12:00:00"  # 每场围棋比赛是当天12点开始的。

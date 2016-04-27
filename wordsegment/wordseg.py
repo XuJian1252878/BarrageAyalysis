@@ -13,7 +13,8 @@ from analysis.model.dictconfig import DictConfig
 from util.fileutil import FileUtil
 
 logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',
+                    filename='word-seg.log', filemode="w")
 
 
 """
@@ -101,6 +102,9 @@ def __segment_sentence(sentence):
     sentence_seg = []
     logging.info(u"正在分词：" + sentence)
     words = pseg.cut(sentence)
+    # 首先对可能出现的emoji表情进行识别
+    # 由于结巴分词会将颜文字表情识别为一个个的单一标点符号，使原来的颜文字表情信息无法表示出来。
+    words = filterwords.distinguish_emoji(words)
     for word, flag in words:
         if flag == "eng":
             # 如果切出来的词语是英文，那么需要将其转换成小写，因为替换词典中所有关于英文的模式都是小写的。
@@ -109,13 +113,15 @@ def __segment_sentence(sentence):
             continue
         # 如果词语在替换词词典中，那么返回(True, 替换之后的词)，否则返回(Flase, 原词)
         # 这个必须先于replace_emoji_to_word调用，因为存在QQWWWWWWQQQ这样的颜表情，需要替换为QWQ之后，再替换为对应情感色彩的汉字。
+        origin_word = word
         is_word_replace, word = filterwords.format_word(word)
         if is_word_replace:
-            logging.debug(u"word 替换成功：" + word)
+            logging.debug(u" word " + origin_word + u" 替换成功：" + word)
         # 查看该词是否颜文字表情，进行颜文字表情的替换操作
-        is_emoji_replace, word = filterwords.replace_emoji_to_word(word)
+        origin_word = word
+        is_emoji_replace, word, flag = filterwords.replace_emoji_to_word(word, flag)
         if is_emoji_replace:
-            logging.debug(u"emoji 替换成功：" + word)
+            logging.debug(u"emoji" + origin_word + u" 替换成功：" + word)
         # 判断该词的词性是否为接受的词性，如果不是，那么不加入分词结果。
         # if not filterwords.is_accept_nominal(flag):
         #     # 测试一下滤出的都是什么词
@@ -156,3 +162,14 @@ def load_segment_barrages(file_path):
     barrage_seg_list_json = json.loads(json_str)
     barrage_seg_list = BarrageSeg.dict2barrageseglist(barrage_seg_list_json)
     return barrage_seg_list
+
+
+if __name__ == "__main__":
+    DictConfig.build_dicts()
+    sentence_list = [u"哈哈哈哈哈哈哈哈哈", u"+1", u"1111", u"(´▽｀)ノ♪", u"(╬ﾟдﾟ)▄︻┻┳═一(╬ﾟдﾟ)▄︻", u"(╬ﾟдﾟ)▄︻┻┳═一呀(╬ﾟдﾟ)▄︻",
+                     u"哈(╬ﾟдﾟ)▄︻┻┳═一不(╬ﾟдﾟ)▄︻", u"你是不是傻(╬ﾟдﾟ)▄︻┻┳═一(╬ﾟдﾟ)▄︻",
+                     u"你终于承认完全不懂了！！！！！！！！！！"]
+    for sentence in sentence_list:
+        sentence_seg = __segment_sentence(sentence)
+        for word_seg in sentence_seg:
+            print word_seg.word, u"\t", word_seg.flag

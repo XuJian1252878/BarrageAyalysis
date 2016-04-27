@@ -1,13 +1,14 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
+import logging
+import os
+
+from gensim import corpora, models
+
 import util.loader.dataloader as dataloader
 import wordsegment.wordseg as wordseg
-import logging
 from analysis.similarity.matrix import SimMatrix
-import codecs
-from gensim import corpora, models
-import os
 from util.fileutil import FileUtil
 
 """
@@ -139,7 +140,8 @@ class TimeWindow(object):
 
 
 if __name__ == "__main__":
-    barrages = dataloader.get_barrage_from_txt_file("../../data/local/2065063.txt")
+    # barrages = dataloader.get_barrage_from_txt_file("../../data/local/2065063.txt")
+    barrages = dataloader.get_barrage_from_live_text_file("../../data/AlphaGo/bilibili/2016-03-09.txt")
     barrage_seg_list = wordseg.segment_barrages(barrages)
     # time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list)
     # for time_window in time_window_list:
