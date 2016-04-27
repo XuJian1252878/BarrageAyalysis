@@ -3,7 +3,6 @@
 
 import codecs
 import json
-import logging
 import os
 
 import jieba.posseg as pseg
@@ -11,10 +10,9 @@ import jieba.posseg as pseg
 import wordsegment.filterwords as filterwords
 from analysis.model.dictconfig import DictConfig
 from util.fileutil import FileUtil
+from util.loggerutil import Logger
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',
-                    filename='word-seg.log', filemode="w")
+logger = Logger(log_name="word-segment.log").get_logger()
 
 
 """
@@ -100,7 +98,7 @@ def segment_barrages(barrages):
 # 返回：包含该句子分词结果的列表，列表中的对象为WordSeg对象。
 def __segment_sentence(sentence):
     sentence_seg = []
-    logging.info(u"正在分词：" + sentence)
+    logger.info(u"正在分词：" + sentence)
     words = pseg.cut(sentence)
     # 首先对可能出现的emoji表情进行识别
     # 由于结巴分词会将颜文字表情识别为一个个的单一标点符号，使原来的颜文字表情信息无法表示出来。
@@ -116,12 +114,12 @@ def __segment_sentence(sentence):
         origin_word = word
         is_word_replace, word = filterwords.format_word(word)
         if is_word_replace:
-            logging.debug(u" word " + origin_word + u" 替换成功：" + word)
+            logger.debug(u" word " + origin_word + u" 替换成功：" + word)
         # 查看该词是否颜文字表情，进行颜文字表情的替换操作
         origin_word = word
         is_emoji_replace, word, flag = filterwords.replace_emoji_to_word(word, flag)
         if is_emoji_replace:
-            logging.debug(u"emoji" + origin_word + u" 替换成功：" + word)
+            logger.debug(u"emoji" + origin_word + u" 替换成功：" + word)
         # 判断该词的词性是否为接受的词性，如果不是，那么不加入分词结果。
         # if not filterwords.is_accept_nominal(flag):
         #     # 测试一下滤出的都是什么词

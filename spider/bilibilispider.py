@@ -12,9 +12,9 @@ from multiprocessing import Pool
 from db.dao.barragedao import BarrageDao
 from db.dao.videodao import VideoDao
 from spider import BarrageSpider
-from util.consoleutil import ConsoleUtil
 from util.datetimeutil import DateTimeUtil
 from util.fileutil import FileUtil
+from util.loggerutil import Logger
 
 """
 抓取bilibili站点的视频信息（标题，分类）以及视频对应的弹幕信息。
@@ -94,7 +94,7 @@ class BilibiliSpider(BarrageSpider):
             last_barrage_index = -1  # 记录文件中最后一条弹幕在row_barrages中的下标。
             barrage_count = FileUtil.get_file_line_count(barrage_file_path)
             last_n_barrages = FileUtil.get_file_last_n_line_content(barrage_file_path, 5)
-            ConsoleUtil.print_console_info(u"当前文件的最后n条弹幕：\n" + u"\n".join(last_n_barrages))
+            Logger.print_console_info(u"当前文件的最后n条弹幕：\n" + u"\n".join(last_n_barrages))
             for index in xrange(len(row_barrages) - 1, -1, -1):
                 if self.__is_same_barrage(last_n_barrages, row_barrages[index]):
                     # 获得存储在弹幕文件中的最后一条弹幕，在更新弹幕序列中的位置。
@@ -103,20 +103,20 @@ class BilibiliSpider(BarrageSpider):
             # 当前弹幕数据没有更新
             if last_barrage_index == (len(row_barrages) - 1):
                 row_barrages = []
-                ConsoleUtil.print_console_info(unicode(DateTimeUtil.get_cur_timestamp("%Y-%m-%d %H:%M:%S")) +
+                Logger.print_console_info(unicode(DateTimeUtil.get_cur_timestamp("%Y-%m-%d %H:%M:%S")) +
                                                u"\t" + u"弹幕数据没有更新。")
             # 此时部分的弹幕数据需要更新
             elif last_barrage_index >= 0:
-                ConsoleUtil.print_console_info(unicode(DateTimeUtil.get_cur_timestamp("%Y-%m-%d %H:%M:%S")) +
+                Logger.print_console_info(unicode(DateTimeUtil.get_cur_timestamp("%Y-%m-%d %H:%M:%S")) +
                                                u"\t" + u"有弹幕数据更新：" +
                                                u"\t" + str(len(row_barrages) - last_barrage_index - 1))
                 row_barrages = row_barrages[last_barrage_index + 1: len(row_barrages)]
             # 弹幕全文都要更新
             elif last_barrage_index == -1:
-                ConsoleUtil.print_console_info(unicode(DateTimeUtil.get_cur_timestamp("%Y-%m-%d %H:%M:%S")) + u"\t" +
+                Logger.print_console_info(unicode(DateTimeUtil.get_cur_timestamp("%Y-%m-%d %H:%M:%S")) + u"\t" +
                                                u"有弹幕数据更新：" + u"\t" + str(len(row_barrages)))
         barrage_count += len(row_barrages)
-        ConsoleUtil.print_console_info(unicode(DateTimeUtil.get_cur_timestamp("%Y-%m-%d %H:%M:%S")) +
+        Logger.print_console_info(unicode(DateTimeUtil.get_cur_timestamp("%Y-%m-%d %H:%M:%S")) +
                                        u" 当前弹幕总条数：" + unicode(barrage_count) + u"\n\n")
         return row_barrages
 
@@ -137,7 +137,7 @@ class BilibiliSpider(BarrageSpider):
             # last_barrage 格式: (row_id\tplay_timestamp\t...\tcontent)
             last_barrage = last_barrage.split(u"\t")
             if len(last_barrage) != len(barrage):
-                ConsoleUtil.print_console_info(u"Error，弹幕格式有误，无法两条弹幕是否相同。")
+                Logger.print_console_info(u"Error，弹幕格式有误，无法两条弹幕是否相同。")
                 continue
             is_same = True
             for index in xrange(1, len(last_barrage)):
@@ -155,7 +155,7 @@ class BilibiliSpider(BarrageSpider):
         video_html_content = self.get_html_content(video_url)
         if video_html_content is None:
             # 说明网络连接可能有问题，导致无法获得网页源码。
-            ConsoleUtil.print_console_info(u"无法获得网页html代码，请检查网址是否输入正确，或检查网络连接是否正常！！")
+            Logger.print_console_info(u"无法获得网页html代码，请检查网址是否输入正确，或检查网络连接是否正常！！")
             return None
         # 获得视频的相关信息
         aid = self.get_video_aid(video_url)
@@ -176,10 +176,10 @@ class BilibiliSpider(BarrageSpider):
 
 # 爬取弹幕的任务函数
 def grab_barrage_task(video_url):
-    ConsoleUtil.print_console_info(u"子进程id：%s，抓取网页：%s。开始……" % (os.getpid(), video_url))
+    Logger.print_console_info(u"子进程id：%s，抓取网页：%s。开始……" % (os.getpid(), video_url))
     bili_spider = BilibiliSpider()
     bili_spider.start(video_url)
-    ConsoleUtil.print_console_info(u"子进程id：%s，抓取网页：%s。结束……" % (os.getpid(), video_url))
+    Logger.print_console_info(u"子进程id：%s，抓取网页：%s。结束……" % (os.getpid(), video_url))
 
 
 # 爬虫主函数，创建多个进程对多个video站点的弹幕信息进行抓取。
@@ -199,14 +199,14 @@ def main():
                   "http://www.bilibili.com/video/av3470183/"]
     print video_urls
 
-    ConsoleUtil.print_console_info(u"开始抓取弹幕信息。\n父进程id：%s" % os.getpid())
+    Logger.print_console_info(u"开始抓取弹幕信息。\n父进程id：%s" % os.getpid())
     pool = Pool(7)
     for video_url in video_urls:
         print video_url
         pool.apply_async(grab_barrage_task, args=(video_url,))
     pool.close()
     pool.join()
-    ConsoleUtil.print_console_info(u"弹幕信息抓取结束！")
+    Logger.print_console_info(u"弹幕信息抓取结束！")
 
 
 def scheme_task(my_sched, interval_time=60):
