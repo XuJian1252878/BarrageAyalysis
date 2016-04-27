@@ -1,14 +1,14 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
-"""
-获取 http://www.yanwenzi.com/  颜文字网页上的颜文字信息。
-"""
-
 import codecs
 import re
 import sys
 import urllib2
+
+"""
+用来爬取 http://www.yanwenzi.com/ 颜文字网站上的颜文字信息。
+"""
 
 filesystemencoding = sys.getfilesystemencoding()
 
@@ -100,5 +100,5 @@ with codecs.open("emoji-all.txt", "wb", "utf-8") as all_output_file:
             # 收集完成一个类别的信息之后，将类别信息写入文件中
             for emoji_name, emoji_pic_set in emoji_dict.items():
                 for emoji_pic in emoji_pic_set:
-                    output_file.write(emoji_pic + u"\t" + emoji_name + u"\n")
-                    all_output_file.write(emoji_pic + u"\t" + emoji_name + u"\n")
+                    output_file.write(emoji_pic + u"\t" + category + u"\t" + emoji_name + u"\n")
+                    all_output_file.write(emoji_pic + u"\t" + category + u"\t" + emoji_name + u"\n")

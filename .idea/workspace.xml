@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="929654d8-5e55-42aa-b84c-2828a57edab0" name="Default" comment="add some emoji to emoji dict. and finish the emoji generate flow in word segment flow.">
+    <list default="true" id="929654d8-5e55-42aa-b84c-2828a57edab0" name="Default" comment="modify some emoji meaning.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/dict/barrage-word-dict.txt" afterPath="$PROJECT_DIR$/data/dict/barrage-word-dict.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/dict/emoji-dict.txt" afterPath="$PROJECT_DIR$/data/dict/emoji-dict.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/dict/replace-dict.txt" afterPath="$PROJECT_DIR$/data/dict/replace-dict.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spider/other/yanwenzi.py" afterPath="$PROJECT_DIR$/spider/other/yanwenzi.py" />
     </list>
     <ignored path="BarrageAnalysis.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,16 +31,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="barragedao.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/db/dao/barragedao.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="dataloader.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util/loader/dataloader.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -60,31 +51,31 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="emoji-dict.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/dict/emoji-dict.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="442">
+              <caret line="944" column="17" selection-start-line="944" selection-start-column="17" selection-end-line="944" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="replace-dict.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/dict/replace-dict.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="555">
-              <caret line="95" column="6" selection-start-line="95" selection-start-column="6" selection-end-line="95" selection-end-column="6" />
+            <state relative-caret-position="368">
+              <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="emoji-dict.txt" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/data/dict/emoji-dict.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
-              <caret line="567" column="13" selection-start-line="567" selection-start-column="13" selection-end-line="567" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="barrage-word-dict.txt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="barrage-word-dict.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/data/dict/barrage-word-dict.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="1598" column="4" selection-start-line="1598" selection-start-column="4" selection-end-line="1598" selection-end-column="4" />
+            <state relative-caret-position="102">
+              <caret line="770" column="2" selection-start-line="770" selection-start-column="2" selection-end-line="770" selection-end-column="2" />
               <folding />
             </state>
           </provider>
@@ -179,15 +170,15 @@
         <option value="$PROJECT_DIR$/analysis/similarity/__init__.py" />
         <option value="$PROJECT_DIR$/db/dao/barragedao.py" />
         <option value="$PROJECT_DIR$/db/model/barrage.py" />
-        <option value="$PROJECT_DIR$/spider/other/yanwenzi.py" />
         <option value="$PROJECT_DIR$/analysis/model/dictconfig.py" />
         <option value="$PROJECT_DIR$/util/loader/dataloader.py" />
         <option value="$PROJECT_DIR$/analysis/model/timewindow.py" />
         <option value="$PROJECT_DIR$/wordsegment/filterwords.py" />
         <option value="$PROJECT_DIR$/wordsegment/wordseg.py" />
-        <option value="$PROJECT_DIR$/data/dict/barrage-word-dict.txt" />
-        <option value="$PROJECT_DIR$/data/dict/replace-dict.txt" />
+        <option value="$PROJECT_DIR$/spider/other/yanwenzi.py" />
         <option value="$PROJECT_DIR$/data/dict/emoji-dict.txt" />
+        <option value="$PROJECT_DIR$/data/dict/replace-dict.txt" />
+        <option value="$PROJECT_DIR$/data/dict/barrage-word-dict.txt" />
       </list>
     </option>
   </component>
@@ -230,7 +221,88 @@
     <panes>
       <pane id="Scope" />
       <pane id="ProjectPane">
-        <subPane />
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="spider" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="spider" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="other" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dict" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
       </pane>
       <pane id="Scratches" />
     </panes>
@@ -242,16 +314,16 @@
     <property name="settings.editor.splitter.proportion" value="0.23212537" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\local" />
-      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\scripts\spider" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\spider\other" />
       <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data" />
       <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\dict" />
       <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\util\loader" />
       <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\scripts\matlab" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\local" />
+      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\scripts\spider" />
     </key>
   </component>
   <component name="RunManager" selected="Python.Unnamed">
@@ -545,7 +617,14 @@
       <option name="project" value="LOCAL" />
       <updated>1461750625494</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="modify some emoji meaning.">
+      <created>1461758942720</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1461758942720</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TodoView">
@@ -561,7 +640,7 @@
     <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18549618" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18532526" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32872504" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28725037" sideWeight="0.5030257" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -618,7 +697,8 @@
     <MESSAGE value="complete the alphago live barrage data read flow." />
     <MESSAGE value="add emoji replace dict and add replace dict, complete emoji replace flow." />
     <MESSAGE value="add some emoji to emoji dict. and finish the emoji generate flow in word segment flow." />
-    <option name="LAST_COMMIT_MESSAGE" value="add some emoji to emoji dict. and finish the emoji generate flow in word segment flow." />
+    <MESSAGE value="modify some emoji meaning." />
+    <option name="LAST_COMMIT_MESSAGE" value="modify some emoji meaning." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -849,13 +929,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/spider/other/yanwenzi.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1088">
-          <caret line="4" column="42" selection-start-line="4" selection-start-column="42" selection-end-line="4" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/spider/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="362">
@@ -919,26 +992,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/spider/other/yanwenzi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="129">
+          <caret line="9" column="43" selection-start-line="9" selection-start-column="43" selection-end-line="9" selection-end-column="43" />
+          <folding>
+            <element signature="e#50#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/dict/emoji-dict.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="944" column="17" selection-start-line="944" selection-start-column="17" selection-end-line="944" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/data/dict/replace-dict.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="95" column="6" selection-start-line="95" selection-start-column="6" selection-end-line="95" selection-end-column="6" />
+        <state relative-caret-position="368">
+          <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data/dict/barrage-word-dict.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="1598" column="4" selection-start-line="1598" selection-start-column="4" selection-end-line="1598" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/dict/emoji-dict.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="567" column="13" selection-start-line="567" selection-start-column="13" selection-end-line="567" selection-end-column="13" />
+        <state relative-caret-position="102">
+          <caret line="770" column="2" selection-start-line="770" selection-start-column="2" selection-end-line="770" selection-end-column="2" />
           <folding />
         </state>
       </provider>
