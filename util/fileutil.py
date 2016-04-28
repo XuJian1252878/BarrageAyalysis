@@ -108,7 +108,7 @@ class FileUtil(object):
         return last_lines
 
     # 构建分词结果文件的文件名称（根据本地txt弹幕文件的cid 加上
-    # -seg-result.txt 问分词结果的文件名。即cid-seg-result.txt）
+    # -seg-result.json 问分词结果的文件名。即cid-seg-result.json）
     # 参数： cid 本地原始弹幕文件的cid信息。
     @staticmethod
     def get_word_segment_result_file_path(cid):
