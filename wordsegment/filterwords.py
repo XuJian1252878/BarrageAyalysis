@@ -31,7 +31,8 @@ def format_word(word):
     return False, word
 
 
-# 对弹幕中的颜表情进行替换，如果颜表情在替换词词典中，那么返回(True, 替换之后的词, 替换后的词性)，否则返回(Flase, 原词, 原词词性)
+# 对弹幕中的颜表情进行替换，如果颜表情在替换词词典中，
+# 那么返回(True, 替换之后的词, 替换后的词性)，否则返回(Flase, 原词, 原词词性)
 # replace_emoji_to_word函数中会将匹配上的 单个 emoji 表情的词语属性 替换成emoji。
 def replace_emoji_to_word(word, flag):
     emoji_replace_dict = DictConfig.get_emoji_replace_dict()

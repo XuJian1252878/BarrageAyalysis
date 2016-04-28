@@ -11,6 +11,7 @@ __author__ = "htwxujian@gmail.com"
 
 
 class FileUtil(object):
+
     # 如果路径存在，并且是一个文件夹，那么返回true；否则返回false。
     @staticmethod
     def is_dir_exists(dir_path):
@@ -106,13 +107,12 @@ class FileUtil(object):
             last_lines[index] = last_lines[index].decode("utf-8", "ignore")
         return last_lines
 
-    # 构建分词结果文件的文件名称（根据本地txt弹幕文件的名称 加上
+    # 构建分词结果文件的文件名称（根据本地txt弹幕文件的cid 加上
     # -seg-result.txt 问分词结果的文件名。即cid-seg-result.txt）
+    # 参数： cid 本地原始弹幕文件的cid信息。
     @staticmethod
-    def get_word_segment_result_file_path(local_barrage_file_path):
-        (local_barrage_dir, local_barrage_file_name) = os.path.split(local_barrage_file_path)
-        split_info = local_barrage_file_name.split(".")
-        word_segment_result_file_path = u"".join([split_info[0], "-seg-result.txt"])
+    def get_word_segment_result_file_path(cid):
+        word_segment_result_file_path = u"".join([cid, "-seg-result.json"])
         word_segment_result_file_path = os.path.join(FileUtil.get_word_segment_dir(), word_segment_result_file_path)
         return word_segment_result_file_path
 
@@ -155,6 +155,14 @@ class FileUtil(object):
         tfidf_dir = os.path.join(data_dir, "tfidf")
         FileUtil.create_dir_if_not_exist(tfidf_dir)
         return tfidf_dir
+
+    # 获得zscore结果的存储路径
+    @staticmethod
+    def get_zscore_dir():
+        data_dir = FileUtil.get_data_root_dir()
+        zscore_dir = os.path.join(data_dir, "zscore")
+        FileUtil.create_dir_if_not_exist(zscore_dir)
+        return zscore_dir
 
 
 if __name__ == "__main__":

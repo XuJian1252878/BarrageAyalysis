@@ -140,9 +140,12 @@ class TimeWindow(object):
 
 
 if __name__ == "__main__":
-    # barrages = dataloader.get_barrage_from_txt_file("../../data/local/2065063.txt")
-    barrages = dataloader.get_barrage_from_live_text_file("../../data/AlphaGo/bilibili/2016-03-09.txt")
-    barrage_seg_list = wordseg.segment_barrages(barrages)
+    barrage_file_path = "../../data/local/9.txt"
+    # "../../data/local/9.txt" "../../data/AlphaGo/bilibili/2016-03-09.txt"
+    barrages = dataloader.get_barrage_from_txt_file(barrage_file_path)
+    # barrages = dataloader.get_barrage_from_live_text_file(barrage_file_path)
+    cid = FileUtil.get_cid_from_barrage_file_path(barrage_file_path)
+    barrage_seg_list = wordseg.segment_barrages(barrages, cid)
     # time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list)
     # for time_window in time_window_list:
     #     str_info = ''
@@ -153,7 +156,7 @@ if __name__ == "__main__":
     #         str(time_window.end_timestamp), u"\t", str_info
 
     # time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
-    # with codecs.open("seg-result.txt", "wb", "utf-8") as output_file:
+    # with codecs.open(FileUtil.get_word_segment_result_file_path(cid), "wb", "utf-8") as output_file:
     #     for time_window in time_window_list:
     #         str_info = str(time_window.time_window_index) + u"\t"
     #         for user_id, word_frequency in time_window.user_word_frequency_dict.items():
