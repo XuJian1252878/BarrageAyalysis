@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
+import codecs
 import logging
 import os
 
@@ -9,6 +10,7 @@ from gensim import corpora, models
 import util.loader.dataloader as dataloader
 import wordsegment.wordseg as wordseg
 from analysis.similarity.matrix import SimMatrix
+from util.datetimeutil import DateTimeUtil
 from util.fileutil import FileUtil
 
 """
@@ -26,6 +28,8 @@ class TimeWindow(object):
         self.time_window_index = time_window_index
         self.start_timestamp = start_timestamp
         self.end_timestamp = end_timestamp
+        self.barrage_count = 0  # 该时间窗口内弹幕的数量
+        self.valid_barrage_word_count = 0  # 该时间窗口内弹幕词语的数量
         self.barrage_seg_list = []  # 该时间窗口内对应的弹幕分词列表，或是原始的弹幕列表。
         self.user_word_frequency_dict = {}  # dict {key=user_id, value = {key=word, value="frequency"}}
         self.user_token_tfidf_dict = {}  # dict {key=user_id, value={key=token, value="tfidf weight"}}
@@ -41,6 +45,19 @@ class TimeWindow(object):
     @classmethod
     def get_analysis_unit_capacity(cls):
         return cls.__ANALYSIS_UNIT_CAPACITY
+
+    # 将时间窗口的下标、开始结束时间戳、弹幕数量、有用词数量保存入文件中，便于今后的zscore分析
+    @classmethod
+    def __save_time_window_info_to_file(cls, time_window_list):
+        file_path = os.path.join(FileUtil.get_zscore_dir(), "time-window-info.txt")
+        with codecs.open(file_path, "wb", "utf-8") as output_file:
+            for time_window in time_window_list:
+                time_window_info = unicode(str(time_window.time_window_index)) + u"\t" \
+                                   + DateTimeUtil.format_barrage_play_timestamp(time_window.start_timestamp) + u"\t" \
+                                   + DateTimeUtil.format_barrage_play_timestamp(time_window.end_timestamp) + u"\t" \
+                                   + unicode(str(time_window.barrage_count)) + u"\t" \
+                                   + unicode(str(time_window.valid_barrage_word_count)) + u"\n"
+                output_file.write(time_window_info)
 
     # 对于时间窗口本身，在其barrage_or_seg_list 被填充的情况下，统计词频。
     # 返回：dict {key=user_id, value = {key=word, value="frequency"}} 格式的字典
@@ -101,20 +118,26 @@ class TimeWindow(object):
         time_window_list = []
         while start_timestamp <= barrage_or_seg_list[-1].play_timestamp:
             temp_seg_list = []
+            valid_barrage_word_count = 0
             for barrage_seg in barrage_or_seg_list:
                 if (start_timestamp <= barrage_seg.play_timestamp) and (end_timestamp > barrage_seg.play_timestamp):
                     temp_seg_list.append(barrage_seg)
+                    valid_barrage_word_count += len(barrage_seg.sentence_seg_list)
                 elif end_timestamp <= barrage_seg.play_timestamp:
                     break
             logging.info(u"建立第 " + str(time_window_index) + u" 个时间窗口！！")
             # 产生一个新的timewindow对象
             time_window = TimeWindow(time_window_index, start_timestamp, end_timestamp)
             time_window.barrage_seg_list = temp_seg_list
+            time_window.barrage_count = len(temp_seg_list)  # 记录该时间窗口下的弹幕数量
+            time_window.valid_barrage_word_count = valid_barrage_word_count  # 记录该时间窗口下有效的弹幕词语的数量
             time_window_list.append(time_window)
 
             start_timestamp += cls.__SLIDE_TIME_INTERVAL
             end_timestamp = start_timestamp + cls.__TIME_WINDOW_SIZE
             time_window_index += 1
+        # 将时间窗口的相关数据信息写入zscore文件中
+        cls.__save_time_window_info_to_file(time_window_list)
         return time_window_list
 
     # 获得每一个时间窗口内，以用户为维度，统计用户所发弹幕词语的词频。

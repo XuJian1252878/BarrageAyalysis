@@ -196,7 +196,7 @@ def main():
     video_urls = ["http://www.bilibili.com/video/av1502166/", "http://www.bilibili.com/video/av624985/",
                   "http://www.bilibili.com/video/av4258089/", "http://www.bilibili.com/video/av1206074/",
                   "http://www.bilibili.com/video/av80193/", "http://www.bilibili.com/video/av1818288/",
-                  "http://www.bilibili.com/video/av3470183/"]
+                  "http://www.bilibili.com/video/av3470183/", "http://www.bilibili.com/video/av1552337/"]
     print video_urls
 
     Logger.print_console_info(u"开始抓取弹幕信息。\n父进程id：%s" % os.getpid())

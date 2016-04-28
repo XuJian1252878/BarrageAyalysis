@@ -22,7 +22,7 @@ BILI_SPIDER_LOG=${SPIDER_LOG_HOME}/bili-spider.log
 export PYTHONPATH=${BARRAGE_ANALYSIS_HOME}
 PYTHON=`which python`
 # 获得b站视频信息的弹幕列表。
-VIDEO_ARGS=`cat ${VIDEO_LIST_FILE} | awk -F "\t" 'BEGIN{args="";} {args=args" -u "$0;} END{print substr(args, 1);}'`
+VIDEO_ARGS=`cat ${VIDEO_LIST_FILE} | awk -F "\t" 'BEGIN{args="";} {args=args" -u "$1;} END{print substr(args, 1);}'`
 echo ${VIDEO_ARGS}
 # 运行b站的爬虫脚本
 ${PYTHON} ${SPIDER_HOME}/bilibilispider.py ${VIDEO_ARGS} >> ${BILI_SPIDER_LOG} 2>&1
