@@ -138,11 +138,11 @@ if __name__ == "__main__":
     #     print str(barrage_seg.play_timestamp), u"\t", u"\t".join([seg.word + u"\t" + seg.flag for seg
     #                                                               in barrage_seg.sentence_seg_list])
 
-    # gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "2065063.txt"))
+    gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "2065063.txt"))
 
     # parse_barrage_xml_to_txt("E:\\Workspace\\PycharmProjects\\BarrageAyalysis\\util\\loader\\2065063.xml")
 
-    barrages = get_barrage_from_live_text_file(os.path.join(FileUtil.get_project_root_path(), "data", "AlphaGo",
-                                                            "bilibili", "2016-03-09.txt"))
-    for barrage in barrages:
-        print barrage.play_timestamp, u"\t", barrage.sender_id, u"\t", barrage.content, u"\n"
+    # barrages = get_barrage_from_live_text_file(os.path.join(FileUtil.get_project_root_path(), "data", "AlphaGo",
+    #                                                         "bilibili", "2016-03-09.txt"))
+    # for barrage in barrages:
+    #     print barrage.play_timestamp, u"\t", barrage.sender_id, u"\t", barrage.content, u"\n"

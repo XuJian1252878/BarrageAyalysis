@@ -135,15 +135,16 @@ def __save_segment_word_to_file(barrage_seg_list, cid):
 # 参数：cid  弹幕来源的cid名称，用来构建弹幕切词结果的存储路径，格式如：cid-seg-result.json
 #      barrage_seg_list 切词结果list
 def save_segment_barrages(barrage_seg_list, cid):
-    save_file_path = os.path.join(FileUtil.get_word_segment_result_file_path(cid))
+    save_file_path = FileUtil.get_word_segment_result_file_path(cid)
     json_str = json.dumps(barrage_seg_list, default=lambda obj: obj.__dict__)
     with codecs.open(save_file_path, "wb", "utf-8") as output_file:
         output_file.write(json_str)
 
 
 # 将切词结果从文件中读出，文件中的字符串为json的格式
-def load_segment_barrages(file_path):
+def load_segment_barrages(cid):
     json_data = []
+    file_path = FileUtil.get_word_segment_result_file_path(cid)
     with codecs.open(file_path, "rb", "utf-8") as input_file:
         for line in input_file:
             json_data.append(line)

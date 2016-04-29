@@ -164,6 +164,14 @@ class FileUtil(object):
         FileUtil.create_dir_if_not_exist(zscore_dir)
         return zscore_dir
 
+    # 获得情感分析结果的数据路径
+    @staticmethod
+    def get_emotion_dir():
+        data_dir = FileUtil.get_data_root_dir()
+        emotion_dir = os.path.join(data_dir, "emotion")
+        FileUtil.create_dir_if_not_exist(emotion_dir)
+        return emotion_dir
+
 
 if __name__ == "__main__":
     print FileUtil.get_local_data_dir()

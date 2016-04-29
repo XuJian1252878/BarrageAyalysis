@@ -9,7 +9,6 @@ from gensim import corpora, models
 
 import util.loader.dataloader as dataloader
 import wordsegment.wordseg as wordseg
-from analysis.similarity.matrix import SimMatrix
 from util.datetimeutil import DateTimeUtil
 from util.fileutil import FileUtil
 
@@ -24,7 +23,8 @@ class TimeWindow(object):
     __SLIDE_TIME_INTERVAL = 10  # 以10s为时间间隔滑动，创建时间窗口，以秒为单位
     __ANALYSIS_UNIT_CAPACITY = 4  # 以多少个时间窗口为单位进行分析zscore的值。
 
-    def __init__(self, time_window_index, start_timestamp, end_timestamp):
+    def __init__(self, cid, time_window_index, start_timestamp, end_timestamp):
+        self.cid = cid
         self.time_window_index = time_window_index
         self.start_timestamp = start_timestamp
         self.end_timestamp = end_timestamp
@@ -48,8 +48,8 @@ class TimeWindow(object):
 
     # 将时间窗口的下标、开始结束时间戳、弹幕数量、有用词数量保存入文件中，便于今后的zscore分析
     @classmethod
-    def __save_time_window_info_to_file(cls, time_window_list):
-        file_path = os.path.join(FileUtil.get_zscore_dir(), "time-window-info.txt")
+    def __save_time_window_info_to_file(cls, cid, time_window_list):
+        file_path = os.path.join(FileUtil.get_zscore_dir(), str(cid) + "-time-window-info.txt")
         with codecs.open(file_path, "wb", "utf-8") as output_file:
             for time_window in time_window_list:
                 time_window_info = unicode(str(time_window.time_window_index)) + u"\t" \
@@ -86,8 +86,10 @@ class TimeWindow(object):
     # 前提：需要在 user_word_frequency_dict 变量被填充之后调用。
     # 返回：dict {key=user_id, value={key=token, value="tfidf weight"}}
     def gen_user_token_tfidf(self):
-        dictionary = corpora.Dictionary.load(os.path.join(FileUtil.get_tfidf_dir(), "barrage-words.dict"))
-        tfidf_model = models.TfidfModel.load(os.path.join(FileUtil.get_tfidf_dir(), "barrage-tfidf.model"))
+        dictionary = corpora.Dictionary.load(os.path.join(FileUtil.get_tfidf_dir(),
+                                                          str(self.cid) + "-barrage-words.dict"))
+        tfidf_model = models.TfidfModel.load(os.path.join(FileUtil.get_tfidf_dir(),
+                                                          str(self.cid) + "-barrage-tfidf.model"))
         for user_id, word_frequency in self.user_word_frequency_dict.items():
             token_weight_list = []
             for word, frequency in word_frequency.items():
@@ -111,7 +113,7 @@ class TimeWindow(object):
     # 参数：barrage_seg_list 一个已经排好序的，已经切好词的barrage_seg_list列表，或者是原始的未切词的弹幕列表（已排好序）。
     # 返回一个 TimeWindow 列表。
     @classmethod
-    def gen_time_window_barrage_info(cls, barrage_or_seg_list):
+    def gen_time_window_barrage_info(cls, barrage_or_seg_list, cid):
         time_window_index = 0
         start_timestamp = 0
         end_timestamp = start_timestamp + cls.__TIME_WINDOW_SIZE
@@ -127,7 +129,7 @@ class TimeWindow(object):
                     break
             logging.info(u"建立第 " + str(time_window_index) + u" 个时间窗口！！")
             # 产生一个新的timewindow对象
-            time_window = TimeWindow(time_window_index, start_timestamp, end_timestamp)
+            time_window = TimeWindow(cid, time_window_index, start_timestamp, end_timestamp)
             time_window.barrage_seg_list = temp_seg_list
             time_window.barrage_count = len(temp_seg_list)  # 记录该时间窗口下的弹幕数量
             time_window.valid_barrage_word_count = valid_barrage_word_count  # 记录该时间窗口下有效的弹幕词语的数量
@@ -137,15 +139,15 @@ class TimeWindow(object):
             end_timestamp = start_timestamp + cls.__TIME_WINDOW_SIZE
             time_window_index += 1
         # 将时间窗口的相关数据信息写入zscore文件中
-        cls.__save_time_window_info_to_file(time_window_list)
+        cls.__save_time_window_info_to_file(cid, time_window_list)
         return time_window_list
 
     # 获得每一个时间窗口内，以用户为维度，统计用户所发弹幕词语的词频。
     # 参数：已经按照play_timestamp升序排序好的弹幕（已做好中文分词）列表。
     # 返回：time_window列表，每个TimeWindow对象中的 user_word_frequency 用户词频信息已被填充。
     @classmethod
-    def gen_user_word_frequency_by_time_window(cls, barrage_seg_list):
-        time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list)
+    def gen_user_word_frequency_by_time_window(cls, barrage_seg_list, cid):
+        time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list, cid)
         for time_window in time_window_list:
             time_window.gen_user_word_frequency()  # 产生该时间窗口内的用户词频信息。
         return time_window_list
@@ -154,8 +156,8 @@ class TimeWindow(object):
     # 参数：已经按照play_timestamp升序排序好的弹幕（已做好中文分词）列表。
     # 返回：time_window列表，每个TimeWindow对象中的 user_token_tfidf_dict 用户词频信息已被填充。
     @classmethod
-    def gen_user_token_tfidf_by_time_window(cls, barrage_seg_list):
-        time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list)
+    def gen_user_token_tfidf_by_time_window(cls, barrage_seg_list, cid):
+        time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list, cid)
         for time_window in time_window_list:
             time_window.gen_user_word_frequency()  # 产生该时间窗口内的用户词频信息。
             time_window.gen_user_token_tfidf()  # 产生该时间窗口内的用户所发词语的tfidf权重信息。
@@ -163,7 +165,7 @@ class TimeWindow(object):
 
 
 if __name__ == "__main__":
-    barrage_file_path = "../../data/local/9.txt"
+    barrage_file_path = "../../data/local/2065063.txt"
     # "../../data/local/9.txt" "../../data/AlphaGo/bilibili/2016-03-09.txt"
     barrages = dataloader.get_barrage_from_txt_file(barrage_file_path)
     # barrages = dataloader.get_barrage_from_live_text_file(barrage_file_path)
@@ -189,8 +191,8 @@ if __name__ == "__main__":
     #         print str_info
     #         output_file.write(str_info + u"\n")
 
-    # time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list)
+    time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list, cid)
     # SimMatrix.gen_jaccard_sim_matrix_by_word_frequency(time_window_list)
 
-    time_window_list = TimeWindow.gen_user_token_tfidf_by_time_window(barrage_seg_list)
-    SimMatrix.gen_cosine_sim_matrix(time_window_list)
+    # time_window_list = TimeWindow.gen_user_token_tfidf_by_time_window(barrage_seg_list)
+    # SimMatrix.gen_cosine_sim_matrix(time_window_list)

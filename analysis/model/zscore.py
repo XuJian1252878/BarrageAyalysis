@@ -22,7 +22,8 @@ class Zscore(object):
     #       slide_time_interval 以多少秒为时间间隔滑动，创建时间窗口，以秒为单位
     #       analysis_unit_capacity 以多少个时间窗口为单位进行分析zscore的值。
     #       zscore_file_path  以cid-zscore.txt命名
-    def __init__(self, zscore_file_path, time_window_size, slide_time_interval, analysis_unit_capacity):
+    def __init__(self, cid, zscore_file_path, time_window_size, slide_time_interval, analysis_unit_capacity):
+        self.cid = cid  # b站视频对应的cid信息
         self.zscore_file_path = zscore_file_path
         self.zscore_list = []  # 其中的元素为 (time_window_index, zscore) 这样的元组信息
         self.time_window_size = time_window_size
@@ -121,17 +122,63 @@ class Zscore(object):
                 for index in xrange(left_border, right_border + 1, 1):
                     temp_high_emotion_clip.append(my_zscore_dict[index][0])  # 将时间窗口zscore的值也记录下来
                 high_emotion_clips.append(temp_high_emotion_clip)
+        # 将 high_emotion_clips 相关信息写入本地文件
+        self.__save_high_emotion_clips_to_file(high_emotion_clips, global_zscore_threshold,
+                                               left_zscore_threshold, right_zscore_threshould)
         return high_emotion_clips
+
+    # 将 可能的 high_emotion_clips 信息存储到本地文件中
+    # 参数：cid 该视频的cid信息
+    #      global_zscore_threshold 找出小于 global_zscore_threshold的zscore值
+    #      left_zscore_threshold 左边时间窗口与当前时间窗口的 zscore 差值 阈值
+    #      right_zscore_threshould 右边时间窗口与当前时间窗口的 zscore 差值 阈值
+    def __save_high_emotion_clips_to_file(self, high_emotion_clips, global_zscore_threshold,
+                                          left_zscore_threshold, right_zscore_threshould):
+        file_path = os.path.join(FileUtil.get_zscore_dir(), self.cid + "-high-emotion-clips.txt")
+        with codecs.open(file_path, "wb", "utf-8") as output_file:
+            output_file.write(unicode(str(global_zscore_threshold)) + u"\t" +
+                              unicode(str(left_zscore_threshold)) + u"\t" +
+                              unicode(str(right_zscore_threshould)) + u"\n")
+            for emotion_clip in high_emotion_clips:
+                str_info = u""
+                for item in emotion_clip:
+                    str_info += (unicode(str(item)) + u"\t")
+                str_info = str_info[0: len(str_info) - 1] + u"\n"
+                output_file.write(str_info)
+
+    # 从本地文件中获取 某一个cid视频 对应的 high_emotion_clips信息
+    # 参数：cid 该视频的cid信息
+    # 返回：(high_emotion_clips, global_zscore_threshold, left_zscore_threshold, right_zscore_threshould) 的元组
+    @classmethod
+    def load_high_emotion_clips_from_file(cls, cid):
+        file_path = os.path.join(FileUtil.get_zscore_dir(), cid + "-high-emotion-clips.txt")
+        first_line_flag = True
+        high_emotion_clips = []
+        global_zscore_threshold = 0
+        left_zscore_threshold = 0
+        right_zscore_threshould = 0
+        with codecs.open(file_path, "rb", "utf-8") as input_file:
+            for line in input_file:
+                split_info = line.strip().split("\t")
+                if first_line_flag:
+                    first_line_flag = False
+                    global_zscore_threshold = split_info[0]
+                    left_zscore_threshold = split_info[1]
+                    right_zscore_threshould = split_info[2]
+                    continue
+                high_emotion_clips.append(split_info)
+        return high_emotion_clips, global_zscore_threshold, left_zscore_threshold, right_zscore_threshould
 
 
 if __name__ == "__main__":
-    zscore = Zscore(os.path.join(FileUtil.get_zscore_dir(), "zArrayWF.txt"), 30, 10, 4)
+    zscore = Zscore("2065063", os.path.join(FileUtil.get_zscore_dir(), "zArrayWF.txt"), 30, 10, 4)
     # zscore.gen_sorted_zscore_file(threshold_value=0.5)
     # zscore.gen_possible_high_emotion_clips()
     high_emotion_clips = zscore.gen_possible_high_emotion_clips(global_zscore_threshold=0.6)
     for emotion_clip in high_emotion_clips:
         str_info = u""
         for item in emotion_clip:
-            str_info += (u"\t" + unicode(str(item)))
+            str_info += (unicode(str(item)) + u"\t")
+        str_info = str_info[0: len(str_info) - 1]
         str_info += u"\n"
         print str_info
