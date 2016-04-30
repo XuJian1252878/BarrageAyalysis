@@ -22,12 +22,23 @@ from util.loggerutil import Logger
 
 __author__ = "htwxujian@gmail.com"
 
+logger = Logger("video-url-spider.log").get_logger()
+
+"""
+BilibiliBarrageSpider 爬取b站的弹幕信息，通过调用start函数爬取相关视频的弹幕信息，video_url 为b站的url信息。
+如果输入其他的链接，那么将会出错。
+"""
+
 
 class BilibiliSpider(BarrageSpider):
     def __init__(self):
         # 确保父类被正确初始化了
         # http://stackoverflow.com/questions/21063228/typeerror-in-python-single-inheritance-with-super-attribute
         super(BilibiliSpider, self).__init__()
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # 视频弹幕获取相关
+    # -----------------------------------------------------------------------------------------------------------------
 
     # 获得视频的标题信息
     def get_video_title(self, html_content):
@@ -121,9 +132,12 @@ class BilibiliSpider(BarrageSpider):
         return row_barrages
 
     # 将弹幕信息写入文件中。
-    def save_barrages_to_local(self, cid, row_barrages):
+    # 参数：cid 视频对应的cid信息（基于b站）
+    #      row_barrages 当前已经更新的弹幕信息列表
+    #      is_corpus 当前的弹幕信息是否作为语料存储，默认为false，不作为语料存储
+    def save_barrages_to_local(self, cid, row_barrages, is_corpus=False):
         if len(row_barrages) > 0:
-            barrage_file_path = FileUtil.get_barrage_file_path(cid)
+            barrage_file_path = FileUtil.get_barrage_file_path(cid, is_corpus)
             with codecs.open(barrage_file_path, "ab", "utf-8") as output_file:
                 for barrage in row_barrages:
                     if barrage is not None:
@@ -148,9 +162,13 @@ class BilibiliSpider(BarrageSpider):
                 return True
         return False
 
-    # 抓取网页的视频以及弹幕信息。
-    def start(self, video_url):
-        print u"进入start函数。"
+    # 抓取网页的视频以及弹幕信息。（弹幕信息是必须写入本地文件的，写入数据库的功能是基于写入本地文件的基础上的
+    # 写入数据库的时候需要 根据 本地文件中的弹幕数据判断，当前哪一些弹幕是已经更新的弹幕。）
+    # 参数： video_url  视频的链接信息
+    #       is_save_to_db 是否要将弹幕信息写入数据库
+    #       is_corpus 写入到本地的弹幕文件是否以语料的方式存储，默认为false，不作为语料存储
+    def start_spider_barrage(self, video_url, is_save_to_db=True, is_corpus=False):
+        print u"进入 start_spider_barrage 函数。"
         # 视频网页的html源码信息。
         video_html_content = self.get_html_content(video_url)
         if video_html_content is None:
@@ -169,16 +187,105 @@ class BilibiliSpider(BarrageSpider):
         # 获取更新的弹幕信息。
         barrages = self.get_refresh_video_barrage(cid, barrages)
         # 将更新后的弹幕信息写入数据库。
-        BarrageDao.add_barrages(barrages, cid)
+        if is_save_to_db:
+            BarrageDao.add_barrages(barrages, cid)
         # 将更新后的弹幕信息写入本地文件。
-        self.save_barrages_to_local(cid, barrages)
+        self.save_barrages_to_local(cid, barrages, is_corpus)
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # 视频链接获取相关
+    # -----------------------------------------------------------------------------------------------------------------
+
+    # 获取视频列表的页数信息
+    def get_video_list_page_count(self, html_content):
+        pattern = re.compile(r'<div class="pagelistbox">.*?<a class="p endPage".*?>(\d+)</a>.*?</div>', re.S)
+        match = re.search(pattern, html_content)
+        if match is None:
+            return None
+        page_count = int(match.group(1))
+        return page_count
+
+    # 构建 按照 弹幕量排序的，进三个月的，全部页数的 视频列表 页面信息。
+    def get_relative_video_list_urls(self, page_count, base_url):
+        video_list_urls = []
+        # order_param = "order=damku"
+        # # 构建 近三个月的 时间范围字符串
+        # now_date = datetime.date.today()
+        # now_date_str = now_date.strftime("%Y-%m-%d")
+        # # 这种方式会出现 月份天数不同的问题，比如今天是4月30号，三个月前没有2月30号。
+        # # pass_date_str = datetime.datetime(now_date.year, now_date.month - 2, now_date.day).strftime("%Y-%m-%d")
+        # pass_date_str = (now_date - datetime.timedelta(days=90)).strftime("%Y-%m-%d")
+        # date_range_param = "range=" + pass_date_str + "," + now_date_str
+        split_info = base_url.split("/")
+        video_base_url = "/".join(split_info[0: len(split_info) - 1])  # http://www.bilibili.com/video
+        movie_detail_param = split_info[len(split_info) - 1]
+        split_info = movie_detail_param.split("_")
+        # 就是为了构建 http://www.bilibili.com/video/movie_japan_1.html 这样的链接
+        movie_detail_param = "_".join(split_info[0: len(split_info) - 1]) + "_"
+        for index in xrange(1, page_count + 1):
+            # page_param = "page=" + str(index)
+            # link = base_url + "#!" + page_param + "&" + date_range_param + "&" + order_param
+            link = video_base_url + "/" + movie_detail_param + str(index) + ".html"
+            video_list_urls.append(link)
+        return video_list_urls
+
+    # 获得 按弹幕量 排序的 视频url信息。弹幕数量超过100的视频。
+    # 参数： barrage_threshold 视频的弹幕数量必须超过 barrage_threshold 才能被选取
+    #       video_list_urls 包含视频链接信息的 视频列表页面链接
+    def get_video_urls(self, video_list_urls, barrage_threshold=100):
+        video_urls = []
+        for video_list_url in video_list_urls:
+            html_content = self.get_html_content(video_list_url)
+            pattern = re.compile(
+                r'<div class="l-r"><a href="(.*?)".*?>.*?</a><div class="v-desc">.*?</div>.*?<i class="b-icon b-icon-v-dm".*?></i><span number=".*?">(.*?)</span>',
+                re.S)
+            temp_video_urls_info = re.findall(pattern, html_content)
+            if temp_video_urls_info is None:
+                continue
+            for video_url_info in temp_video_urls_info:
+                # http://www.bilibili.com/video/av4482900/
+                video_url = "http://www.bilibili.com" + video_url_info[0]
+                barrage_count = video_url_info[1]
+                if barrage_count < barrage_threshold:
+                    continue  # 忽略弹幕数量小于100的视频
+                video_urls.append(video_url)
+        return video_urls
+
+    # 抓取视频的链接信息
+    # 完整链接：http://www.bilibili.com/video/movie_japan_1.html#!page=8&range=2016-02-30,2016-04-30&order=damku
+    # 输入的bilibili链接为：http://www.bilibili.com/video/movie_japan_1.html
+    # 其他的部分：page、range、order自己构建
+    def start_collect_barrage_corpus(self, bilibili_url):
+        logger.debug(u"进入 start_spider_video_url 函数！！")
+        # 获得视频弹幕排序网页的网页源代码
+        html_content = self.get_html_content(bilibili_url)
+        video_list_page_count = self.get_video_list_page_count(html_content)
+        # 获得视频列表 页面的 页数url信息（第一页到最后一页）
+        video_list_urls = self.get_relative_video_list_urls(video_list_page_count, bilibili_url)
+        # 获得该列表页面下所有的视频链接信息
+        video_urls = self.get_video_urls(video_list_urls)
+        for video_url in video_urls:
+            logger.debug(u"开始抓取 " + unicode(video_url) + u"弹幕信息")
+            self.start_spider_barrage(video_url=video_url, is_save_to_db=False, is_corpus=True)
+
+
+# 收集弹幕语料信息
+def collect_barrage_corpus():
+    bilibili_spider = BilibiliSpider()
+    video_categories_url = []
+    with codecs.open("barrage-corpus.txt", "rb", "utf-8") as input_file:
+        for line in input_file:
+            url = line.strip().split("\t")[0]
+            video_categories_url.append(url)
+    for video_category_url in video_categories_url:
+        bilibili_spider.start_collect_barrage_corpus(video_category_url)
 
 
 # 爬取弹幕的任务函数
 def grab_barrage_task(video_url):
     Logger.print_console_info(u"子进程id：%s，抓取网页：%s。开始……" % (os.getpid(), video_url))
     bili_spider = BilibiliSpider()
-    bili_spider.start(video_url)
+    bili_spider.start_spider_barrage(video_url)
     Logger.print_console_info(u"子进程id：%s，抓取网页：%s。结束……" % (os.getpid(), video_url))
 
 
@@ -221,4 +328,7 @@ def scheme_main(interval_time=60):
 
 
 if __name__ == "__main__":
-    scheme_main(120)
+    # scheme_main(120)
+    # bilibili_spider = BilibiliSpider()
+    # bilibili_spider.start_collect_barrage_corpus("http://www.bilibili.com/video/movie_japan_1.html")
+    collect_barrage_corpus()

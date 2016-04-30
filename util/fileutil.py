@@ -61,9 +61,14 @@ class FileUtil(object):
         return local_data_path
 
     # 获得弹幕文件的路径。
+    # 参数： is_corpus 当前的弹幕文件是否为语料，默认为false，不为语料
+    #       cid 视频对应的cid信息（基于b站）
     @staticmethod
-    def get_barrage_file_path(cid):
-        return os.path.join(FileUtil.get_local_data_dir(), cid + ".txt")
+    def get_barrage_file_path(cid, is_corpus=False):
+        if not is_corpus:
+            return os.path.join(FileUtil.get_local_data_dir(), cid + ".txt")
+        else:
+            return os.path.join(FileUtil.get_corpus_dir(), cid + ".txt")
 
     # 分块读取文件的内容。
     @staticmethod
@@ -171,6 +176,14 @@ class FileUtil(object):
         emotion_dir = os.path.join(data_dir, "emotion")
         FileUtil.create_dir_if_not_exist(emotion_dir)
         return emotion_dir
+
+    # 获得语料库的路径
+    @staticmethod
+    def get_corpus_dir():
+        data_dir = FileUtil.get_data_root_dir()
+        corpus_dir = os.path.join(data_dir, "corpus")
+        FileUtil.create_dir_if_not_exist(corpus_dir)
+        return corpus_dir
 
 
 if __name__ == "__main__":

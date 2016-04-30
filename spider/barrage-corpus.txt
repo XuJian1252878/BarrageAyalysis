@@ -1,0 +1,13 @@
+http://www.bilibili.com/video/movie_west_1.html	欧美电影	电影
+http://www.bilibili.com/video/movie_japan_1.html	日本电影	电影
+http://www.bilibili.com/video/movie_chinese_1.html	国产电影	电影
+http://www.bilibili.com/video/bangumi-two-1.html	连载动画	番剧
+http://www.bilibili.com/video/part-twoelement-1.html	完结动画	番剧
+http://www.bilibili.com/video/bangumi_chinese_1.html	国产动画
+http://www.bilibili.com/video/douga-mad-1.html	MAD.AMV	动画
+http://www.bilibili.com/video/douga-mmd-1.html	MMD.3D	动画
+http://www.bilibili.com/video/ent_funny_1.html	搞笑	娱乐
+http://www.bilibili.com/video/ent-life-1.html	生活	娱乐
+http://www.bilibili.com/video/ent-variety-1.html	综艺	娱乐
+http://www.bilibili.com/video/soap-three-1.html	连载剧集	电视剧
+http://www.bilibili.com/video/tv-drama-1.html	完结剧集	电视剧
