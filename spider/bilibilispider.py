@@ -136,12 +136,26 @@ class BilibiliSpider(BarrageSpider):
     #      row_barrages 当前已经更新的弹幕信息列表
     #      is_corpus 当前的弹幕信息是否作为语料存储，默认为false，不作为语料存储
     def save_barrages_to_local(self, cid, row_barrages, is_corpus=False):
-        if len(row_barrages) > 0:
-            barrage_file_path = FileUtil.get_barrage_file_path(cid, is_corpus)
-            with codecs.open(barrage_file_path, "ab", "utf-8") as output_file:
-                for barrage in row_barrages:
-                    if barrage is not None:
-                        output_file.write(u"\t".join(barrage) + u"\n")
+        barrage_count = len(row_barrages)
+        if barrage_count <= 0:  # 是对于要存储入数据库的弹幕来说的。
+            return
+        barrage_file_path = FileUtil.get_barrage_file_path(cid, is_corpus)
+        if is_corpus:
+            if barrage_count < 100:  # 弹幕数量小于100的弹幕不作为语料库弹幕数据。
+                return
+            row_barrages = self.sort_barrages(row_barrages)
+            # 如果需要作为语料库的信息，那么 弹幕数量 频率至少为每10秒钟 一条，这样才能保持内容的连贯性。
+            try:
+                total_seconds = float(row_barrages[-1][0].strip())
+                if (total_seconds / 10) > barrage_count:
+                    return
+            except Exception as exception:
+                print exception
+                return
+        with codecs.open(barrage_file_path, "ab", "utf-8") as output_file:
+            for barrage in row_barrages:
+                if barrage is not None:
+                    output_file.write(u"\t".join(barrage) + u"\n")
 
     # 判断 row_barrages 中的某一条弹幕记录 与 本地文件中最后n条弹幕的某一条是否相同。
     def __is_same_barrage(self, last_n_barrages, barrage):
@@ -180,14 +194,17 @@ class BilibiliSpider(BarrageSpider):
         cid = self.get_video_cid(video_html_content)
         tags = self.get_video_tags(video_html_content)
         title = self.get_video_title(video_html_content)
-        # 将视频信息存储入数据库中
-        VideoDao.add_video(cid, title, tags, aid, unicode(video_url))
+
         # 获取弹幕信息。
         barrages = self.get_row_video_barrage(self.barrage_xml_url(cid))
-        # 获取更新的弹幕信息。
-        barrages = self.get_refresh_video_barrage(cid, barrages)
+        if barrages is None:  # 弹幕xml文件解析失败的时候，会返回none
+            return
         # 将更新后的弹幕信息写入数据库。
         if is_save_to_db:
+            # 将视频信息存储入数据库中
+            VideoDao.add_video(cid, title, tags, aid, unicode(video_url))
+            # 获取更新的弹幕信息。
+            barrages = self.get_refresh_video_barrage(cid, barrages)
             BarrageDao.add_barrages(barrages, cid)
         # 将更新后的弹幕信息写入本地文件。
         self.save_barrages_to_local(cid, barrages, is_corpus)

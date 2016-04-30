@@ -5,6 +5,7 @@ import sys
 import urllib
 import urllib2
 import zlib
+from decimal import Decimal, getcontext
 
 from util.loggerutil import Logger
 
@@ -56,18 +57,6 @@ class BarrageSpider(object):
                 return resp
             else:
                 return False
-        except urllib2.HTTPError as exception:
-            print exception
-            Logger.print_console_info(u"连接失败！" + unicode(str(try_times)) + u" ，正在重新连接……")
-            # # 发现发生 HTTPError 502 错误时，重试链接并没有效果。
-            # if exception.code == 502:
-            #     time.sleep(10)  # 还是没有用
-            self.__access_url_internal(req, timeout, try_times + 1)
-        except urllib2.URLError as exception:
-            print exception
-            Logger.print_console_info(u"连接失败！" + unicode(str(try_times)) + u" ，正在重新连接……")
-            # 发现发生 HTTPError 502 错误时，重试链接并没有效果。
-            self.__access_url_internal(req, timeout, try_times + 1)
         except Exception as exception:
             print exception
             Logger.print_console_info(u"连接失败！" + unicode(str(try_times)) + u" ，正在重新连接……")
@@ -90,9 +79,11 @@ class BarrageSpider(object):
         req = self.__construct_req(site_url, post_data, headers)
         resp = self.__access_url(req, self.timeout)
         # 获得返回网页的相关信息
-        if resp is None:
+        try:
+            page_html = resp.read()
+        except Exception as exception:
+            print exception
             return ""
-        page_html = resp.read()
         resp_info = resp.info()
         if "Content-Encoding" in resp_info:
             Logger.print_console_info(
@@ -106,9 +97,24 @@ class BarrageSpider(object):
                     page_html = zlib.decompress(page_html, zlib.MAX_WBITS)
             except zlib.error as e:
                 print e
-                return None
+                return ""
         page_html = page_html.decode("utf-8", "ignore")
         return page_html
+
+    @classmethod
+    def __sort_barrages_by_play_timestamp(cls, barrage):
+        # barrage 为一个字符串 数组列表，第一列为play_timestamp
+        # 由于play_timestamp字符串时间戳的小数位置不定，所以用Decial将字符串转化为数字
+        # 将 decimal 的精度设置为30
+        getcontext().prec = 30
+        return Decimal(barrage[0])
+
+    @classmethod
+    # order_flag：True 按照play_timestamp降序排列
+    # order_flag：False 按照play_timestamp升序排列
+    def sort_barrages(cls, barrages, order_flag=False):
+        barrages = sorted(barrages, key=cls.__sort_barrages_by_play_timestamp, reverse=order_flag)
+        return barrages
 
 
 if __name__ == "__main__":
