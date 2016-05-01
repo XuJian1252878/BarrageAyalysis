@@ -63,10 +63,22 @@ class BilibiliSpider(BarrageSpider):
     def get_video_cid(self, html_content):
         pattern = re.compile(r'.*?<script.*>EmbedPlayer\(\'player\',.*?"cid=(\d*)&.*?</script>', re.S)
         match = re.search(pattern, html_content)
-        if match is None:
-            return u"-1"
-        cid = match.group(1).strip()
-        return cid
+        if match is not None:
+            cid = match.group(1).strip()
+            return cid
+        pattern = re.compile(r'<embed.*?class.*?=.*?".*?player.*?".*?flashvars.*?=.*?".*?bili-cid=(.*?)&.*?</embed>',
+                             re.S)
+        match = re.search(pattern, html_content)
+        if match is not None:
+            cid = match.group(1).strip()
+            return cid
+        pattern = re.compile(
+            r'<div.*?id.*?=.*?".*?bofqi.*?">.*?<iframe.*?src.*?=.*?".*?cid=(.*?)&.*?".*?>.*?</iframe>.*?</div>', re.S)
+        match = re.search(pattern, html_content)
+        if match is not None:
+            cid = match.group(1).strip()
+            return cid
+        return u"-1"  # 找不到cid的情况
 
     # 获得视频的id信息。
     def get_video_aid(self, video_url):
