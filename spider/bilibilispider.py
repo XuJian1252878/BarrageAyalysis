@@ -66,14 +66,14 @@ class BilibiliSpider(BarrageSpider):
         if match is not None:
             cid = match.group(1).strip()
             return cid
-        pattern = re.compile(r'<embed.*?class =" player ".*?flashvars =" bili-cid=(.*?)&.*?</embed>',
+        pattern = re.compile(r'<embed.*?class="player".*?flashvars="bili-cid=(.*?)&.*?</embed>',
                              re.S)
         match = re.search(pattern, html_content)
         if match is not None:
             cid = match.group(1).strip()
             return cid
         pattern = re.compile(
-            r'<div.*?id =" bofqi ">.*?<iframe.*?src =".*?cid=(.*?)&.*?".*?>.*?</iframe>.*?</div>', re.S)
+            r'<div.*?id="bofqi">.*?<iframe.*?src=".*?cid=(.*?)&.*?".*?>.*?</iframe>.*?</div>', re.S)
         match = re.search(pattern, html_content)
         if match is not None:
             cid = match.group(1).strip()

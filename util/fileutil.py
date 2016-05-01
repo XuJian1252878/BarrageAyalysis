@@ -185,6 +185,14 @@ class FileUtil(object):
         FileUtil.create_dir_if_not_exist(corpus_dir)
         return corpus_dir
 
+    # 获得模型路径
+    @staticmethod
+    def get_model_dir():
+        data_dir = FileUtil.get_data_root_dir()
+        model_dir = os.path.join(data_dir, "model")
+        FileUtil.create_dir_if_not_exist(model_dir)
+        return model_dir
+
 
 if __name__ == "__main__":
     print FileUtil.get_local_data_dir()

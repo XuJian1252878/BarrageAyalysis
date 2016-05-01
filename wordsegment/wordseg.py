@@ -66,19 +66,21 @@ class BarrageSeg(object):
 # 对弹幕的内容进行分词。
 # 参数：barrages 读取的弹幕列表，以播放时间的升序排序。
 # 返回：WordSeg 列表（包含弹幕的row_id, play_timestamp, sender_id）
-def segment_barrages(barrages, cid):
+#      is_corpus 是否对语料库中的弹幕信息进行分词，True表示是，False表示对需要分析的弹幕文件进行分词
+def segment_barrages(barrages, cid=None, is_corpus=False):
     barrage_seg_list = []
     for barrage in barrages:
         barrage_seg = BarrageSeg(barrage.play_timestamp, barrage.sender_id, barrage.row_id)
         sentence_seg = __segment_sentence(barrage.content)
         barrage_seg.sentence_seg_list = sentence_seg
         barrage_seg_list.append(barrage_seg)
-    # 将分词结果写入测试文件中，检查分词情况
-    __save_segment_word_to_file(barrage_seg_list, cid)
-    # 将分词的结果以json的形式写入文件中，以供今后分析zscore的时候调用。
-    save_segment_barrages(barrage_seg_list, cid)
-    # 建立 tf-idf 相关的词典信息
-    DictConfig.gen_tfidf_dict(barrage_seg_list)
+    if is_corpus is False:
+        # 将分词结果写入测试文件中，检查分词情况
+        __save_segment_word_to_file(barrage_seg_list, cid)
+        # 将分词的结果以json的形式写入文件中，以供今后分析zscore的时候调用。
+        save_segment_barrages(barrage_seg_list, cid)
+        # 建立 tf-idf 相关的词典信息
+        DictConfig.gen_tfidf_dict(barrage_seg_list)
     return barrage_seg_list
 
 
@@ -101,21 +103,22 @@ def __segment_sentence(sentence):
         # 如果词语在替换词词典中，那么返回(True, 替换之后的词)，否则返回(Flase, 原词)
         # 这个必须先于replace_emoji_to_word调用，因为存在QQWWWWWWQQQ这样的颜表情，需要替换为QWQ之后，再替换为对应情感色彩的汉字。
         origin_word = word
-        is_word_replace, word = filterwords.format_word(word)
+        is_word_replace, word, flag = filterwords.format_word(word, flag)
         if is_word_replace:
             logger.debug(u" word " + origin_word + u" 替换成功：" + word)
         # 查看该词是否颜文字表情，进行颜文字表情的替换操作
         origin_word = word
-        is_emoji_replace, word, flag = filterwords.replace_emoji_to_word(word, flag)
+        is_emoji_replace, emoji_list = filterwords.replace_emoji_to_word(word, flag)
         if is_emoji_replace:
-            logger.debug(u"emoji" + origin_word + u" 替换成功：" + word)
-        # 判断该词的词性是否为接受的词性，如果不是，那么不加入分词结果。
-        # if not filterwords.is_accept_nominal(flag):
-        #     # 测试一下滤出的都是什么词
-        #     with codecs.open("not_accept.txt", "ab", "utf-8") as output_file:
-        #         str_info = word + u"\t" + str(flag) + u"\n"
-        #         output_file.write(str_info)
-        #     continue
+            for emoji_info in emoji_list:
+                emoji = emoji_info[0]
+                emoji_flag = emoji_info[1]
+                sentence_seg.append(WordSeg(emoji, emoji_flag))
+                logger.debug(u"emoji" + origin_word + u" 替换成功：" + emoji)
+            continue
+        # 过滤无意义的数字，标点，（英文字符暂时没有被过滤）信息。
+        if filterwords.is_num_or_punctuation(word, flag):
+            continue
         sentence_seg.append(WordSeg(word, flag))
     return sentence_seg
 
@@ -153,12 +156,14 @@ def load_segment_barrages(cid):
     barrage_seg_list = BarrageSeg.dict2barrageseglist(barrage_seg_list_json)
     return barrage_seg_list
 
-# if __name__ == "__main__":
-#     DictConfig.build_dicts()
-#     sentence_list = [u"哈哈哈哈哈哈哈哈哈", u"+1", u"1111", u"(´▽｀)ノ♪", u"(╬ﾟдﾟ)▄︻┻┳═一(╬ﾟдﾟ)▄︻", u"(╬ﾟдﾟ)▄︻┻┳═一呀(╬ﾟдﾟ)▄︻",
-#                      u"哈(╬ﾟдﾟ)▄︻┻┳═一不(╬ﾟдﾟ)▄︻", u"你是不是傻(╬ﾟдﾟ)▄︻┻┳═一(╬ﾟдﾟ)▄︻",
-#                      u"你终于承认完全不懂了！！！！！！！！！！"]
-#     for sentence in sentence_list:
-#         sentence_seg = __segment_sentence(sentence)
-#         for word_seg in sentence_seg:
-#             print word_seg.word, u"\t", word_seg.flag
+
+if __name__ == "__main__":
+    DictConfig.build_dicts()
+    sentence_list = [u"你终于承认完全不懂了！！！！！！！！！！", u"哈哈哈哈哈哈哈哈哈", u"(´▽｀)ノ♪(´▽｀)ノ♪(´▽｀)ノ♪(´▽｀)ノ♪", u"(╬ﾟдﾟ)▄︻┻┳═一(╬ﾟдﾟ)▄︻",
+                     u"(╬ﾟдﾟ)▄︻┻┳═一呀(╬ﾟдﾟ)▄︻",
+                     u"哈(╬ﾟдﾟ)▄︻┻┳═一不(╬ﾟдﾟ)▄︻", u"你是不是傻(╬ﾟдﾟ)▄︻┻┳═一(╬ﾟдﾟ)▄︻",
+                     u"123"]
+    for sentence in sentence_list:
+        sentence_seg = __segment_sentence(sentence)
+        for word_seg in sentence_seg:
+            print word_seg.word, u"\t", word_seg.flag

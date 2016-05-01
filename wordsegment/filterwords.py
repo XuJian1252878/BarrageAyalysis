@@ -21,14 +21,27 @@ def is_stopwords(word):
 
 
 # 如果词语在替换词词典中，那么返回(True, 替换之后的词)，否则返回(Flase, 原词)
-def format_word(word):
-    replace_word_dict = DictConfig.get_replace_words_dict()
-    replace_pattern_set = replace_word_dict.keys()
-    for replace_pattern in replace_pattern_set:
+def format_word(word, flag):
+    replace_word_list = DictConfig.get_replace_words_list()
+    for replace_pattern_info in replace_word_list:
+        replace_pattern = replace_pattern_info[0]
+        replace_word = replace_pattern_info[1]
+        replace_flag = replace_pattern_info[2]
         pattern = re.compile(replace_pattern)
-        if re.match(pattern, word) is not None:
-            return True, replace_word_dict[replace_pattern]
-    return False, word
+        match = re.match(pattern, word)
+        if match is not None:
+            return True, replace_word, replace_flag
+    return False, word, flag
+
+
+# 判断一个词语是否为符号或者是数字，如果是，那么返回True，否则返回False
+def is_num_or_punctuation(word, flag):
+    reject_punctuation_set = DictConfig.get_reject_punctuation_dict()
+    if flag == "w" or flag == "m":
+        return True
+    if word in reject_punctuation_set:
+        return True
+    return False
 
 
 # 对弹幕中的颜表情进行替换，如果颜表情在替换词词典中，
@@ -37,12 +50,35 @@ def format_word(word):
 def replace_emoji_to_word(word, flag):
     emoji_replace_dict = DictConfig.get_emoji_replace_dict()
     emoji_set = emoji_replace_dict.keys()
-    for emoji in emoji_set:
-        if word == emoji:
-            if len(word) == 1:
-                return True, emoji_replace_dict[emoji], "emoji"
-            return True, emoji_replace_dict[emoji], flag
-    return False, word, flag
+    result_emoji = []  # 因为有些人两个颜文字会连发，所以需要辨别其中的多个表情。
+    while word != "":
+        for emoji in emoji_set:
+            if word == emoji:
+                if len(result_emoji) <= 0:
+                    if len(word) == 1:
+                        return True, [(emoji_replace_dict[emoji], "emoji")]
+                    return True, [(emoji_replace_dict[emoji], flag)]
+                else:
+                    if len(word) == 1:
+                        result_emoji.append((emoji_replace_dict[emoji], "emoji"))
+                    result_emoji.append((emoji_replace_dict[emoji], flag))
+                    return True, result_emoji
+            # 多个颜文字一起发的情况，解决判断多个重复颜文字问题。
+            find_flag = word.startswith(emoji)
+            if find_flag:
+                result_emoji.append((emoji_replace_dict[emoji], "emoji"))
+                word = word.replace(emoji, "", 1)
+                break
+        if not find_flag:  # 没有找到对应的表情
+            break
+
+    # if word != "":
+    #     result_emoji.append(word, "emoji-unknow")  # 没有被收录到词典中的表情
+
+    if len(result_emoji) <= 0:
+        return False, [(word, flag)]
+    else:
+        return True, result_emoji
 
 
 # 判断一个词的词性是否为接受的词性，若是，那么返回true；否则返回false。
@@ -73,7 +109,7 @@ def distinguish_emoji(words):
     for word, flag in words:
         words_index += 1
         result_words.append((word, flag))  # 存储分词结果列表，作为返回结果
-        if flag == "x":  # 如果当前词性是标点符号
+        if flag == "x":  # 如果当前词性 被识别为 字符串
             if len(punctuation_index_list) <= 0:
                 punctuation_list.append(word)
             elif words_index - punctuation_index_list[-1] == 1:

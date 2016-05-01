@@ -26,7 +26,8 @@ class DictConfig(object):
     __STOP_WORDS_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "stopwords-zh-dict.txt"),
                                  os.path.join(FileUtil.get_dict_dir(), "stopwords-en-dict.txt")])
     # 替换词词典信息
-    __REPLACE_WORDS = {}
+    # 替换词词典的替换词次序十分重要，所以用了list。例如 !{1,3}这个替换规则就应该在!!!!+这个替换规则后面。
+    __REPLACE_WORDS = []
     __REPLACE_WORDS_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "replace-dict.txt")])
     # 替换颜表情词典信息
     __REPLACE_EMOJI = {}
@@ -34,6 +35,9 @@ class DictConfig(object):
     # 接受词性词典
     __ACCEPT_NOMINAL = set([])
     __ACCEPT_NOMINAL_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "accept-nominal-dict.txt")])
+    # 拒绝接受的单个标点符号词典
+    __REJECT_PUNCTUATION = set([])
+    __REJECT_PUNCTUATION_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "reject-punctuation-dict.txt")])
 
     @classmethod
     def get_stopwords_set(cls):
@@ -44,7 +48,7 @@ class DictConfig(object):
         return cls.__STOP_WORDS_PATH_SET
 
     @classmethod
-    def get_replace_words_dict(cls):
+    def get_replace_words_list(cls):
         return cls.__REPLACE_WORDS
 
     @classmethod
@@ -54,6 +58,10 @@ class DictConfig(object):
     @classmethod
     def get_emoji_replace_dict(cls):
         return cls.__REPLACE_EMOJI
+
+    @classmethod
+    def get_reject_punctuation_dict(cls):
+        return cls.__REJECT_PUNCTUATION
 
     # 初始化填充停用词列表信息。
     @classmethod
@@ -68,15 +76,15 @@ class DictConfig(object):
 
     @classmethod
     def __init_replace_words(cls):
-        cls.__REPLACE_WORDS = {}
+        cls.__REPLACE_WORDS = []
         for replace_words_path in cls.__REPLACE_WORDS_PATH_SET:
             with codecs.open(replace_words_path, "rb", "utf-8") as input_file:
                 for line in input_file:
                     split_info = line.strip().split("\t")
                     word_pattern = split_info[0]
                     replace_word = split_info[1]
-                    if word_pattern not in cls.__REPLACE_WORDS.keys():
-                        cls.__REPLACE_WORDS[word_pattern] = replace_word
+                    replace_flag = split_info[2]  # 替换词的词性，因为今后将会用到 过滤数字 和 无用标点的选项
+                    cls.__REPLACE_WORDS.append((word_pattern, replace_word, replace_flag))
         logging.debug(u"替换词词典构建完成！！！")
 
     @classmethod
@@ -105,6 +113,17 @@ class DictConfig(object):
                     replace_word = split_info[1]
                     cls.__REPLACE_EMOJI[emoji] = replace_word
         logging.debug(u"emoji 替换词典加载完成！！！")
+
+    # 加载拒绝的单个标点词的词典
+    @classmethod
+    def __init_reject_punctuation_set(cls):
+        cls.__REJECT_PUNCTUATION = set([])
+        for reject_punctuation_path in cls.__REJECT_PUNCTUATION_PATH_SET:
+            with codecs.open(reject_punctuation_path, "rb", "utf-8") as input_file:
+                for line in input_file:
+                    punctuation = line.strip()
+                    cls.__REJECT_PUNCTUATION.add(punctuation)
+        logging.debug(u"弃用标点符号词典加载完成！！！")
 
     # 根据分好词的barrage_seg_list（分好词、过滤好停词）
     @classmethod
@@ -145,6 +164,8 @@ class DictConfig(object):
         cls.__init_accept_nominal()
         # 初始化emoji替换词典
         cls.__init_emoji_replace_dict()
+        # 初始化弃用标点符号词典
+        cls.__init_reject_punctuation_set()
 
 
 if __name__ == "__main__":
