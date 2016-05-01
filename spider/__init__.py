@@ -97,8 +97,8 @@ class BarrageSpider(object):
                     page_html = zlib.decompress(page_html, zlib.MAX_WBITS | 16)
                 elif resp_info["Content-Encoding"] == "zlib":
                     page_html = zlib.decompress(page_html, zlib.MAX_WBITS)
-            except zlib.error as e:
-                print e
+            except zlib.error as exception:
+                logger.debug(exception)
                 return ""
         page_html = page_html.decode("utf-8", "ignore")
         return page_html
@@ -121,6 +121,6 @@ class BarrageSpider(object):
 
 if __name__ == "__main__":
     bSpider = BarrageSpider()
-    url = "http://comment.bilibili.tv/6461"
+    url = "http://www.bilibili.com/video/av4252347/"
     # url = "http://www.bilibili.com/video/av4122999/"
     Logger.print_console_info(bSpider.get_html_content(url))

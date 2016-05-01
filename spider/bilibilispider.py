@@ -66,14 +66,14 @@ class BilibiliSpider(BarrageSpider):
         if match is not None:
             cid = match.group(1).strip()
             return cid
-        pattern = re.compile(r'<embed.*?class.*?=.*?".*?player.*?".*?flashvars.*?=.*?".*?bili-cid=(.*?)&.*?</embed>',
+        pattern = re.compile(r'<embed.*?class =" player ".*?flashvars =" bili-cid=(.*?)&.*?</embed>',
                              re.S)
         match = re.search(pattern, html_content)
         if match is not None:
             cid = match.group(1).strip()
             return cid
         pattern = re.compile(
-            r'<div.*?id.*?=.*?".*?bofqi.*?">.*?<iframe.*?src.*?=.*?".*?cid=(.*?)&.*?".*?>.*?</iframe>.*?</div>', re.S)
+            r'<div.*?id =" bofqi ">.*?<iframe.*?src =".*?cid=(.*?)&.*?".*?>.*?</iframe>.*?</div>', re.S)
         match = re.search(pattern, html_content)
         if match is not None:
             cid = match.group(1).strip()
@@ -251,16 +251,15 @@ class BilibiliSpider(BarrageSpider):
         movie_detail_param = split_info[len(split_info) - 1]
         split_info = movie_detail_param.split("_")
         if len(split_info) < 3:  # 还有用 - 来分割的
-            split_info = ""
+            split_info = movie_detail_param.split("-")
+            if len(split_info) < 3:
+                split_info = ""
+            else:
+                param_construct_method = 1
         else:
             param_construct_method = 0
-        split_info = movie_detail_param.split("-")
-        if len(split_info) < 3:
-            split_info = ""
-        else:
-            param_construct_method = 1
-        # 就是为了构建 http://www.bilibili.com/video/movie_japan_1.html 这样的链接
-        movie_detail_param = "_".join(split_info[0: len(split_info) - 1]) + "_"
+            # 就是为了构建 http://www.bilibili.com/video/movie_japan_1.html 这样的链接
+            movie_detail_param = "_".join(split_info[0: len(split_info) - 1]) + "_"
         for index in xrange(1, page_count + 1):
             # page_param = "page=" + str(index)
             # link = base_url + "#!" + page_param + "&" + date_range_param + "&" + order_param
@@ -373,6 +372,7 @@ def scheme_main(interval_time=60):
 
 if __name__ == "__main__":
     # scheme_main(120)
-    # bilibili_spider = BilibiliSpider()
+    bilibili_spider = BilibiliSpider()
     # bilibili_spider.start_collect_barrage_corpus("http://www.bilibili.com/video/movie_japan_1.html")
-    collect_barrage_corpus()
+    # collect_barrage_corpus()
+    bilibili_spider.start_spider_barrage("http://www.bilibili.com/video/av4252347/")
