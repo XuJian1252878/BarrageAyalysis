@@ -33,7 +33,7 @@ class TrainSentences(object):
     def __gen_corpus_words(self):
         with codecs.open("all-input-corpus.txt", "wb", "utf-8") as output_file:
             barrage_corpus_files = glob.glob(os.path.join(self.barrage_corpus_dirname,
-                                                          "*.", self.barrage_corpus_file_type))
+                                                          "*." + self.barrage_corpus_file_type))
             for barrage_corpus_file in barrage_corpus_files:
                 barrages = get_barrage_from_txt_file(barrage_corpus_file)
                 barrage_seg_list = segment_barrages(barrages, is_corpus=True)
@@ -47,13 +47,11 @@ class TrainSentences(object):
                     output_file.write(corpus_words)
 
 
-                # 根据语料库建立 word2vec 模型
-                # 参数： barrage_corpus_dirname 弹幕语料的路径
-                #       barrage_corpus_file_type 弹幕语料存储的文件类型
-
-
+# 根据语料库建立 word2vec 模型
+# 参数： barrage_corpus_dirname 弹幕语料的路径
+#       barrage_corpus_file_type 弹幕语料存储的文件类型
 def build_word2vec_model(barrage_corpus_dirname, barrage_corpus_file_type="txt"):
-    train_sentences = TrainSentences(FileUtil.get_corpus_dir())
+    train_sentences = TrainSentences(barrage_corpus_dirname, barrage_corpus_file_type)
     """
     min_count: One of them is for pruning the internal dictionary. Words that appear only once or twice in a billion-word corpus
     are probably uninteresting typos and garbage. In addition, there’s not enough data to make any meaningful training
