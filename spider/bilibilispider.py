@@ -245,16 +245,31 @@ class BilibiliSpider(BarrageSpider):
         # # pass_date_str = datetime.datetime(now_date.year, now_date.month - 2, now_date.day).strftime("%Y-%m-%d")
         # pass_date_str = (now_date - datetime.timedelta(days=90)).strftime("%Y-%m-%d")
         # date_range_param = "range=" + pass_date_str + "," + now_date_str
+        param_construct_method = -1  # 视频列表链接的参数构造信息
         split_info = base_url.split("/")
         video_base_url = "/".join(split_info[0: len(split_info) - 1])  # http://www.bilibili.com/video
         movie_detail_param = split_info[len(split_info) - 1]
         split_info = movie_detail_param.split("_")
+        if len(split_info) < 3:  # 还有用 - 来分割的
+            split_info = ""
+        else:
+            param_construct_method = 0
+        split_info = movie_detail_param.split("-")
+        if len(split_info) < 3:
+            split_info = ""
+        else:
+            param_construct_method = 1
         # 就是为了构建 http://www.bilibili.com/video/movie_japan_1.html 这样的链接
         movie_detail_param = "_".join(split_info[0: len(split_info) - 1]) + "_"
         for index in xrange(1, page_count + 1):
             # page_param = "page=" + str(index)
             # link = base_url + "#!" + page_param + "&" + date_range_param + "&" + order_param
-            link = video_base_url + "/" + movie_detail_param + str(index) + ".html"
+            if param_construct_method == 0:
+                link = video_base_url + "/" + movie_detail_param + str(index) + ".html"
+            elif param_construct_method == 1:
+                link = base_url + "#!page=" + str(index)
+            else:
+                continue
             video_list_urls.append(link)
         return video_list_urls
 

@@ -15,6 +15,8 @@ from util.loggerutil import Logger
 
 __author__ = "htwxujian@gmail.com"
 
+logger = Logger(console_only=True).get_logger()
+
 
 class SmartRedirectHandler(urllib2.HTTPRedirectHandler):
     def __init__(self):
@@ -58,7 +60,7 @@ class BarrageSpider(object):
             else:
                 return False
         except Exception as exception:
-            print exception
+            logger.debug(unicode(exception))
             Logger.print_console_info(u"连接失败！" + unicode(str(try_times)) + u" ，正在重新连接……")
             # 发现发生 HTTPError 502 错误时，重试链接并没有效果。
             self.__access_url_internal(req, timeout, try_times + 1)
@@ -82,7 +84,7 @@ class BarrageSpider(object):
         try:
             page_html = resp.read()
         except Exception as exception:
-            print exception
+            logger.debug(unicode(exception))
             return ""
         resp_info = resp.info()
         if "Content-Encoding" in resp_info:
