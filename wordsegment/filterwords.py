@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
+import codecs
 import re
 
 from analysis.model.dictconfig import DictConfig
@@ -21,6 +22,7 @@ def is_stopwords(word):
 
 
 # 如果词语在替换词词典中，那么返回(True, 替换之后的词)，否则返回(Flase, 原词)
+# 替换词词典的顺序是严格讲究的。
 def format_word(word, flag):
     replace_word_list = DictConfig.get_replace_words_list()
     for replace_pattern_info in replace_word_list:
@@ -37,7 +39,9 @@ def format_word(word, flag):
 # 判断一个词语是否为符号或者是数字，如果是，那么返回True，否则返回False
 def is_num_or_punctuation(word, flag):
     reject_punctuation_set = DictConfig.get_reject_punctuation_dict()
-    if flag == "w" or flag == "m":
+    reject_word_flag_set = set(["w", "m", "eng"])
+    if flag in reject_word_flag_set:
+        __record_reject_word_info(word, flag)  # 看看被过滤掉的都是什么词，调试用
         return True
     if word in reject_punctuation_set:
         return True
@@ -51,6 +55,8 @@ def replace_emoji_to_word(word, flag):
     emoji_replace_dict = DictConfig.get_emoji_replace_dict()
     emoji_set = emoji_replace_dict.keys()
     result_emoji = []  # 因为有些人两个颜文字会连发，所以需要辨别其中的多个表情。
+    first_match_flag = False
+    # 从word 头部开始判断emoji表情是否存在
     while word != "":
         for emoji in emoji_set:
             if word == emoji:
@@ -68,15 +74,34 @@ def replace_emoji_to_word(word, flag):
             if find_flag:
                 result_emoji.append((emoji_replace_dict[emoji], "emoji"))
                 word = word.replace(emoji, "", 1)
+                if not first_match_flag:
+                    first_match_flag = True
                 break
         if not find_flag:  # 没有找到对应的表情
             break
+
+    # 从头开始匹配失败，那么从尾开始匹配试一试。
+    if not first_match_flag:
+        while word != "":
+            for emoji in emoji_set:
+                # 多个颜文字一起发的情况，解决判断多个重复颜文字问题。
+                find_flag = word.endswith(emoji)
+                if find_flag:
+                    result_emoji.append((emoji_replace_dict[emoji], "emoji"))
+                    word = word.replace(emoji, "", 1)
+                    break
+            if not find_flag:  # 没有找到对应的表情
+                break
 
     # if word != "":
     #     result_emoji.append(word, "emoji-unknow")  # 没有被收录到词典中的表情
 
     if len(result_emoji) <= 0:
-        return False, [(word, flag)]
+        if flag == "emoji":  # 没有识别出来的颜文字。。。或者符号。。。舍弃掉。。。
+            __record_reject_word_info(word, flag)  # 调试用，看看都舍弃了一些什么符号。
+            return False, None
+        else:
+            return False, [(word, flag)]
     else:
         return True, result_emoji
 
@@ -139,6 +164,12 @@ def distinguish_emoji(words):
         result_words = result_words[0: replace_start_index] + \
                        [(emoji_pic, "emoji")] + result_words[replace_end_index + 1: len(result_words)]
     return result_words
+
+
+# 记录舍弃掉的词语信息，用于调试。
+def __record_reject_word_info(word, flag):
+    with codecs.open("reject_word_info.txt", "ab", "utf-8") as output_file:
+        output_file.write(word + u"\t" + flag + u"\n")
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.DEBUG,
 class DictConfig(object):
 
     # 停用词词典信息
-    __STOP_WORDS = set([" ", "\r", "\n"])  # 停用词集合信息
+    __STOP_WORDS = set([" ", "\r", "\n", "\t"])  # 停用词集合信息
     # 停用词词典的加载路径，用户可以自定义添加。
     __STOP_WORDS_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "stopwords-zh-dict.txt"),
                                  os.path.join(FileUtil.get_dict_dir(), "stopwords-en-dict.txt")])
@@ -66,7 +66,7 @@ class DictConfig(object):
     # 初始化填充停用词列表信息。
     @classmethod
     def __init_stopwords(cls):
-        cls.__STOP_WORDS = set()
+        cls.__STOP_WORDS = set([" ", "\r", "\n", "\t"])
         for stopwords_dict_path in cls.__STOP_WORDS_PATH_SET:
             with codecs.open(stopwords_dict_path, "rb", "utf-8") as input_file:
                 for line in input_file:

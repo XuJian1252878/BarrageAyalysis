@@ -12,7 +12,7 @@ from analysis.model.dictconfig import DictConfig
 from util.fileutil import FileUtil
 from util.loggerutil import Logger
 
-logger = Logger(log_name="word-segment.log").get_logger()
+logger = Logger(console_only=True).get_logger()
 
 
 """
@@ -116,6 +116,8 @@ def __segment_sentence(sentence):
                 sentence_seg.append(WordSeg(emoji, emoji_flag))
                 logger.debug(u"emoji" + origin_word + u" 替换成功：" + emoji)
             continue
+        elif (not is_emoji_replace) and (emoji_list is None):
+            continue  # 当前词语是一个违背识别的符号串，直接舍弃。
         # 过滤无意义的数字，标点，（英文字符暂时没有被过滤）信息。
         if filterwords.is_num_or_punctuation(word, flag):
             continue
