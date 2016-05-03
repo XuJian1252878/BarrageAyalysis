@@ -41,6 +41,8 @@ class TrainSentences(object):
                 #  convert to unicode, lowercase, remove numbers, extract named entities…
                 for barrage_seg in barrage_seg_list:
                     corpus_words = u""
+                    if len(barrage_seg.sentence_seg_list) <= 0:
+                        continue  # 弹幕中的词语有可能全部被替换掉了，没有剩下任何词语。
                     for word_seg in barrage_seg.sentence_seg_list:
                         corpus_words += (word_seg.word + u"\t")
                     corpus_words = corpus_words[0: len(corpus_words) - 1] + u"\n"
