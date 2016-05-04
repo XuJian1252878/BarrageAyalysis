@@ -13,10 +13,9 @@
 885	帮帮我	n
 1414	意思意思	unknowx
 7456	气死我了	l
-~~~+	~~~	w
-~{1,2}	~	w
-～～～+	～～～	w
-～{1,2}	～	w
+rrr+	抓狂	n	啊啊啊啊啊
+~~~~+	~~~	w
+～～～～+	～～～	w
 kiss	接吻	v
 bf	男朋友	n
 gf	女朋友	n
@@ -53,6 +52,8 @@ ff+	羡慕	v	烧死异性恋
 我艹	卧槽	n
 靠+	卧槽	n
 草+	卧槽	n
+cao	卧槽	n
+草泥马	卧槽	n
 我\+\+	卧槽	n
 wtf	卧槽	n
 what the fuck	卧槽	n
@@ -138,6 +139,7 @@ rbq	肉便器	unknowx	深层次的婊子
 nb	牛逼	unknowx
 牛b	牛逼	unknowx
 牛B	牛逼	unknowx
+diao	牛逼	unknowx
 Q+W+Q+	QWQ	unknowx
 雅蠛蝶	拒绝	v
 彩弹	彩蛋	n
@@ -189,8 +191,7 @@ gay	同性恋	n
 弹幕掩体	前方高能	unknowx
 高能掩体	前方高能	unknowx
 高能预警	前方高能	unknowx
-高能	前方高能	unknowx
-zz	无语	nz
+zz	政府	nz
 想睡觉	想睡觉	unknowx
 zzz+	想睡觉	unknowx
 被戴绿帽	被戴绿帽	unknowx
@@ -231,3 +232,4 @@ get	获取	v
 B站	b站	n
 bilibili	b站	n
 么么+哒	么么哒	unknowx
+cnn	cnn	unknowx
