@@ -48,31 +48,42 @@ def is_num_or_punctuation(word, flag):
     return False
 
 
+# word 待替换的词语信息，flag word的词性，word_start_position word在原句中的起始位置，
+# word_end_position word在原句中的结束位置
 # 对弹幕中的颜表情进行替换，如果颜表情在替换词词典中，
-# 那么返回(True, 替换之后的词, 替换后的词性)，否则返回(Flase, 原词, 原词词性)
+# 那么返回(True, [替换之后的词, 替换后的词性，表情在原句中的起始位置，表情在原句中的结束位置])，
+# 否则返回(Flase, [原词, 原词词性，表情在原句中的起始位置，表情在原句中的结束位置])
 # replace_emoji_to_word函数中会将匹配上的 单个 emoji 表情的词语属性 替换成emoji。
-def replace_emoji_to_word(word, flag):
+def replace_emoji_to_word(word, flag, word_start_position, word_end_position):
     emoji_replace_dict = DictConfig.get_emoji_replace_dict()
     emoji_set = emoji_replace_dict.keys()
     result_emoji = []  # 因为有些人两个颜文字会连发，所以需要辨别其中的多个表情。
     first_match_flag = False
+    emoji_start_position = word_start_position - 1
+    emoji_end_position = word_start_position - 1
     # 从word 头部开始判断emoji表情是否存在
     while word != "":
+        find_flag = False
         for emoji in emoji_set:
             if word == emoji:
+                emoji_start_position = emoji_end_position + 1  # 当前表情在原句中的起始位置
+                emoji_end_position = emoji_start_position - 1 + len(emoji)  # 当前表情在原句中的结束位置
                 if len(result_emoji) <= 0:
                     if len(word) == 1:
-                        return True, [(emoji_replace_dict[emoji], "emoji")]
-                    return True, [(emoji_replace_dict[emoji], flag)]
+                        return True, [(emoji_replace_dict[emoji], "emoji", emoji_start_position, emoji_end_position)]
+                    return True, [(emoji_replace_dict[emoji], flag, emoji_start_position, emoji_end_position)]
                 else:
                     if len(word) == 1:
-                        result_emoji.append((emoji_replace_dict[emoji], "emoji"))
-                    result_emoji.append((emoji_replace_dict[emoji], flag))
+                        result_emoji.append((emoji_replace_dict[emoji], "emoji",
+                                             emoji_start_position, emoji_end_position))
+                    result_emoji.append((emoji_replace_dict[emoji], flag, emoji_start_position, emoji_end_position))
                     return True, result_emoji
             # 多个颜文字一起发的情况，解决判断多个重复颜文字问题。
             find_flag = word.startswith(emoji)
             if find_flag:
-                result_emoji.append((emoji_replace_dict[emoji], "emoji"))
+                emoji_start_position = emoji_end_position + 1  # 当前表情在原句中的起始位置
+                emoji_end_position = emoji_start_position - 1 + len(emoji)  # 当前表情在原句中的结束位置
+                result_emoji.append((emoji_replace_dict[emoji], "emoji", emoji_start_position, emoji_end_position))
                 word = word.replace(emoji, "", 1)
                 if not first_match_flag:
                     first_match_flag = True
@@ -83,11 +94,14 @@ def replace_emoji_to_word(word, flag):
     # 从头开始匹配失败，那么从尾开始匹配试一试。
     if not first_match_flag:
         while word != "":
+            find_flag = False
             for emoji in emoji_set:
                 # 多个颜文字一起发的情况，解决判断多个重复颜文字问题。
                 find_flag = word.endswith(emoji)
                 if find_flag:
-                    result_emoji.append((emoji_replace_dict[emoji], "emoji"))
+                    emoji_start_position = emoji_end_position + 1  # 当前表情在原句中的起始位置
+                    emoji_end_position = emoji_start_position - 1 + len(emoji)  # 当前表情在原句中的结束位置
+                    result_emoji.append((emoji_replace_dict[emoji], "emoji", emoji_start_position, emoji_end_position))
                     word = word.replace(emoji, "", 1)
                     break
             if not find_flag:  # 没有找到对应的表情
@@ -95,7 +109,6 @@ def replace_emoji_to_word(word, flag):
 
     # if word != "":
     #     result_emoji.append(word, "emoji-unknow")  # 没有被收录到词典中的表情
-
     if len(result_emoji) <= 0:
         if flag == "emoji":  # 没有识别出来的颜文字。。。或者符号。。。舍弃掉。。。
             __record_reject_word_info(word, flag)  # 调试用，看看都舍弃了一些什么符号。

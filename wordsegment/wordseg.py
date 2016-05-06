@@ -22,15 +22,19 @@ logger = Logger(console_only=True).get_logger()
 
 # 记录一个词的词性以及词本身。
 class WordSeg(object):
-    def __init__(self, word, flag):
+    def __init__(self, word, flag, word_start_position, word_end_position):
         self.word = word
         self.flag = flag
+        self.start_position = word_start_position  # 词语在弹幕文本中的起始位置
+        self.end_position = word_end_position  # 词语在弹幕文本中的结束位置
 
     @staticmethod
     def dict2wordseg(word_seg_dict):
         word = word_seg_dict["word"]
         flag = word_seg_dict["flag"]
-        word_seg = WordSeg(word, flag)
+        start_position = word_seg_dict["start_position"]
+        end_position = word_seg_dict["end_position"]
+        word_seg = WordSeg(word, flag, start_position, end_position)
         return word_seg
 
 
@@ -91,10 +95,14 @@ def __segment_sentence(sentence):
     sentence_seg = []
     logger.info(u"正在分词：" + sentence)
     words = pseg.cut(sentence)
+    word_start_position = -1  # 记录当前分词词语的起始位置
+    word_end_position = -1  # 记录当前分词词语的结束位置
     # 首先对可能出现的emoji表情进行识别
     # 由于结巴分词会将颜文字表情识别为一个个的单一标点符号，使原来的颜文字表情信息无法表示出来。
     words = filterwords.distinguish_emoji(words)
     for word, flag in words:
+        word_start_position = word_end_position + 1
+        word_end_position = word_start_position - 1 + len(word)
         if flag == "eng":
             # 如果切出来的词语是英文，那么需要将其转换成小写，因为替换词典中所有关于英文的模式都是小写的。
             word = word.lower()
@@ -108,12 +116,15 @@ def __segment_sentence(sentence):
             logger.debug(u" word " + origin_word + u" 替换成功：" + word)
         # 查看该词是否颜文字表情，进行颜文字表情的替换操作
         origin_word = word
-        is_emoji_replace, emoji_list = filterwords.replace_emoji_to_word(word, flag)
+        is_emoji_replace, emoji_list = filterwords.replace_emoji_to_word(word, flag,
+                                                                         word_start_position, word_end_position)
         if is_emoji_replace:
             for emoji_info in emoji_list:
                 emoji = emoji_info[0]
                 emoji_flag = emoji_info[1]
-                sentence_seg.append(WordSeg(emoji, emoji_flag))
+                emoji_start_position = emoji_info[2]
+                emoji_end_position = emoji_info[3]
+                sentence_seg.append(WordSeg(emoji, emoji_flag, emoji_start_position, emoji_end_position))
                 logger.debug(u"emoji" + origin_word + u" 替换成功：" + emoji)
             continue
         elif (not is_emoji_replace) and (emoji_list is None):
@@ -121,7 +132,7 @@ def __segment_sentence(sentence):
         # 过滤无意义的数字，标点，（英文字符暂时没有被过滤）信息。
         if filterwords.is_num_or_punctuation(word, flag):
             continue
-        sentence_seg.append(WordSeg(word, flag))
+        sentence_seg.append(WordSeg(word, flag, word_start_position, word_end_position))
     return sentence_seg
 
 
@@ -168,4 +179,4 @@ if __name__ == "__main__":
     for sentence in sentence_list:
         sentence_seg = __segment_sentence(sentence)
         for word_seg in sentence_seg:
-            print word_seg.word, u"\t", word_seg.flag
+            print word_seg.word, u"\t", word_seg.flag, u"\t", word_seg.start_position, u"\t", word_seg.end_position
