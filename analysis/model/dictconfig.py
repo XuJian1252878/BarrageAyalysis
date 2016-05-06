@@ -38,6 +38,12 @@ class DictConfig(object):
     # 拒绝接受的单个标点符号词典
     __REJECT_PUNCTUATION = set([])
     __REJECT_PUNCTUATION_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "reject-punctuation-dict.txt")])
+    # 程度副词词典加载（来自知网数据）
+    __DEGREE_ADVERB = []
+    __DEGREE_ADVERB_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "degree-adverb-dict.txt")])
+    # 否定词词典加载
+    __NEGATIVES = set([])
+    __NEGATIVES_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "negatives-dict.txt")])
 
     @classmethod
     def get_stopwords_set(cls):
@@ -62,6 +68,14 @@ class DictConfig(object):
     @classmethod
     def get_reject_punctuation_dict(cls):
         return cls.__REJECT_PUNCTUATION
+
+    @classmethod
+    def get_degree_adverb_list(cls):
+        return cls.__DEGREE_ADVERB
+
+    @classmethod
+    def get_negatives_set(cls):
+        return cls.__NEGATIVES
 
     # 初始化填充停用词列表信息。
     @classmethod
@@ -125,7 +139,31 @@ class DictConfig(object):
                     cls.__REJECT_PUNCTUATION.add(punctuation)
         logging.debug(u"弃用标点符号词典加载完成！！！")
 
-    # 根据分好词的barrage_seg_list（分好词、过滤好停词）
+    # 初始化程度副词词典
+    @classmethod
+    def __init_degree_adverb_list(cls):
+        cls.__DEGREE_ADVERB = []
+        for degree_adverb_path in cls.__DEGREE_ADVERB_PATH_SET:
+            with codecs.open(degree_adverb_path, "rb", "utf-8") as input_file:
+                for line in input_file:
+                    split_info = line.strip().split("\t")
+                    degree_adverb = split_info[0]
+                    score = split_info[1]
+                    cls.__DEGREE_ADVERB.append((degree_adverb, score))
+        logging.debug(u"程度副词词典加载完成！！！")
+
+    # 初始化否定词词典
+    @classmethod
+    def __init_negatives_set(cls):
+        cls.__NEGATIVES = set([])
+        for negatives_path in cls.__NEGATIVES_PATH_SET:
+            with codecs.open(negatives_path, "rb", "utf-8") as input_file:
+                for line in input_file:
+                    negative = line.strip()
+                    cls.__NEGATIVES.add(negative)
+        logging.debug(u"否定词词典加载完成！！！")
+
+    # 根据分好词的barrage_seg_list（分好词、过滤好停词），为弹幕中的每一个词语对应一个唯一的编号。
     @classmethod
     def gen_tfidf_dict(cls, barrage_seg_list):
         # 获得每条弹幕分好之后的词语
