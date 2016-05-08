@@ -326,7 +326,6 @@ QAQ  unknowx
 不忍  v
 不舍  unknowx
 不顺  a
-惨  a
 操心  v
 愁  v
 担心  v
@@ -372,7 +371,6 @@ QAQ  unknowx
 心碎  v
 心疼  a
 要哭  unknowx
-要命  v
 一言难尽  i
 已跪  unknowx
 已死  unknowx
@@ -497,7 +495,6 @@ QAQ  unknowx
 狗急跳墙  i
 狗男女  l
 狗血  n
-过分  n
 寒碜  v
 好苏  unknowx
 好自为之  i
@@ -533,7 +530,6 @@ QAQ  unknowx
 精神污染  i
 咎由自取  i
 举报  v
-拒绝  v
 绝情  n
 看轻  v
 可耻  a
@@ -763,7 +759,6 @@ QAQ  unknowx
 亦可赛艇  unknowx
 我X  unknowx
 我x  unknowx
-绝对  d
 草  n
 狂用葱插我  unknowx
 woc  unknowx
@@ -788,7 +783,6 @@ py交易  unknowx
 搞基  unknowx
 妈蛋  unknowx
 牛b  unknowx
-拒绝  v
 彩蛋  n
 我艹  unknowx
 因吹四艇  unknowx
@@ -1010,7 +1004,6 @@ B站  n
 曷  adverb
 碜  adverb
 大不了  adverb
-多  adverb
 更  adverb
 更加  adverb
 更进一步  adverb
@@ -1031,13 +1024,13 @@ B站  n
 尤甚  adverb
 逾  adverb
 愈  adverb
-愈 ... 愈  adverb
+愈 ... 愈
 愈发  adverb
 愈加  adverb
 愈来愈  adverb
 愈益  adverb
 远远  adverb
-越 ... 越  adverb
+越 ... 越
 越发  adverb
 越加  adverb
 越来越  adverb
@@ -1050,7 +1043,6 @@ B站  n
 多多少少  adverb
 怪  adverb
 好生  adverb
-还  adverb
 或多或少  adverb
 略  adverb
 略加  adverb
@@ -1095,7 +1087,6 @@ B站  n
 超微结构  adverb
 超物质  adverb
 出头  adverb
-多  adverb
 浮  adverb
 过  adverb
 过度  adverb
@@ -1113,8 +1104,60 @@ B站  n
 何啻  adverb
 开外  adverb
 苦  adverb
-老  adverb
 偏  adverb
-强  adverb
 溢  adverb
 忒  adverb
+不  negative
+非  negative
+无  negative
+未  negative
+不曾  negative
+没  negative
+没有  negative
+请勿  negative
+不用  negative
+无须  negative
+并非  negative
+毫无  negative
+决不  negative
+休想  negative
+永不  negative
+不要  negative
+未尝  negative
+未曾  negative
+毋  negative
+莫  negative
+从不  negative
+从未  negative
+从未有过  negative
+尚未  negative
+一无  negative
+并未  negative
+尚无  negative
+从来不  negative
+从没  negative
+绝非  negative
+远非  negative
+切莫  negative
+永不  negative
+休想  negative
+绝不  negative
+毫不  negative
+不必  negative
+禁止  negative
+忌  negative
+拒绝  negative
+杜绝  negative
+否  negative
+弗  negative
+木有  negative
+不可以  negative
+怎么不  negative
+几乎不  negative
+不会  negative
+很少  negative
+极少  negative
+不是  negative
+难以  negative
+甭  negative
+勿  negative
