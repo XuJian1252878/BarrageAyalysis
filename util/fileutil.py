@@ -155,11 +155,11 @@ class FileUtil(object):
 
     # 获得tfidf字典数据的路径
     @staticmethod
-    def get_tfidf_dir():
+    def get_train_model_dir():
         data_dir = FileUtil.get_data_root_dir()
-        tfidf_dir = os.path.join(data_dir, "tfidf")
-        FileUtil.create_dir_if_not_exist(tfidf_dir)
-        return tfidf_dir
+        train_model_dir = os.path.join(data_dir, "model")
+        FileUtil.create_dir_if_not_exist(train_model_dir)
+        return train_model_dir
 
     # 获得zscore结果的存储路径
     @staticmethod
@@ -184,14 +184,6 @@ class FileUtil(object):
         corpus_dir = os.path.join(data_dir, "corpus")
         FileUtil.create_dir_if_not_exist(corpus_dir)
         return corpus_dir
-
-    # 获得模型路径
-    @staticmethod
-    def get_model_dir():
-        data_dir = FileUtil.get_data_root_dir()
-        model_dir = os.path.join(data_dir, "model")
-        FileUtil.create_dir_if_not_exist(model_dir)
-        return model_dir
 
 
 if __name__ == "__main__":

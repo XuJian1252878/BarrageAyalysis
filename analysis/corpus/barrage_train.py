@@ -63,7 +63,7 @@ def build_word2vec_model(barrage_corpus_dirname, barrage_corpus_file_type="txt")
     workers: training parallelization, to speed up training, default = 1 worker = no parallelization
     """
     model = gensim.models.Word2Vec(train_sentences, min_count=5, size=150, workers=multiprocessing.cpu_count())
-    model.save(os.path.join(FileUtil.get_model_dir(), "barrage-corpusword2vec-model.txt"))
+    model.save(os.path.join(FileUtil.get_train_model_dir(), "barrage-corpusword2vec-model.txt"))
 
 
 if __name__ == "__main__":

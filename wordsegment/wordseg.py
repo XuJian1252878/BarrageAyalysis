@@ -83,8 +83,12 @@ def segment_barrages(barrages, cid=None, is_corpus=False):
         __save_segment_word_to_file(barrage_seg_list, cid)
         # 将分词的结果以json的形式写入文件中，以供今后分析zscore的时候调用。
         save_segment_barrages(barrage_seg_list, cid)
-        # 建立 tf-idf 相关的词典信息
-        DictConfig.gen_tfidf_dict(barrage_seg_list)
+        # 将视频v全体的弹幕数据作为语料库，便于生成tf-idf模型
+        corpus = DictConfig.gen_corpus_info(barrage_seg_list, cid)
+        # 以分好词的弹幕作为训练集，训练tf-idf模型
+        DictConfig.gen_tfidf_model(corpus, cid)
+        # 以分好词的弹幕作为训练集，训练lda模型
+        DictConfig.gen_lda_model(corpus, cid)
     return barrage_seg_list
 
 

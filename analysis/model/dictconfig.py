@@ -163,9 +163,10 @@ class DictConfig(object):
                     cls.__NEGATIVES.add(negative)
         logging.debug(u"否定词词典加载完成！！！")
 
+    # 将待实验视频v的全体弹幕信息作为语料库，为训练tf-idf模型以及lda模型做准备
     # 根据分好词的barrage_seg_list（分好词、过滤好停词），为弹幕中的每一个词语对应一个唯一的编号。
     @classmethod
-    def gen_tfidf_dict(cls, barrage_seg_list):
+    def gen_corpus_info(cls, barrage_seg_list, cid):
         # 获得每条弹幕分好之后的词语
         texts = []
         for barrage_seg in barrage_seg_list:
@@ -176,17 +177,30 @@ class DictConfig(object):
         # 为文本中的每一个词语赋予一个数字下标
         dictionary = corpora.Dictionary(texts)
         # store the dictionary, for future reference
-        dictionary.save(os.path.join(FileUtil.get_tfidf_dir(), "barrage-words.dict"))
-        print str(type(logging))
-        logging.debug("生成 tfidf 弹幕词语词典！！！")
+        dictionary.save(os.path.join(FileUtil.get_train_model_dir(), str(cid) + "-barrage-words.dict"))
+
         logging.debug(dictionary.token2id)
         # 根据生成的字典，生成语料库信息（语料的词用id表示，后面对应的是count。）
         corpus = [dictionary.doc2bow(text) for text in texts]
         # store to disk, for later use
-        corpora.MmCorpus.serialize(os.path.join(FileUtil.get_tfidf_dir(), 'barrage-corpus.mm'), corpus)
+        corpora.MmCorpus.serialize(os.path.join(FileUtil.get_train_model_dir(), str(cid) + '-barrage-corpus.mm'),
+                                   corpus)
+        return corpus
+
+    # 根据语料库corpus生成tf-idf模型
+    @classmethod
+    def gen_tfidf_model(cls, corpus, cid):
         # let’s initialize a tfidf transformation:
+        logging.debug(u"生成 tfidf 模型！！！")
         tfidf = models.TfidfModel(corpus)
-        tfidf.save(os.path.join(FileUtil.get_tfidf_dir(), "barrage-tfidf.model"))
+        tfidf.save(os.path.join(FileUtil.get_train_model_dir(), str(cid) + "-barrage-tfidf.model"))
+
+    # 根据语料库信息生成lda模型
+    @classmethod
+    def gen_lda_model(cls, corpus, cid):
+        logging.debug(u"生成 lda 模型！！！")
+        lda = models.LdaModel(corpus, num_topics=10)
+        lda.save(os.path.join(FileUtil.get_train_model_dir(), str(cid) + "-barrage-lda.model"))
 
     # 初始化所有的字典信息。
     @classmethod
@@ -207,7 +221,4 @@ class DictConfig(object):
 
 
 if __name__ == "__main__":
-    DictConfig.build_dicts()
-    stopwords_set = DictConfig.get_stopwords_set()
-    for stopwords in stopwords_set:
-        print stopwords
+    lda = models.LdaModel.load(os.path.join(FileUtil.get_train_model_dir(), "9-barrage-lda.model"))
