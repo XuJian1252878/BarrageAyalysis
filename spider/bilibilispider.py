@@ -371,7 +371,7 @@ def scheme_main(interval_time=60):
 
 
 if __name__ == "__main__":
-    # scheme_main(120)
+    # scheme_main(60)
     bilibili_spider = BilibiliSpider()
     # bilibili_spider.start_collect_barrage_corpus("http://www.bilibili.com/video/movie_japan_1.html")
     # collect_barrage_corpus()

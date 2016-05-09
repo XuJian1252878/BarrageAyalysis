@@ -32,18 +32,21 @@ class DictConfig(object):
     # 替换颜表情词典信息
     __REPLACE_EMOJI = {}
     __REPLACE_EMOJI_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "emoji-dict.txt")])
-    # 接受词性词典
+    # 接受词性词典 ---- 现在代码中没有用词性来过滤处理
     __ACCEPT_NOMINAL = set([])
     __ACCEPT_NOMINAL_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "accept-nominal-dict.txt")])
     # 拒绝接受的单个标点符号词典
     __REJECT_PUNCTUATION = set([])
     __REJECT_PUNCTUATION_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "reject-punctuation-dict.txt")])
     # 程度副词词典加载（来自知网数据）
-    __DEGREE_ADVERB = []
+    __DEGREE_ADVERB = {}
     __DEGREE_ADVERB_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "degree-adverb-dict.txt")])
     # 否定词词典加载
     __NEGATIVES = set([])
     __NEGATIVES_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "negatives-dict.txt")])
+    # 情感词典加载
+    __EMOTION = {}  # 情感词典的格式 {情感词类别：(情感词，情感强度，情感极性)}
+    __EMOTION_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "emotion-extend-dict.txt")])
 
     @classmethod
     def get_stopwords_set(cls):
@@ -76,6 +79,26 @@ class DictConfig(object):
     @classmethod
     def get_negatives_set(cls):
         return cls.__NEGATIVES
+
+    # 直接加载情感词典 情感词典的格式 {情感词类别：(情感词，情感强度，情感极性)} 供情感分析使用
+    @classmethod
+    def load_emotion_dict(cls):
+        cls.__EMOTION = {}
+        for emotion_dict_path in cls.__EMOTION_PATH_SET:
+            with codecs.open(emotion_dict_path, "rb", "utf-8") as input_file:
+                for line in input_file:
+                    split_info = line.strip().split(u"\t")
+                    if len(split_info) < 4:
+                        continue
+                    category = split_info[0]  # 情感词类别
+                    word = split_info[1]  # 情感词
+                    degree = split_info[2]  # 情感强度
+                    level = split_info[3]  # 情感极性
+                    if category not in cls.__EMOTION.keys():
+                        cls.__EMOTION[category] = set([(word, degree, level)])
+                    else:
+                        cls.__EMOTION[category].add((word, degree, level))
+        return cls.__EMOTION
 
     # 初始化填充停用词列表信息。
     @classmethod
@@ -141,16 +164,18 @@ class DictConfig(object):
 
     # 初始化程度副词词典
     @classmethod
-    def __init_degree_adverb_list(cls):
-        cls.__DEGREE_ADVERB = []
+    def load_degree_adverb_dict(cls):
+        cls.__DEGREE_ADVERB = {}
         for degree_adverb_path in cls.__DEGREE_ADVERB_PATH_SET:
             with codecs.open(degree_adverb_path, "rb", "utf-8") as input_file:
                 for line in input_file:
                     split_info = line.strip().split("\t")
                     degree_adverb = split_info[0]
                     score = split_info[1]
-                    cls.__DEGREE_ADVERB.append((degree_adverb, score))
+                    if degree_adverb not in cls.__DEGREE_ADVERB.keys():
+                        cls.__DEGREE_ADVERB[degree_adverb] = float(score)
         logging.debug(u"程度副词词典加载完成！！！")
+        return cls.__DEGREE_ADVERB
 
     # 初始化否定词词典
     @classmethod
