@@ -39,7 +39,7 @@ def format_word(word, flag):
 # 判断一个词语是否为符号或者是数字，如果是，那么返回True，否则返回False
 def is_num_or_punctuation(word, flag):
     reject_punctuation_set = DictConfig.get_reject_punctuation_dict()
-    reject_word_flag_set = set(["w", "m", "eng"])
+    reject_word_flag_set = set(["w"])  # set(["w", "m", "eng"])
     if flag in reject_word_flag_set:
         __record_reject_word_info(word, flag)  # 看看被过滤掉的都是什么词，调试用
         return True

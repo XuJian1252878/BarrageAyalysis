@@ -9,6 +9,7 @@ from gensim import corpora, models
 
 import util.loader.dataloader as dataloader
 import wordsegment.wordseg as wordseg
+from analysis.similarity.matrix import SimMatrix
 from util.datetimeutil import DateTimeUtil
 from util.fileutil import FileUtil
 
@@ -98,7 +99,7 @@ class TimeWindow(object):
             tfidf_weight_list = tfidf_model[token_frequency_list]
             tfidf_weight_dict = {}
             for item in tfidf_weight_list:
-                tfidf_weight_dict[str(item[0])] = item[1]
+                tfidf_weight_dict[str(item[0])] = float(item[1])
             self.user_token_tfidf_dict[user_id] = tfidf_weight_dict
 
     # 对于时间窗口本身，在其barrage_seg_list 被填充的情况下，获得其主题分布信息。
@@ -120,7 +121,7 @@ class TimeWindow(object):
             lda_topic_list = lda_model[token_frequency_list]
             lda_topic_dict = {}
             for item in lda_topic_list:
-                lda_topic_dict[str(item[0])] = item[1]
+                lda_topic_dict[str(item[0])] = float(item[1])
             self.user_topic_lda_dict[user_id] = lda_topic_dict
 
     # 获得该时间窗口内 所有弹幕信息 发送用户的id。
@@ -206,7 +207,7 @@ class TimeWindow(object):
 
 
 if __name__ == "__main__":
-    barrage_file_path = "../../data/local/9.txt"
+    barrage_file_path = "../../data/local/2065063.txt"
     # "../../data/local/9.txt" "../../data/AlphaGo/bilibili/2016-03-09.txt" "../../data/local/2065063.txt"
     barrages = dataloader.get_barrage_from_txt_file(barrage_file_path)
     # barrages = dataloader.get_barrage_from_live_text_file(barrage_file_path)
@@ -235,5 +236,5 @@ if __name__ == "__main__":
     # time_window_list = TimeWindow.gen_user_word_frequency_by_time_window(barrage_seg_list, cid)
     # SimMatrix.gen_jaccard_sim_matrix_by_word_frequency(time_window_list)
 
-    time_window_list = TimeWindow.gen_user_topic_lda_by_time_window(barrage_seg_list, cid)
-    # SimMatrix.gen_cosine_sim_matrix(time_window_list)
+    time_window_list = TimeWindow.gen_user_token_tfidf_by_time_window(barrage_seg_list, cid)
+    SimMatrix.gen_cosine_sim_matrix(time_window_list, 2)

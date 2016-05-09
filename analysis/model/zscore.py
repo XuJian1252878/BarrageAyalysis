@@ -29,6 +29,7 @@ class Zscore(object):
         self.time_window_size = time_window_size
         self.slide_time_interval = slide_time_interval
         self.analysis_unit_capacity = analysis_unit_capacity
+        # 读入matlab处理过后的zscore文件，该文件中是没有前 analysis_unit_capacity 个时间窗口的值的
         with codecs.open(zscore_file_path, "rb", "utf-8") as input_file:
             time_window_index = analysis_unit_capacity
             for line in input_file:
@@ -59,10 +60,11 @@ class Zscore(object):
                 # logger.debug(zscore_info)
                 output_file.write(zscore_info)
 
-    # 根据 zscore 的值产生可能的 强烈情感 片段。
+    # 根据 zscore 的值（对片段进行左右拼接）产生可能的 强烈情感 片段。这里的zscore 是 Z = 1 - UTL的版本，值越小片段越相似。
     # 参数：global_zscore_threshold 找出小于 global_zscore_threshold的zscore值
     #      left_zscore_threshold 左边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      right_zscore_threshould 右边时间窗口与当前时间窗口的 zscore 差值 阈值
+    #      其实直接遍历 self.zscore_list 就好，没必要这么复杂
     def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.5, left_zscore_threshold=0.25,
                                         right_zscore_threshould=0.25):
         high_emotion_clips = []  # 其中的元素为[时间窗口起始下标、结束下标、起始时间、结束时间、zscore值]
@@ -120,7 +122,7 @@ class Zscore(object):
                                           DateTimeUtil.format_barrage_play_timestamp(left_border_seconds),
                                           DateTimeUtil.format_barrage_play_timestamp(right_border_seconds)]
                 for index in xrange(left_border, right_border + 1, 1):
-                    temp_high_emotion_clip.append(my_zscore_dict[index][0])  # 将时间窗口zscore的值也记录下来
+                    temp_high_emotion_clip.append(my_zscore_dict[index][0])  # 将每一个时间窗口zscore的值也记录下来
                 high_emotion_clips.append(temp_high_emotion_clip)
         # 将 high_emotion_clips 相关信息写入本地文件
         self.__save_high_emotion_clips_to_file(high_emotion_clips, global_zscore_threshold,
@@ -128,7 +130,7 @@ class Zscore(object):
         return high_emotion_clips
 
     # 将 可能的 high_emotion_clips 信息存储到本地文件中
-    # 参数：cid 该视频的cid信息
+    # 参数：high_emotion_clips [(left_border, right_border, left_border_seconds, right_border_seconds)]
     #      global_zscore_threshold 找出小于 global_zscore_threshold的zscore值
     #      left_zscore_threshold 左边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      right_zscore_threshould 右边时间窗口与当前时间窗口的 zscore 差值 阈值
@@ -149,6 +151,7 @@ class Zscore(object):
     # 从本地文件中获取 某一个cid视频 对应的 high_emotion_clips信息
     # 参数：cid 该视频的cid信息
     # 返回：(high_emotion_clips, global_zscore_threshold, left_zscore_threshold, right_zscore_threshould) 的元组
+    #       high_emotion_clips [(left_border, right_border, left_border_seconds, right_border_seconds)]
     @classmethod
     def load_high_emotion_clips_from_file(cls, cid):
         file_path = os.path.join(FileUtil.get_zscore_dir(), cid + "-high-emotion-clips.txt")

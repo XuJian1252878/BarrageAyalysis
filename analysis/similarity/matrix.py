@@ -84,4 +84,4 @@ class SimMatrix(object):
             matrix_file_name = os.path.join(FileUtil.get_similarity_matrix_dir(),
                                             "matrix-" + str(time_window_index) + ".txt")
             with codecs.open(matrix_file_name, "wb", "utf-8") as output_file:
-                np.savetxt(fname=output_file, X=sim_matrix, fmt="%.5f", delimiter="\t", newline="\n")
+                np.savetxt(fname=output_file, X=sim_matrix, fmt="%.2f", delimiter="\t", newline="\n")
