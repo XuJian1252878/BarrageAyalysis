@@ -179,7 +179,7 @@ class DictConfig(object):
 
     # 初始化否定词词典
     @classmethod
-    def __init_negatives_set(cls):
+    def load_negatives_set(cls):
         cls.__NEGATIVES = set([])
         for negatives_path in cls.__NEGATIVES_PATH_SET:
             with codecs.open(negatives_path, "rb", "utf-8") as input_file:
@@ -187,6 +187,7 @@ class DictConfig(object):
                     negative = line.strip()
                     cls.__NEGATIVES.add(negative)
         logging.debug(u"否定词词典加载完成！！！")
+        return cls.__NEGATIVES
 
     # 将待实验视频v的全体弹幕信息作为语料库，为训练tf-idf模型以及lda模型做准备
     # 根据分好词的barrage_seg_list（分好词、过滤好停词），为弹幕中的每一个词语对应一个唯一的编号。

@@ -33,6 +33,7 @@ class Emotion(object):
         self.barrage_seg_list = wordseg.load_segment_barrages(cid)
         self.emotion_dict = DictConfig.load_emotion_dict()
         self.degree_adverb_dict = DictConfig.load_degree_adverb_dict()
+        self.negatives_dict = DictConfig.load_negatives_set()
         # emotion_dict_path = os.path.join(FileUtil.get_dict_dir(), "emotion-dict.txt")  # 分类情感词典的路径
         # # 加载分类情感词典
         # self.emotion_dict = {}
@@ -55,7 +56,9 @@ class Emotion(object):
     def __is_emotion_words(self, word):
         for category, word_info_set in self.emotion_dict.items():
             for emotion_word, degree, level in word_info_set:
-                if emotion_word == word:
+                # 情感词典里面的有些词语也存在于程度副词词典中或是否定词词典中，因此要找到那么仅仅存在于情感词词典里面的词语
+                if (emotion_word == word) and (word not in self.negatives_dict) \
+                        and (word not in self.degree_adverb_dict):
                     return True, (category, emotion_word, degree, level)
         return False, None
 
