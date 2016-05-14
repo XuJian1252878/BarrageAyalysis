@@ -30,7 +30,9 @@ class Emotion(object):
         #       high_emotion_clips [(left_border, right_border, left_border_seconds, right_border_seconds)]
         self.high_emotion_clips, self.global_zscore_threshold, self.left_zscore_threshold, self.right_zscore_threshould = Zscore.load_high_emotion_clips_from_file(
             cid)
+        # 获得做好分词处理、替换词处理、停词过滤、颜文字替换的弹幕分词列表
         self.barrage_seg_list = wordseg.load_segment_barrages(cid)
+        self.barrage_count = len(self.barrage_seg_list)  # 对应视频含有的弹幕总数量
         self.emotion_dict = DictConfig.load_emotion_dict()
         self.degree_adverb_dict = DictConfig.load_degree_adverb_dict()
         self.negatives_dict = DictConfig.load_negatives_set()

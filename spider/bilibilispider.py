@@ -343,10 +343,13 @@ def main():
                             help="the internal minute for grabing the bilibili barrages")
     opts = arg_parser.parse_args()
     video_urls = opts.video_urls  # 获得url的list列表。
-    video_urls = ["http://www.bilibili.com/video/av1502166/", "http://www.bilibili.com/video/av624985/",
-                  "http://www.bilibili.com/video/av4258089/", "http://www.bilibili.com/video/av1206074/",
-                  "http://www.bilibili.com/video/av80193/", "http://www.bilibili.com/video/av1818288/",
-                  "http://www.bilibili.com/video/av3470183/", "http://www.bilibili.com/video/av1552337/"]
+    video_urls = ["http://www.bilibili.com/video/av2218236/index_1.html",
+                  "http://www.bilibili.com/video/av2218236/index_2.html",
+                  "http://www.bilibili.com/video/av2218236/index_3.html",
+                  "http://www.bilibili.com/video/av2218236/index_4.html",
+                  "http://www.bilibili.com/video/av2218236/index_5.html",
+                  "http://www.bilibili.com/video/av2218236/index_6.html",
+                  "http://www.bilibili.com/video/av2218236/index_7.html"]
     print video_urls
 
     Logger.print_console_info(u"开始抓取弹幕信息。\n父进程id：%s" % os.getpid())
@@ -371,8 +374,8 @@ def scheme_main(interval_time=60):
 
 
 if __name__ == "__main__":
-    # scheme_main(60)
-    bilibili_spider = BilibiliSpider()
-    # bilibili_spider.start_collect_barrage_corpus("http://www.bilibili.com/video/movie_japan_1.html")
-    # collect_barrage_corpus()
-    bilibili_spider.start_spider_barrage("http://www.bilibili.com/video/av4252347/")
+    scheme_main(60)
+    # bilibili_spider = BilibiliSpider()
+    # # bilibili_spider.start_collect_barrage_corpus("http://www.bilibili.com/video/movie_japan_1.html")
+    # # collect_barrage_corpus()
+    # bilibili_spider.start_spider_barrage("http://www.bilibili.com/video/av4252347/")
