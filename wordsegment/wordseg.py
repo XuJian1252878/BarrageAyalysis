@@ -75,7 +75,9 @@ def segment_barrages(barrages, cid=None, is_corpus=False):
     barrage_seg_list = []
     for barrage in barrages:
         barrage_seg = BarrageSeg(barrage.play_timestamp, barrage.sender_id, barrage.row_id)
-        sentence_seg = __segment_sentence(barrage.content)
+        sentence_seg = __segment_sentence(barrage.content)  # 一条弹幕分词之后的结果
+        if len(sentence_seg) <= 0:  # 对于其中的词语全部都被过滤的弹幕，不保存它的信息（防止影片末尾日期刷屏）
+            continue
         barrage_seg.sentence_seg_list = sentence_seg
         barrage_seg_list.append(barrage_seg)
     if is_corpus is False:

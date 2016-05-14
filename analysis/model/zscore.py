@@ -217,7 +217,7 @@ class Zscore(object):
 
 
 if __name__ == "__main__":
-    zscore = Zscore("2453759", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-wf-tbh.txt"), 30, 10, 4)
+    zscore = Zscore("2065063", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-wf-trueman.txt"), 30, 10, 4)
     # zscore.gen_sorted_zscore_file(threshold_value=5)
     # # zscore.gen_possible_high_emotion_clips()
     high_emotion_clips = zscore.gen_possible_high_emotion_clips(global_zscore_threshold=5)

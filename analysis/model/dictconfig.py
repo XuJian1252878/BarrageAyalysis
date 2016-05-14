@@ -19,9 +19,10 @@ logging.basicConfig(level=logging.DEBUG,
 
 
 class DictConfig(object):
+    __HAS_LOAD_USER_DICT = False  # 检测是否加载了用户自定义的词典
 
     # 停用词词典信息
-    __STOP_WORDS = set([" ", "\r", "\n", "\t"])  # 停用词集合信息
+    __STOP_WORDS = set([])  # 停用词集合信息
     # 停用词词典的加载路径，用户可以自定义添加。
     __STOP_WORDS_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "stopwords-zh-dict.txt"),
                                  os.path.join(FileUtil.get_dict_dir(), "stopwords-en-dict.txt")])
@@ -103,6 +104,8 @@ class DictConfig(object):
     # 初始化填充停用词列表信息。
     @classmethod
     def __init_stopwords(cls):
+        if cls.__STOP_WORDS:
+            return
         cls.__STOP_WORDS = set([" ", "\r", "\n", "\t"])
         for stopwords_dict_path in cls.__STOP_WORDS_PATH_SET:
             with codecs.open(stopwords_dict_path, "rb", "utf-8") as input_file:
@@ -113,7 +116,8 @@ class DictConfig(object):
 
     @classmethod
     def __init_replace_words(cls):
-        cls.__REPLACE_WORDS = []
+        if cls.__REPLACE_WORDS:
+            return
         for replace_words_path in cls.__REPLACE_WORDS_PATH_SET:
             with codecs.open(replace_words_path, "rb", "utf-8") as input_file:
                 for line in input_file:
@@ -126,7 +130,8 @@ class DictConfig(object):
 
     @classmethod
     def __init_accept_nominal(cls):
-        cls.__ACCEPT_NOMINAL = set([])
+        if cls.__ACCEPT_NOMINAL:
+            return
         for accept_nominal_path in cls.__ACCEPT_NOMINAL_PATH_SET:
             with codecs.open(accept_nominal_path, "rb", "utf-8") as input_file:
                 for line in input_file:
@@ -137,7 +142,8 @@ class DictConfig(object):
 
     @classmethod
     def __init_emoji_replace_dict(cls):
-        cls.__REPLACE_EMOJI = {}
+        if cls.__REPLACE_EMOJI:
+            return
         for emoji_dict_path in cls.__REPLACE_EMOJI_PATH_SET:
             with codecs.open(emoji_dict_path, "rb", "utf-8") as input_file:
                 for line in input_file:
@@ -154,7 +160,8 @@ class DictConfig(object):
     # 加载拒绝的单个标点词的词典
     @classmethod
     def __init_reject_punctuation_set(cls):
-        cls.__REJECT_PUNCTUATION = set([])
+        if cls.__REJECT_PUNCTUATION:
+            return
         for reject_punctuation_path in cls.__REJECT_PUNCTUATION_PATH_SET:
             with codecs.open(reject_punctuation_path, "rb", "utf-8") as input_file:
                 for line in input_file:
@@ -231,9 +238,11 @@ class DictConfig(object):
     # 初始化所有的字典信息。
     @classmethod
     def build_dicts(cls):
-        # 载入自定义的弹幕词典，优化弹幕特有词语的切词，以及颜表情的切词
-        jieba.load_userdict(os.path.join(FileUtil.get_dict_dir(), "barrage-word-dict.txt"))
-        logging.debug(u"自定义弹幕词典加载成功！！！")
+        if not cls.__HAS_LOAD_USER_DICT:  # 还未加载用户词典
+            cls.__HAS_LOAD_USER_DICT = True
+            # 载入自定义的弹幕词典，优化弹幕特有词语的切词，以及颜表情的切词
+            jieba.load_userdict(os.path.join(FileUtil.get_dict_dir(), "barrage-word-dict.txt"))
+            logging.debug(u"自定义弹幕词典加载成功！！！")
         # 初始化停用词列表
         cls.__init_stopwords()
         # 初始化替换词词典
