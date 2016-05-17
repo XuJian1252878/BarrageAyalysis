@@ -33,7 +33,9 @@ class Zscore(object):
         self.analysis_unit_capacity = analysis_unit_capacity
         # 获得做好分词处理、替换词处理、停词过滤、颜文字替换的弹幕分词列表
         self.barrage_seg_list = wordseg.load_segment_barrages(cid)
-        self.barrage_count = len(self.barrage_seg_list)  # 对应视频含有的弹幕总数量
+        self.barrage_count = len(self.barrage_seg_list)
+        # 弹幕数量最多的时间窗口对应的弹幕数量，在__adjust_zscore_by_barrage_count_in_timewindow中填充。
+        self.max_barrage_count = 0
         # 读入matlab处理过后的zscore文件，该文件中是没有前 analysis_unit_capacity 个时间窗口的值的
         with codecs.open(zscore_file_path, "rb", "utf-8") as input_file:
             time_window_index = analysis_unit_capacity - 1  # 时间窗口的下标是从0开始的
@@ -52,33 +54,39 @@ class Zscore(object):
         time_window_list = TimeWindow.gen_time_window_barrage_info(self.barrage_seg_list, self.cid)
         adjust_zscore_list = []
         temp_zscore_list = []
+        # 获取弹幕最多时间窗口中的弹幕数量。
+        for time_window in time_window_list:
+            if time_window.barrage_count > self.max_barrage_count:
+                self.max_barrage_count = time_window.barrage_count
         # 对于前 analysis_unit_capacity - 1 个时间窗口来说，他们是没有zscore的
         for index in xrange(0, len(self.zscore_list)):
             zscore = float(self.zscore_list[index][1])
             time_window_index = index + self.analysis_unit_capacity - 1
-            barrage_percent = time_window_list[time_window_index].barrage_count / (1.0 * self.barrage_count)
-            adjust_zscore = zscore * barrage_percent * 1000  # 以整数的形式出现，不然都是小数
+            barrage_percent = time_window_list[time_window_index].barrage_count / (1.0 * self.max_barrage_count)
+            adjust_zscore = 1 * zscore + 0 * barrage_percent  # 以整数的形式出现，不然都是小数
             adjust_zscore_list.append((time_window_index, adjust_zscore, zscore, barrage_percent,
-                                       time_window_list[time_window_index].barrage_count, self.barrage_count))
+                                       time_window_list[time_window_index].barrage_count, self.barrage_count,
+                                       DateTimeUtil.format_barrage_play_timestamp(time_window_index * 10)))
             temp_zscore_list.append(
                 (time_window_index, adjust_zscore, time_window_list[time_window_index].barrage_count))
         # 按照调整之后的zscore值进行排序。
-        adjust_zscore_list = self.__sort_zscore_list(adjust_zscore_list, reverse=True)
-        temp_zscore_list = self.__sort_zscore_list(temp_zscore_list, reverse=True)
+        adjust_zscore_list = self.__sort_zscore_list(adjust_zscore_list, reverse=True, sort_index=0)
+        temp_zscore_list = self.__sort_zscore_list(temp_zscore_list, reverse=False, sort_index=0)
         # 替换原来的self.zscore_list
         self.zscore_list = temp_zscore_list
         with codecs.open(self.cid + "-adjust-zscore.txt", "wb", "utf-8") as output_file:
             for item in adjust_zscore_list:
                 output_file.write(unicode(str(item[0])) + u"\t" + unicode(str(item[1])) + u"\t" +
                                   unicode(str(item[2])) + u"\t" + unicode(str(item[3])) + u"\t" +
-                                  unicode(str(item[4])) + u"\t" + unicode(str(item[5])) + u"\n")
+                                  unicode(str(item[4])) + u"\t" + unicode(str(item[5])) + u"\t" +
+                                  unicode(str(item[6])) + u"\n")
 
     # 对zscore数组进行排序（默认按照升序进行排列）
     # 参数： reverse 值为False 时，zscore按照升序排序，值为True时，zscore按照降序排序。
-    def __sort_zscore_list(self, zscore_list=None, reverse=False):
+    def __sort_zscore_list(self, zscore_list=None, reverse=False, sort_index=1):
         if zscore_list is None:
             zscore_list = self.zscore_list
-        return sorted(zscore_list, key=lambda zscore_tuple: zscore_tuple[1], reverse=reverse)
+        return sorted(zscore_list, key=lambda zscore_tuple: zscore_tuple[sort_index], reverse=reverse)
 
     # 参数： threshold_value 过滤阈值，只有大于 threshold_value 的zscore才能被输出。
     # 生成zscore排序结果文件，文件中包括3列：
@@ -100,8 +108,8 @@ class Zscore(object):
     #      left_zscore_threshold 左边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      right_zscore_threshould 右边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      其实直接遍历 self.zscore_list 就好，没必要这么复杂
-    def gen_possible_high_emotion_clips(self, global_zscore_threshold=5, left_zscore_threshold=2.5,
-                                        right_zscore_threshould=2.5):
+    def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.3, left_zscore_threshold=0.25,
+                                        right_zscore_threshould=0.25):
         high_emotion_clips = []  # 其中的元素为[时间窗口起始下标、结束下标、起始时间、结束时间、zscore值]
         # False 表示当前的zscore_tuple没有被选入 high_emotion_clips
         my_zscore_dict = {}
@@ -172,6 +180,53 @@ class Zscore(object):
                                                left_zscore_threshold, right_zscore_threshould)
         return high_emotion_clips
 
+    # 抽取精彩片段（另一种方式）
+    def gen_possible_high_emotion_clips_another(self, base_line=0.1):
+        is_high_emotion_clip = False
+        high_emotion_clips = []  # 其中的元素为[时间窗口起始下标、结束下标、起始时间、结束时间、zscore值]
+        start_border = -1
+        end_border = -1
+        for index in xrange(0, len(self.zscore_list)):
+            time_window_index = self.zscore_list[index][0]
+            zscore = self.zscore_list[index][1]
+            barrage_count = self.zscore_list[index][2]
+            # 记录是否变化点。
+            if (zscore < base_line) and (index >= 1):
+                last_zscore = self.zscore_list[index - 1][1]
+                if last_zscore > base_line:  # 说明刚进入变化点。
+                    is_high_emotion_clip = (not is_high_emotion_clip)
+                    # 看看是否在记录精彩片段
+                    if start_border != -1:
+                        # 记录下当前的结束片段
+                        end_border = time_window_index - 1
+
+                        zscore_mean = 0
+                        barrage_mean = 0
+                        # 获得平均的zscore值
+                        for sub_index in xrange(start_border, end_border + 1):
+                            zscore_mean += self.zscore_list[sub_index][1]
+                            barrage_mean += self.zscore_list[sub_index][2]
+                        zscore_mean /= (end_border - start_border + 1)
+                        barrage_mean /= (end_border - start_border + 3)  # 弹幕密度，每十秒内的弹幕数量
+                        high_emotion_clips.append((start_border, end_border,
+                                                   DateTimeUtil.format_barrage_play_timestamp(start_border * 10),
+                                                   DateTimeUtil.format_barrage_play_timestamp(end_border * 10 + 30),
+                                                   zscore_mean, barrage_mean))
+                        start_border = -1
+                        end_border = -1
+            # 检测是否潜在的精彩片段
+            if is_high_emotion_clip:
+                if (zscore > base_line) and (index >= 1):
+                    last_zscore = self.zscore_list[index - 1][1]
+                    if last_zscore < base_line:
+                        start_border = time_window_index
+        high_emotion_clips = sorted(high_emotion_clips, key=lambda high_emotion_clip: high_emotion_clip[5],
+                                    reverse=True)
+        # 将精彩片段信息写入文件。
+        self.__save_high_emotion_clips_to_file(high_emotion_clips, -1, -1, -1)
+        return high_emotion_clips
+
+
     # 将 可能的 high_emotion_clips 信息存储到本地文件中
     # 参数：high_emotion_clips [(left_border, right_border, left_border_seconds, right_border_seconds)]
     #      global_zscore_threshold 找出小于 global_zscore_threshold的zscore值
@@ -217,10 +272,10 @@ class Zscore(object):
 
 
 if __name__ == "__main__":
-    zscore = Zscore("2065063", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-wf-trueman.txt"), 30, 10, 4)
+    zscore = Zscore("2065063", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-tfidf-trueman.txt"), 30, 10, 4)
     # zscore.gen_sorted_zscore_file(threshold_value=5)
     # # zscore.gen_possible_high_emotion_clips()
-    high_emotion_clips = zscore.gen_possible_high_emotion_clips(global_zscore_threshold=5)
+    high_emotion_clips = zscore.gen_possible_high_emotion_clips_another(base_line=0.1)
     for emotion_clip in high_emotion_clips:
         str_info = u""
         for item in emotion_clip:
