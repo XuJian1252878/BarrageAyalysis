@@ -8,12 +8,13 @@
 import codecs
 import os
 
+import gensim
+
 import wordsegment.wordseg as wordseg
 from analysis.model.dictconfig import DictConfig
 from analysis.model.timewindow import TimeWindow
 from util.fileutil import FileUtil
 from util.loggerutil import Logger
-from wordsegment.wordseg import BarrageSeg, WordSeg
 from zscore import Zscore
 
 logger = Logger(console_only=True).get_logger()
@@ -28,8 +29,8 @@ class Emotion(object):
         # load_high_emotion_clips_from_file
         # 返回：(high_emotion_clips, global_zscore_threshold, left_zscore_threshold, right_zscore_threshould) 的元组
         #       high_emotion_clips [(left_border, right_border, left_border_seconds, right_border_seconds)]
-        self.high_emotion_clips, self.global_zscore_threshold, self.left_zscore_threshold, self.right_zscore_threshould = Zscore.load_high_emotion_clips_from_file(
-            cid)
+        self.high_emotion_clips, self.global_zscore_threshold, self.left_zscore_threshold, \
+        self.right_zscore_threshould = Zscore.load_high_emotion_clips_from_file(cid)
         # 获得做好分词处理、替换词处理、停词过滤、颜文字替换的弹幕分词列表
         self.barrage_seg_list = wordseg.load_segment_barrages(cid)
         self.barrage_count = len(self.barrage_seg_list)  # 对应视频含有的弹幕总数量
@@ -51,6 +52,69 @@ class Emotion(object):
         #         else:
         #             self.emotion_dict[category] = set([word])
         logger.debug(u"多维情感分类词典加载成功！！！！")
+
+    # 合并新词
+    def __merge_emotion_dict(self, standard_word_dict, extend_word_dict):
+        all_word_dict = {}
+        for word, word_info in standard_word_dict.items():
+            all_word_dict[word] = word_info
+        for word, word_info in extend_word_dict.items():
+            if word not in all_word_dict.keys():
+                all_word_dict[word] = word_info
+        return all_word_dict
+
+    # 扩张情感词典，看看能不能加入网络新词
+    def extend_emotion_dict(self, loop_times=10, change_threshould_percent=0.05):
+        barrage_model = gensim.models.Word2Vec.load(os.path.join(FileUtil.get_train_model_dir(),
+                                                                 "barrage-corpusword2vec-model.txt"))
+        standard_word_dict = {}  # {word, (category, degree, level)}
+        for category, word_set in self.emotion_dict.items():
+            for word, emotion_degree, emotion_level in word_set:
+                standard_word_dict[word] = (category, emotion_degree, emotion_level, 1)
+        extend_word_dict = {}  # {word, (category, degree, level)}
+        all_word_dict = standard_word_dict
+        for loop_time in xrange(0, loop_times):  # 连续10次循环，找出所有潜在的词。
+            for word, word_info in all_word_dict.items():
+                category = word_info[0]
+                emotion_degree = word_info[1]
+                emotion_level = word_info[2]
+                try:
+                    similar_word_list = barrage_model.most_similar(positive=[word], topn=10)
+                except Exception as exception:
+                    logger.info(exception)
+                    continue
+                for index in xrange(0, len(similar_word_list)):
+                    similar_word, similar = similar_word_list[index]
+
+                    similar_degree = float(emotion_degree) * similar
+                    similar_level = float(emotion_level) * similar
+                    if (similar_word not in all_word_dict.keys()) and (similar_word not in extend_word_dict.keys()):
+                        extend_word_dict[similar_word] = (category, similar_degree, similar_level, 2)
+                    else:
+                        if similar_word in all_word_dict.keys():
+                            last_similar_degree = all_word_dict[similar_word][1]
+                            last_origin_type = all_word_dict[similar_word][3]
+                            if (last_similar_degree < similar_degree) and (last_origin_type == 2):  # 属于扩展类型的才能改变。
+                                all_word_dict[similar_word] = (category, similar_degree, similar_level, 2)
+                        else:
+                            last_similar_degree = extend_word_dict[similar_word][1]
+                            if last_similar_degree < similar_degree:  # 属于扩展类型的才能改变。
+                                extend_word_dict[similar_word] = (category, similar_degree, similar_level, 2)
+            all_word_dict = self.__merge_emotion_dict(all_word_dict, extend_word_dict)
+            extend_word_dict = {}
+
+        with codecs.open("extend-emotion-words.txt", "wb", "utf-8") as output_file:
+            for word, word_info in all_word_dict.items():
+                category = word_info[0]
+                degree = word_info[1]
+                level = word_info[2]
+                origin_type = word_info[3]
+                if origin_type == 2:
+                    output_file.write(category + u"\t" + word + u"\t" + unicode(str(degree)) + u"\t" +
+                                      unicode(str(level)) + u"\n")
+
+    # 通过循环的方式扩充新词
+
 
     # 判断当前词语是不是在情感词典中（即是不是情感词）
     # 返回：如果word在情感字典中，那么返回 (True, (category, emotion_word, degree, level))
@@ -243,14 +307,15 @@ class Emotion(object):
 
 if __name__ == "__main__":
     emotion = Emotion("2065063")
+    emotion.extend_emotion_dict()
     # emotion.gen_clips_emotion()
-    word_seg1 = WordSeg(u"我", "xx", 0, 0)
-    word_seg2 = WordSeg(u"不", "negative", 0, 0)
-    word_seg3 = WordSeg(u"开心", "emotion", 0, 0)  # 5 index 0
-    word_seg4 = WordSeg(u"不是", "negative", 0, 0)
-    word_seg5 = WordSeg(u"很", "adverb", 0, 0)  # 2
-    word_seg6 = WordSeg(u"十分", "adverb", 0, 0)  # 3
-    word_seg7 = WordSeg(u"伤心", "emotion", 0, 0)  # 5  index 3
+    # word_seg1 = WordSeg(u"我", "xx", 0, 0)
+    # word_seg2 = WordSeg(u"不", "negative", 0, 0)
+    # word_seg3 = WordSeg(u"开心", "emotion", 0, 0)  # 5 index 0
+    # word_seg4 = WordSeg(u"不是", "negative", 0, 0)
+    # word_seg5 = WordSeg(u"很", "adverb", 0, 0)  # 2
+    # word_seg6 = WordSeg(u"十分", "adverb", 0, 0)  # 3
+    # word_seg7 = WordSeg(u"伤心", "emotion", 0, 0)  # 5  index 3
     # barrage_seg1 = BarrageSeg("0", "0", "0")
     # barrage_seg1.sentence_seg_list.append(word_seg1)
     # barrage_seg1.sentence_seg_list.append(word_seg2)
@@ -259,11 +324,11 @@ if __name__ == "__main__":
     # barrage_seg1.sentence_seg_list.append(word_seg6)
     # barrage_seg1.sentence_seg_list.append(word_seg7)
 
-    barrage_seg2 = BarrageSeg("0", "0", "0")
-    barrage_seg2.sentence_seg_list.append(word_seg1)
-    barrage_seg2.sentence_seg_list.append(word_seg4)
-    barrage_seg2.sentence_seg_list.append(word_seg2)
-    barrage_seg2.sentence_seg_list.append(word_seg5)
-    barrage_seg2.sentence_seg_list.append(word_seg2)
-    barrage_seg2.sentence_seg_list.append(word_seg3)
-    print emotion.calc_barrage_emotion_info(barrage_seg2)
+    # barrage_seg2 = BarrageSeg("0", "0", "0")
+    # barrage_seg2.sentence_seg_list.append(word_seg1)
+    # barrage_seg2.sentence_seg_list.append(word_seg4)
+    # barrage_seg2.sentence_seg_list.append(word_seg2)
+    # barrage_seg2.sentence_seg_list.append(word_seg5)
+    # barrage_seg2.sentence_seg_list.append(word_seg2)
+    # barrage_seg2.sentence_seg_list.append(word_seg3)
+    # print emotion.calc_barrage_emotion_info(barrage_seg2)
