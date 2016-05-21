@@ -174,8 +174,8 @@ def distinguish_emoji(words):
         replace_start_index = emoji_replace_list[index][0]
         replace_end_index = emoji_replace_list[index][1]
         emoji_pic = emoji_replace_list[index][2]
-        result_words = result_words[0: replace_start_index] + \
-                       [(emoji_pic, "emoji")] + result_words[replace_end_index + 1: len(result_words)]
+        result_words = result_words[0: replace_start_index] + [(emoji_pic, "emoji")] + \
+                       result_words[replace_end_index + 1: len(result_words)]
     return result_words
 
 
@@ -183,6 +183,32 @@ def distinguish_emoji(words):
 def __record_reject_word_info(word, flag):
     with codecs.open("reject_word_info.txt", "ab", "utf-8") as output_file:
         output_file.write(word + u"\t" + flag + u"\n")
+
+
+# 判断词语是否有效词（有效词指的是 扩展后的情感词典、程度副词词典、否定词词典中包括的词）
+# 如果词语是情感词词典中的词，那么返回该情感词对应的情感类别情感词，便于今后的时间窗口划分
+# 如果词语是程度副词词典或者否定词词典中的词，那么返回原词信息。
+# 如果词语不再这三个词典中，那么返回词信息。
+# 返回格式：(true or false,  word_info)
+def judge_valid_word(word):
+    emotion_dict = DictConfig.load_emotion_dict()
+    # 填充情感词信息。
+    emotion_word_dict = {}
+    for category, word_info in emotion_dict.items():
+        for word_item in word_info:
+            word = word_item[0]
+            if word not in emotion_word_dict.keys():
+                emotion_word_dict[word] = category
+    # 否定词词典
+    negatives_set = DictConfig.load_negatives_set()
+    # 程度副词词典
+    degree_adverb_dict = DictConfig.load_degree_adverb_dict()
+    if word in emotion_dict.keys():
+        return True, emotion_dict[word]
+    elif (word in negatives_set) or (word in degree_adverb_dict.keys()):
+        return True, word
+    else:
+        return False, None
 
 
 if __name__ == "__main__":

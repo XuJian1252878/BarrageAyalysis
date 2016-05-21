@@ -108,8 +108,8 @@ class Zscore(object):
     #      left_zscore_threshold 左边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      right_zscore_threshould 右边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      其实直接遍历 self.zscore_list 就好，没必要这么复杂
-    def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.3, left_zscore_threshold=0.25,
-                                        right_zscore_threshould=0.25):
+    def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.4, left_zscore_threshold=0.3,
+                                        right_zscore_threshould=0.3):
         high_emotion_clips = []  # 其中的元素为[时间窗口起始下标、结束下标、起始时间、结束时间、zscore值]
         # False 表示当前的zscore_tuple没有被选入 high_emotion_clips
         my_zscore_dict = {}
@@ -220,7 +220,7 @@ class Zscore(object):
                     last_zscore = self.zscore_list[index - 1][1]
                     if last_zscore < base_line:
                         start_border = time_window_index
-        high_emotion_clips = sorted(high_emotion_clips, key=lambda high_emotion_clip: high_emotion_clip[5],
+        high_emotion_clips = sorted(high_emotion_clips, key=lambda high_emotion_clip: high_emotion_clip[4],
                                     reverse=True)
         # 将精彩片段信息写入文件。
         self.__save_high_emotion_clips_to_file(high_emotion_clips, -1, -1, -1)
@@ -252,7 +252,7 @@ class Zscore(object):
     #       high_emotion_clips [(left_border, right_border, left_border_seconds, right_border_seconds)]
     @classmethod
     def load_high_emotion_clips_from_file(cls, cid):
-        file_path = os.path.join(FileUtil.get_zscore_dir(), cid + "-high-emotion-clips.txt")
+        file_path = os.path.join(FileUtil.get_zscore_dir(), cid + "-high-emotion-clips-wf.txt")
         first_line_flag = True
         high_emotion_clips = []
         global_zscore_threshold = 0
@@ -272,7 +272,7 @@ class Zscore(object):
 
 
 if __name__ == "__main__":
-    zscore = Zscore("2065063", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-tfidf-trueman.txt"), 30, 10, 4)
+    zscore = Zscore("2453759", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-wf-tbh.txt"), 30, 10, 4)
     # zscore.gen_sorted_zscore_file(threshold_value=5)
     # # zscore.gen_possible_high_emotion_clips()
     high_emotion_clips = zscore.gen_possible_high_emotion_clips_another(base_line=0.1)

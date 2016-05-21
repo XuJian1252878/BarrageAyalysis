@@ -138,6 +138,13 @@ def __segment_sentence(sentence):
         # 过滤无意义的数字，标点，（英文字符暂时没有被过滤）信息。
         if filterwords.is_num_or_punctuation(word, flag):
             continue
+        # # 只保留有效词
+        # is_valid_word, temp_word = filterwords.judge_valid_word(word)
+        # if is_valid_word:
+        #     # 如果词语是有效词，那么保留。这里没有区分情感词和程度副词、否定词，情感词会被它的情感类别代替，程度副词和否定词会保留原样。
+        #     word = temp_word
+        # else:
+        #     continue
         sentence_seg.append(WordSeg(word, flag, word_start_position, word_end_position))
     return sentence_seg
 

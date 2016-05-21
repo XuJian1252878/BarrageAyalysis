@@ -74,7 +74,7 @@ class DictConfig(object):
         return cls.__REJECT_PUNCTUATION
 
     @classmethod
-    def get_degree_adverb_list(cls):
+    def get_degree_adverb_dict(cls):
         return cls.__DEGREE_ADVERB
 
     @classmethod

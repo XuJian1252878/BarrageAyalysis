@@ -65,7 +65,8 @@ def gen_sorted_barrage_file(barrage_file_path):
     sorted_file_name = FileUtil.get_cid_from_barrage_file_path(barrage_file_path) + "-sorted.txt"
     with codecs.open(sorted_file_name, "wb", "utf-8") as output_file:
         for barrage in barrages:
-            barrage_str = DateTimeUtil.format_barrage_play_timestamp(barrage.play_timestamp) + u"\t" + barrage.play_timestamp \
+            play_time_stamp = unicode(str(float(barrage.play_timestamp) + 30))
+            barrage_str = DateTimeUtil.format_barrage_play_timestamp(play_time_stamp) + u"\t" + play_time_stamp \
                           + u"\t" + barrage.type + u"\t" + barrage.font_size + u"\t" + barrage.font_color + u"\t" \
                           + barrage.unix_timestamp + u"\t" + barrage.pool + u"\t" + barrage.sender_id + u"\t" \
                           + barrage.row_id + u"\t" + barrage.content + u"\n"
@@ -138,7 +139,7 @@ if __name__ == "__main__":
     #     print str(barrage_seg.play_timestamp), u"\t", u"\t".join([seg.word + u"\t" + seg.flag for seg
     #                                                               in barrage_seg.sentence_seg_list])
 
-    gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "2065063.txt"))
+    gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "2453758.txt"))
 
     # parse_barrage_xml_to_txt("E:\\Workspace\\PycharmProjects\\BarrageAyalysis\\util\\loader\\2065063.xml")
 

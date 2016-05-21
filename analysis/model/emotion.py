@@ -100,8 +100,11 @@ class Emotion(object):
                             last_similar_degree = extend_word_dict[similar_word][1]
                             if last_similar_degree < similar_degree:  # 属于扩展类型的才能改变。
                                 extend_word_dict[similar_word] = (category, similar_degree, similar_level, 2)
-            all_word_dict = self.__merge_emotion_dict(all_word_dict, extend_word_dict)
-            extend_word_dict = {}
+            if loop_time <= 0:
+                all_word_dict = extend_word_dict
+            else:
+                all_word_dict = self.__merge_emotion_dict(all_word_dict, extend_word_dict)
+                extend_word_dict = {}
 
         with codecs.open("extend-emotion-words.txt", "wb", "utf-8") as output_file:
             for word, word_info in all_word_dict.items():
@@ -112,9 +115,6 @@ class Emotion(object):
                 if origin_type == 2:
                     output_file.write(category + u"\t" + word + u"\t" + unicode(str(degree)) + u"\t" +
                                       unicode(str(level)) + u"\n")
-
-    # 通过循环的方式扩充新词
-
 
     # 判断当前词语是不是在情感词典中（即是不是情感词）
     # 返回：如果word在情感字典中，那么返回 (True, (category, emotion_word, degree, level))
@@ -243,6 +243,75 @@ class Emotion(object):
                                     ((-1) ** negative_after_count) * emotion_level)
         return emotion_value, level_value
 
+    # 将两个情感强度向量相加
+    @classmethod
+    def __sum_emotion_vector(cls, vec1, vec2):
+        res_emotion_vec = []
+        for index in xrange(0, 7):
+            res_emotion_vec.append(vec1[index] + vec2[index])
+        return res_emotion_vec
+
+    # 计算一个情感片段内的平均情感值
+    @classmethod
+    def __mean_emotion_vector(cls, vector, time_window_count):
+        for index in xrange(0, 7):
+            vector[index] /= time_window_count
+        return vector
+
+    # 获取情感片段中的弹幕切词信息
+    def __get_barrages_from_emotion_clip(self, time_window_list, start_window_index, end_window_index):
+        barrage_seg_list = []
+        for index in xrange(start_window_index, end_window_index + 1):
+            if end_window_index >= len(time_window_list):
+                continue
+            if index < end_window_index:
+                next_play_timestamp = time_window_list[index].barrage_seg_list[0].play_timestamp
+                for barrage_seg in time_window_list[index].barrage_seg_list:
+                    if barrage_seg.play_timestamp < next_play_timestamp:
+                        barrage_seg_list.append(barrage_seg)
+                    else:
+                        break
+            else:
+                for barrage_seg in time_window_list[index].barrage_seg_list:
+                    barrage_seg_list.append(barrage_seg)
+        return barrage_seg_list
+
+    # 计算情感片段的情感强度以及情感极性
+    def calc_emotion_clips_info(self):
+        # 首先对从文件中载入的弹幕切词信息进行时间窗口的划分
+        time_window_list = TimeWindow.gen_time_window_barrage_info(self.barrage_seg_list, self.cid)
+        # 情感计算结果列表
+        emotion_result_list = []
+        emotion_result_file = self.cid + "-emotion-result.txt"
+        with codecs.open(emotion_result_file, "wb", "utf-8") as output_file:
+            for emotion_clip in self.high_emotion_clips:
+                emotion_value = [0, 0, 0, 0, 0, 0, 0]  # 七维情感强度向量
+                level_value = 0  # 情感极性
+                # 前两个域分别是 开始时间窗口下标 结束时间窗口下标
+                start_window_index = int(emotion_clip[0].strip())
+                end_window_index = int(emotion_clip[1].strip())
+
+                barrage_seg_list = self.__get_barrages_from_emotion_clip(time_window_list, start_window_index,
+                                                                         end_window_index)
+                for barrage_seg in barrage_seg_list:
+                    temp_emotion_value, temp_level_value = self.calc_barrage_emotion_info(barrage_seg)
+                    emotion_value = Emotion.__sum_emotion_vector(emotion_value, temp_emotion_value)
+                    level_value += temp_level_value
+
+                level_value /= (end_window_index - start_window_index + 3)
+                emotion_value = Emotion.__mean_emotion_vector(emotion_value, end_window_index - start_window_index + 3)
+                emotion_result_list.append((start_window_index, end_window_index, level_value, emotion_value))
+
+            # 将情感分析结果写入文件
+            for start_window_index, end_window_index, level_value, emotion_value in emotion_result_list:
+                emotion_value_str = ""
+                for item in emotion_value:
+                    emotion_value_str += (unicode(str(item)) + u"\t")
+                emotion_value_str = emotion_value_str[0: len(emotion_value_str) - 1]
+                info_str = unicode(str(start_window_index)) + u"\t" + unicode(str(end_window_index)) + u"\t" + \
+                           unicode(str(level_value)) + u"\t" + emotion_value_str + u"\n"
+                output_file.write(info_str)
+
     # 统计每个 强烈情感片段 的每一维的情感词语有哪些，high_emotion_clips barrage_seg_list 相关。
     def gen_clips_emotion(self):
         # 首先对从文件中载入的弹幕切词信息进行时间窗口的划分
@@ -307,7 +376,8 @@ class Emotion(object):
 
 if __name__ == "__main__":
     emotion = Emotion("2065063")
-    emotion.extend_emotion_dict()
+    emotion.calc_emotion_clips_info()
+    # emotion.extend_emotion_dict()
     # emotion.gen_clips_emotion()
     # word_seg1 = WordSeg(u"我", "xx", 0, 0)
     # word_seg2 = WordSeg(u"不", "negative", 0, 0)
