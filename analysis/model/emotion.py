@@ -64,57 +64,42 @@ class Emotion(object):
         return all_word_dict
 
     # 扩张情感词典，看看能不能加入网络新词
-    def extend_emotion_dict(self, loop_times=10, change_threshould_percent=0.05):
+    def extend_emotion_dict(self):
         barrage_model = gensim.models.Word2Vec.load(os.path.join(FileUtil.get_train_model_dir(),
                                                                  "barrage-corpusword2vec-model.txt"))
         standard_word_dict = {}  # {word, (category, degree, level)}
         for category, word_set in self.emotion_dict.items():
             for word, emotion_degree, emotion_level in word_set:
-                standard_word_dict[word] = (category, emotion_degree, emotion_level, 1)
+                standard_word_dict[word] = (category, emotion_degree, emotion_level)
         extend_word_dict = {}  # {word, (category, degree, level)}
-        all_word_dict = standard_word_dict
-        for loop_time in xrange(0, loop_times):  # 连续10次循环，找出所有潜在的词。
-            for word, word_info in all_word_dict.items():
-                category = word_info[0]
-                emotion_degree = word_info[1]
-                emotion_level = word_info[2]
-                try:
-                    similar_word_list = barrage_model.most_similar(positive=[word], topn=10)
-                except Exception as exception:
-                    logger.info(exception)
-                    continue
-                for index in xrange(0, len(similar_word_list)):
-                    similar_word, similar = similar_word_list[index]
+        for word, word_info in standard_word_dict.items():
+            category = word_info[0]
+            emotion_degree = word_info[1]
+            emotion_level = word_info[2]
+            try:
+                similar_word_list = barrage_model.most_similar(positive=[word])
+            except Exception as exception:
+                logger.info(exception)
+                continue
+            for index in xrange(0, len(similar_word_list)):
+                similar_word, similar = similar_word_list[index]
 
-                    similar_degree = float(emotion_degree) * similar
-                    similar_level = float(emotion_level) * similar
-                    if (similar_word not in all_word_dict.keys()) and (similar_word not in extend_word_dict.keys()):
-                        extend_word_dict[similar_word] = (category, similar_degree, similar_level, 2)
-                    else:
-                        if similar_word in all_word_dict.keys():
-                            last_similar_degree = all_word_dict[similar_word][1]
-                            last_origin_type = all_word_dict[similar_word][3]
-                            if (last_similar_degree < similar_degree) and (last_origin_type == 2):  # 属于扩展类型的才能改变。
-                                all_word_dict[similar_word] = (category, similar_degree, similar_level, 2)
-                        else:
-                            last_similar_degree = extend_word_dict[similar_word][1]
-                            if last_similar_degree < similar_degree:  # 属于扩展类型的才能改变。
-                                extend_word_dict[similar_word] = (category, similar_degree, similar_level, 2)
-            if loop_time <= 0:
-                all_word_dict = extend_word_dict
-            else:
-                all_word_dict = self.__merge_emotion_dict(all_word_dict, extend_word_dict)
-                extend_word_dict = {}
+                similar_degree = float(emotion_degree) * similar
+                similar_level = int(emotion_level)
+                if (similar_word not in standard_word_dict.keys()) and (similar_word not in extend_word_dict.keys()):
+                    extend_word_dict[similar_word] = (category, similar_degree, similar_level)
+                elif similar_word in extend_word_dict.keys():
+                    last_similar_degree = extend_word_dict[similar_word][1]
+                    if last_similar_degree < similar_degree:
+                        extend_word_dict[similar_word] = (category, similar_degree, similar_level)
 
         with codecs.open("extend-emotion-words.txt", "wb", "utf-8") as output_file:
-            for word, word_info in all_word_dict.items():
+            for word, word_info in extend_word_dict.items():
                 category = word_info[0]
                 degree = word_info[1]
                 level = word_info[2]
-                origin_type = word_info[3]
-                if origin_type == 2:
-                    output_file.write(category + u"\t" + word + u"\t" + unicode(str(degree)) + u"\t" +
-                                      unicode(str(level)) + u"\n")
+                output_file.write(category + u"\t" + word + u"\t" + unicode(str(degree)) + u"\t" +
+                                  unicode(str(level)) + u"\n")
 
     # 判断当前词语是不是在情感词典中（即是不是情感词）
     # 返回：如果word在情感字典中，那么返回 (True, (category, emotion_word, degree, level))
@@ -265,7 +250,7 @@ class Emotion(object):
             if end_window_index >= len(time_window_list):
                 continue
             if index < end_window_index:
-                next_play_timestamp = time_window_list[index].barrage_seg_list[0].play_timestamp
+                next_play_timestamp = time_window_list[index + 1].barrage_seg_list[0].play_timestamp
                 for barrage_seg in time_window_list[index].barrage_seg_list:
                     if barrage_seg.play_timestamp < next_play_timestamp:
                         barrage_seg_list.append(barrage_seg)
@@ -312,70 +297,9 @@ class Emotion(object):
                            unicode(str(level_value)) + u"\t" + emotion_value_str + u"\n"
                 output_file.write(info_str)
 
-    # 统计每个 强烈情感片段 的每一维的情感词语有哪些，high_emotion_clips barrage_seg_list 相关。
-    def gen_clips_emotion(self):
-        # 首先对从文件中载入的弹幕切词信息进行时间窗口的划分
-        time_window_list = TimeWindow.gen_time_window_barrage_info(self.barrage_seg_list, self.cid)
-        # 没有匹配上的词语列表
-        not_match_word_list = []
-        # emotion匹配结果列表
-        emotion_match_result_list = []
-        # 开始对 情感强烈 片段中的词语进行匹配。
-        for emotion_clip in self.high_emotion_clips:
-            # 前两个域分别是 开始时间窗口下标 结束时间窗口下标
-            start_window_index = int(emotion_clip[0].strip())
-            end_window_index = int(emotion_clip[1].strip())
-            temp_not_match_list = [emotion_clip[0], emotion_clip[1]]
-            emotion_clip_match_dict = {}
-            barrage_count = 0  # 该段视频内 弹幕的 总数量
-            valid_barrage_word_count = 0  # 该段视频内切词的总数量
-            for index in xrange(start_window_index, end_window_index + 1):
-                if index >= len(time_window_list):
-                    continue
-                barrage_count += time_window_list[index].barrage_count
-                valid_barrage_word_count += time_window_list[index].valid_barrage_word_count
-                for barrage_seg in time_window_list[index].barrage_seg_list:
-                    # --------------------------------------------------------------------
-                    # 每句弹幕的情感强度以及情感极性判断
-                    # --------------------------------------------------------------------
-                    for word_seg in barrage_seg.sentence_seg_list:
-                        # 这里今后  可能要对 emoji 表情 做*2处理，加大emoji表情的权重。
-                        word = word_seg.word
-                        not_match_emotion = True
-                        for emotion_category in self.emotion_dict.keys():
-                            if word in self.emotion_dict[emotion_category]:
-                                not_match_emotion = False
-                                if emotion_category in emotion_clip_match_dict.keys():
-                                    emotion_clip_match_dict[emotion_category] += 1
-                                else:
-                                    emotion_clip_match_dict[emotion_category] = 1
-                                break
-                        if not_match_emotion:
-                            temp_not_match_list.append(word)
-                            # --------------------------------------------------------------------
-            not_match_word_list.append(temp_not_match_list)
-            emotion_match_result_list.append((start_window_index, end_window_index, barrage_count,
-                                              valid_barrage_word_count, emotion_clip_match_dict))
-        # 将分析结果写入文件中。
-        emotion_file_path = os.path.join(FileUtil.get_emotion_dir(), self.cid + "-emotion-match.txt")
-        with codecs.open(emotion_file_path, "wb", "utf-8") as output_file:
-            for emotion_match in emotion_match_result_list:
-                str_info = unicode(str(emotion_match[0])) + u"\t" + unicode(str(emotion_match[1])) + u"\t" + \
-                           unicode(str(emotion_match[2])) + u"\t" + unicode(str(emotion_match[3])) + u"\t"
-                emotion_clip_match_dict = emotion_match[4]
-                for emotion_category, word_count in emotion_clip_match_dict.items():
-                    str_info += (emotion_category + u"\t" + unicode(str(word_count)))
-                str_info += u"\n"
-                output_file.write(str_info)
-        # 将未匹配到的词语写入文件中。
-        not_match_word_file_path = os.path.join(FileUtil.get_emotion_dir(), "not-match-word.txt")
-        with codecs.open(not_match_word_file_path, "wb", "utf-8") as output_file:
-            for not_match_word in not_match_word_list:
-                output_file.write(u"\t".join(not_match_word) + u"\n")
-
 
 if __name__ == "__main__":
-    emotion = Emotion("2065063")
+    emotion = Emotion("935527")
     emotion.calc_emotion_clips_info()
     # emotion.extend_emotion_dict()
     # emotion.gen_clips_emotion()

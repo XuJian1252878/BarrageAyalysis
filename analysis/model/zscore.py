@@ -70,7 +70,7 @@ class Zscore(object):
             temp_zscore_list.append(
                 (time_window_index, adjust_zscore, time_window_list[time_window_index].barrage_count))
         # 按照调整之后的zscore值进行排序。
-        adjust_zscore_list = self.__sort_zscore_list(adjust_zscore_list, reverse=True, sort_index=0)
+        adjust_zscore_list = self.__sort_zscore_list(adjust_zscore_list, reverse=True, sort_index=1)
         temp_zscore_list = self.__sort_zscore_list(temp_zscore_list, reverse=False, sort_index=0)
         # 替换原来的self.zscore_list
         self.zscore_list = temp_zscore_list
@@ -108,8 +108,8 @@ class Zscore(object):
     #      left_zscore_threshold 左边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      right_zscore_threshould 右边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      其实直接遍历 self.zscore_list 就好，没必要这么复杂
-    def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.4, left_zscore_threshold=0.3,
-                                        right_zscore_threshould=0.3):
+    def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.3, left_zscore_threshold=0.2,
+                                        right_zscore_threshould=0.2):
         high_emotion_clips = []  # 其中的元素为[时间窗口起始下标、结束下标、起始时间、结束时间、zscore值]
         # False 表示当前的zscore_tuple没有被选入 high_emotion_clips
         my_zscore_dict = {}
@@ -168,7 +168,7 @@ class Zscore(object):
             for index in xrange(left_border, right_border + 1, 1):
                 temp_zscore += my_zscore_dict[index][0]
                 temp_barrage_count += my_zscore_dict[index][2]
-            time_window_count = right_border - left_border + 1
+            time_window_count = right_border - left_border + 3
             # temp_high_emotion_clip.append(my_zscore_dict[index][0])  # 将每一个时间窗口zscore的值也记录下来
             temp_high_emotion_clip.append(temp_zscore / (1.0 * time_window_count))  # 这里的zscore是调整之后的zscore
             temp_high_emotion_clip.append(temp_barrage_count)
@@ -226,7 +226,6 @@ class Zscore(object):
         self.__save_high_emotion_clips_to_file(high_emotion_clips, -1, -1, -1)
         return high_emotion_clips
 
-
     # 将 可能的 high_emotion_clips 信息存储到本地文件中
     # 参数：high_emotion_clips [(left_border, right_border, left_border_seconds, right_border_seconds)]
     #      global_zscore_threshold 找出小于 global_zscore_threshold的zscore值
@@ -252,7 +251,7 @@ class Zscore(object):
     #       high_emotion_clips [(left_border, right_border, left_border_seconds, right_border_seconds)]
     @classmethod
     def load_high_emotion_clips_from_file(cls, cid):
-        file_path = os.path.join(FileUtil.get_zscore_dir(), cid + "-high-emotion-clips-wf.txt")
+        file_path = os.path.join(FileUtil.get_zscore_dir(), cid + "-high-emotion-clips-lda.txt")
         first_line_flag = True
         high_emotion_clips = []
         global_zscore_threshold = 0
@@ -272,10 +271,10 @@ class Zscore(object):
 
 
 if __name__ == "__main__":
-    zscore = Zscore("2453759", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-wf-tbh.txt"), 30, 10, 4)
+    zscore = Zscore("935527", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-lda-tbh.txt"), 30, 10, 4)
     # zscore.gen_sorted_zscore_file(threshold_value=5)
     # # zscore.gen_possible_high_emotion_clips()
-    high_emotion_clips = zscore.gen_possible_high_emotion_clips_another(base_line=0.1)
+    high_emotion_clips = zscore.gen_possible_high_emotion_clips()
     for emotion_clip in high_emotion_clips:
         str_info = u""
         for item in emotion_clip:

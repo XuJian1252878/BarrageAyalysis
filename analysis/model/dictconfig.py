@@ -47,7 +47,8 @@ class DictConfig(object):
     __NEGATIVES_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "negatives-dict.txt")])
     # 情感词典加载
     __EMOTION = {}  # 情感词典的格式 {情感词类别：(情感词，情感强度，情感极性)}
-    __EMOTION_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "emotion-extend-dict.txt")])
+    __EMOTION_PATH_SET = set([os.path.join(FileUtil.get_dict_dir(), "emotion-extend-dict.txt"),
+                              os.path.join(FileUtil.get_dict_dir(), "emotion-dict.txt")])
 
     @classmethod
     def get_stopwords_set(cls):

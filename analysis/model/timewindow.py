@@ -206,7 +206,7 @@ class TimeWindow(object):
 
 
 if __name__ == "__main__":
-    barrage_file_path = "../../data/local/2065063.txt"
+    barrage_file_path = "../../data/local/935527.txt"
     # "../../data/local/9.txt" "../../data/AlphaGo/bilibili/2016-03-09.txt" "../../data/local/2065063.txt"
     barrages = dataloader.get_barrage_from_txt_file(barrage_file_path)
     # barrages = dataloader.get_barrage_from_live_text_file(barrage_file_path)
