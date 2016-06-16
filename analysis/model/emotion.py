@@ -6,15 +6,15 @@
 """
 
 import codecs
-import os
-
 import gensim
+import os
 
 import wordsegment.wordseg as wordseg
 from analysis.model.dictconfig import DictConfig
 from analysis.model.timewindow import TimeWindow
 from util.fileutil import FileUtil
 from util.loggerutil import Logger
+from wordsegment.wordseg import WordSeg, BarrageSeg
 from zscore import Zscore
 
 logger = Logger(console_only=True).get_logger()
@@ -37,20 +37,6 @@ class Emotion(object):
         self.emotion_dict = DictConfig.load_emotion_dict()
         self.degree_adverb_dict = DictConfig.load_degree_adverb_dict()
         self.negatives_dict = DictConfig.load_negatives_set()
-        # emotion_dict_path = os.path.join(FileUtil.get_dict_dir(), "emotion-dict.txt")  # 分类情感词典的路径
-        # # 加载分类情感词典
-        # self.emotion_dict = {}
-        # with codecs.open(emotion_dict_path, "rb", "utf-8") as input_file:
-        #     for line in input_file:
-        #         split_info = line.strip().split("\t")
-        #         if len(split_info) < 2:
-        #             continue  # 情感分类词词典， 绝对有两列，第一列是类别，第二列是词语，第三列是词语的说明（可有可无）
-        #         category = split_info[0]
-        #         word = split_info[1]
-        #         if category in self.emotion_dict.keys():
-        #             self.emotion_dict[category].add(word)
-        #         else:
-        #             self.emotion_dict[category] = set([word])
         logger.debug(u"多维情感分类词典加载成功！！！！")
 
     # 合并新词
@@ -214,7 +200,7 @@ class Emotion(object):
                 level_value += (degree_adverb_weight * emotion_level)
             elif (negative_before_count + negative_after_count > 0) and (degree_adverb_count == 1):
                 # 否定词跟程度副词都出现的情况
-                adjust_weight = 0.5
+                adjust_weight = 0.3
                 # 1 否定词全部位于程度副词之后
                 if negative_before_count <= 0:
                     emotion_value[emotion_category_index] += \
@@ -291,10 +277,10 @@ class Emotion(object):
             for start_window_index, end_window_index, level_value, emotion_value in emotion_result_list:
                 emotion_value_str = ""
                 for item in emotion_value:
-                    emotion_value_str += (unicode(str(item)) + u"\t")
-                emotion_value_str = emotion_value_str[0: len(emotion_value_str) - 1]
+                    emotion_value_str += (unicode('%.3f' % item) + u", ")
+                emotion_value_str = emotion_value_str[0: len(emotion_value_str) - 2]
                 info_str = unicode(str(start_window_index)) + u"\t" + unicode(str(end_window_index)) + u"\t" + \
-                           unicode(str(level_value)) + u"\t" + emotion_value_str + u"\n"
+                           unicode('%.3f' % level_value) + u"\t" + emotion_value_str + u"\n"
                 output_file.write(info_str)
 
 
@@ -317,7 +303,7 @@ if __name__ == "__main__":
     # barrage_seg1.sentence_seg_list.append(word_seg1)
     # barrage_seg1.sentence_seg_list.append(word_seg6)
     # barrage_seg1.sentence_seg_list.append(word_seg7)
-
+    #
     # barrage_seg2 = BarrageSeg("0", "0", "0")
     # barrage_seg2.sentence_seg_list.append(word_seg1)
     # barrage_seg2.sentence_seg_list.append(word_seg4)
@@ -325,4 +311,6 @@ if __name__ == "__main__":
     # barrage_seg2.sentence_seg_list.append(word_seg5)
     # barrage_seg2.sentence_seg_list.append(word_seg2)
     # barrage_seg2.sentence_seg_list.append(word_seg3)
+    # barrage_seg2.sentence_seg_list.append(word_seg5)
+    # barrage_seg2.sentence_seg_list.append(word_seg7)
     # print emotion.calc_barrage_emotion_info(barrage_seg2)

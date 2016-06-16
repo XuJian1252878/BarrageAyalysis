@@ -6,7 +6,6 @@ import datetime
 import os
 import re
 from decimal import Decimal, getcontext
-
 from gensim import corpora
 
 from analysis.model.barrageinfo import BarrageInfo
@@ -65,7 +64,7 @@ def gen_sorted_barrage_file(barrage_file_path):
     sorted_file_name = FileUtil.get_cid_from_barrage_file_path(barrage_file_path) + "-sorted.txt"
     with codecs.open(sorted_file_name, "wb", "utf-8") as output_file:
         for barrage in barrages:
-            play_time_stamp = unicode(str(float(barrage.play_timestamp) + 30))
+            play_time_stamp = unicode(str(float(barrage.play_timestamp)))
             barrage_str = DateTimeUtil.format_barrage_play_timestamp(play_time_stamp) + u"\t" + play_time_stamp \
                           + u"\t" + barrage.type + u"\t" + barrage.font_size + u"\t" + barrage.font_color + u"\t" \
                           + barrage.unix_timestamp + u"\t" + barrage.pool + u"\t" + barrage.sender_id + u"\t" \

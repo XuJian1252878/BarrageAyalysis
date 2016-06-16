@@ -115,10 +115,6 @@ h+	hhh	unknowx	表示大笑
 好污	好污	unknowx
 污+	好污	unknowx	不纯洁、黄色段子
 污妖王	好污	unknowx
-做爱	做爱	unknowx
-啪啪啪+	做爱	unknowx	H
-x+o+	做爱	unknowx
-o+x+	做爱	unknowx
 妈蛋	妈蛋	unknowx
 麻蛋	妈蛋	unknowx
 程序猿	程序员	n
@@ -203,9 +199,6 @@ cry	伤心	n
 ex	前任	n
 w+o+w+	吃惊	n
 kkk+	kkk	unknowx
-第一次	第一次	unknowx
-k+j+	口交	n
-m+l+	做爱	v
 man	man	unknowx
 我的天	我的天	unknowx
 omg	我的天	unknowx
@@ -219,17 +212,25 @@ loli	萝莉	n
 战五渣	战五渣	unknowx
 醉了	醉了	unknowx
 好人卡	好人卡	n
-sm	性虐	n
 boss	boss	n
 up	up	unknowx	顶、up主、上传视频的人
 npc	npc	n	游戏中的配角角色
 gta	gta	n	一个游戏的名称
 hold住	hold住	unknowx
-HOLD住	HOLD住	unknowx
+HOLD住	hold住	unknowx
 亮了	亮了	unknowx
 get	获取	v
 逗比	逗逼	unknowx
+逗笔	逗逼	unknowx
 B站	b站	n
 bilibili	b站	n
 么么+哒	么么哒	unknowx
 cnn	cnn	unknowx
+做爱	做爱	unknowx
+啪啪啪+	做爱	unknowx	H
+x+o+	做爱	unknowx
+o+x+	做爱	unknowx
+第一次	第一次	unknowx
+k+j+	口交	n
+m+l+	做爱	v
+sm	性虐	n

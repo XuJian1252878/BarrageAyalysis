@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import codecs
+import math
 import os
 
 import wordsegment.wordseg as wordseg
@@ -49,6 +50,21 @@ class Zscore(object):
                 time_window_index += 1
         self.__adjust_zscore_by_barrage_count_in_timewindow()
 
+    def __zscore_normalization(self, zscore_list):
+        max_zscore = 0
+        min_zscore = 0
+        for index in xrange(0, len(zscore_list)):
+            zscore = zscore_list[index][1]
+            if zscore > max_zscore:
+                max_zscore = zscore
+            if zscore < min_zscore:
+                min_zscore = zscore
+        zscore_range = max_zscore - min_zscore
+        for index in xrange(0, len(zscore_list)):
+            zscore = zscore_list[index][1]
+            zscore_list[index][1] = abs(zscore - min_zscore) / zscore_range
+        return zscore_list
+
     # 对读入的zscore信息再进行处理，考虑到每个时间窗口的弹幕数量影响
     def __adjust_zscore_by_barrage_count_in_timewindow(self):
         time_window_list = TimeWindow.gen_time_window_barrage_info(self.barrage_seg_list, self.cid)
@@ -62,18 +78,25 @@ class Zscore(object):
         for index in xrange(0, len(self.zscore_list)):
             zscore = float(self.zscore_list[index][1])
             time_window_index = index + self.analysis_unit_capacity - 1
-            barrage_percent = time_window_list[time_window_index].barrage_count / (1.0 * self.max_barrage_count)
-            adjust_zscore = 1 * zscore + 0 * barrage_percent  # 以整数的形式出现，不然都是小数
-            adjust_zscore_list.append((time_window_index, adjust_zscore, zscore, barrage_percent,
+
+            barrage_density = time_window_list[time_window_index].barrage_count / TimeWindow.get_time_window_size()
+            adjust_zscore = zscore * math.log(1 + barrage_density)
+
+            # barrage_percent = time_window_list[time_window_index].barrage_count / (1.0 * self.max_barrage_count)
+            # adjust_zscore = 1 * zscore + 0 * barrage_percent  # 以整数的形式出现，不然都是小数
+            adjust_zscore_list.append([time_window_index, adjust_zscore, zscore, barrage_density,
                                        time_window_list[time_window_index].barrage_count, self.barrage_count,
-                                       DateTimeUtil.format_barrage_play_timestamp(time_window_index * 10)))
+                                       DateTimeUtil.format_barrage_play_timestamp(time_window_index * 10)])
             temp_zscore_list.append(
-                (time_window_index, adjust_zscore, time_window_list[time_window_index].barrage_count))
+                [time_window_index, adjust_zscore, time_window_list[time_window_index].barrage_count])
         # 按照调整之后的zscore值进行排序。
         adjust_zscore_list = self.__sort_zscore_list(adjust_zscore_list, reverse=True, sort_index=1)
         temp_zscore_list = self.__sort_zscore_list(temp_zscore_list, reverse=False, sort_index=0)
         # 替换原来的self.zscore_list
         self.zscore_list = temp_zscore_list
+        # 归一化zscore
+        self.zscore_list = self.__zscore_normalization(self.zscore_list)
+        adjust_zscore_list = self.__zscore_normalization(adjust_zscore_list)
         with codecs.open(self.cid + "-adjust-zscore.txt", "wb", "utf-8") as output_file:
             for item in adjust_zscore_list:
                 output_file.write(unicode(str(item[0])) + u"\t" + unicode(str(item[1])) + u"\t" +
@@ -108,8 +131,8 @@ class Zscore(object):
     #      left_zscore_threshold 左边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      right_zscore_threshould 右边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      其实直接遍历 self.zscore_list 就好，没必要这么复杂
-    def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.3, left_zscore_threshold=0.2,
-                                        right_zscore_threshould=0.2):
+    def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.3, left_zscore_threshold=0.3,
+                                        right_zscore_threshould=0.3):
         high_emotion_clips = []  # 其中的元素为[时间窗口起始下标、结束下标、起始时间、结束时间、zscore值]
         # False 表示当前的zscore_tuple没有被选入 high_emotion_clips
         my_zscore_dict = {}
@@ -271,7 +294,7 @@ class Zscore(object):
 
 
 if __name__ == "__main__":
-    zscore = Zscore("935527", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-lda-tbh.txt"), 30, 10, 4)
+    zscore = Zscore("935527", os.path.join(FileUtil.get_zscore_dir(), "zscore-result-lda-tbh-1.txt"), 30, 10, 4)
     # zscore.gen_sorted_zscore_file(threshold_value=5)
     # # zscore.gen_possible_high_emotion_clips()
     high_emotion_clips = zscore.gen_possible_high_emotion_clips()

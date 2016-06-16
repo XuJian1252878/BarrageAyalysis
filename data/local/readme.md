@@ -6,3 +6,5 @@
 
 第十放映室相关视频（网盘资源）
 > http://www.iuchina.cn/tag/dishifangyingshi/1/
+
+> http://www.bilibili.com/video/av813373/

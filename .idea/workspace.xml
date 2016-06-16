@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="929654d8-5e55-42aa-b84c-2828a57edab0" name="Default" comment="optimization the emoji find logic. find from the last.">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/BarrageAyalysis.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/dict/barrage-word-dict.txt" afterPath="$PROJECT_DIR$/data/dict/barrage-word-dict.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/dict/negatives-dict.txt" afterPath="$PROJECT_DIR$/data/dict/negatives-dict.txt" />
+    <list default="true" id="929654d8-5e55-42aa-b84c-2828a57edab0" name="Default" comment="optimization the barrage word dict.">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis/corpus/all-input-corpus.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis/corpus/extend-emtion-dict.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis/corpus/reject_word_info.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis/model/2065063-adjust-zscore.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis/model/2065063-emotion-result.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis/model/935527-adjust-zscore.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis/model/935527-emotion-result.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/wordsegment/2065063-seg-result.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/wordsegment/935527-seg-result.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/wordsegment/test-2065063-seg-result.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/wordsegment/test-935527-seg-result.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/zscore/zscore-result-lda-tbh-1.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/zscore/zscore-result-tfidf-tbh-1.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/zscore/zscore-result-wf-tbh-1.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/analysis/model/emotion.py" afterPath="$PROJECT_DIR$/analysis/model/emotion.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/analysis/model/zscore.py" afterPath="$PROJECT_DIR$/analysis/model/zscore.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/dict/emotion-dict.txt" afterPath="$PROJECT_DIR$/data/dict/emotion-dict.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/dict/replace-dict.txt" afterPath="$PROJECT_DIR$/data/dict/replace-dict.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/local/935527.txt" afterPath="$PROJECT_DIR$/data/local/935527.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/local/readme.md" afterPath="$PROJECT_DIR$/data/local/readme.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/zscore/2065063-high-emotion-clips.txt" afterPath="$PROJECT_DIR$/data/zscore/2065063-high-emotion-clips.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/loader/dataloader.py" afterPath="$PROJECT_DIR$/util/loader/dataloader.py" />
     </list>
     <ignored path="BarrageAnalysis.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,8 +38,9 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/BarrageAyalysis$Unnamed__1_.coverage" NAME="Unnamed (1) Coverage Results" MODIFIED="1462086211629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/spider" />
-    <SUITE FILE_PATH="coverage/BarrageAyalysis$Unnamed.coverage" NAME="Unnamed Coverage Results" MODIFIED="1462547324684" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/wordsegment" />
+    <SUITE FILE_PATH="coverage/BarrageAyalysis$Unnamed__2_.coverage" NAME="Unnamed (2) Coverage Results" MODIFIED="1462888874772" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../dict/wiki_process" />
+    <SUITE FILE_PATH="coverage/BarrageAyalysis$Unnamed__1_.coverage" NAME="Unnamed (1) Coverage Results" MODIFIED="1463969340397" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/analysis/model" />
+    <SUITE FILE_PATH="coverage/BarrageAyalysis$Unnamed.coverage" NAME="Unnamed Coverage Results" MODIFIED="1464786758579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/util/loader" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -35,95 +51,55 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="filterwords.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/wordsegment/filterwords.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="816">
-              <caret line="51" column="24" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="24" />
-              <folding>
-                <element signature="e#50#63#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="matrix.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/analysis/similarity/matrix.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1054">
-              <caret line="68" column="95" selection-start-line="68" selection-start-column="88" selection-end-line="68" selection-end-column="95" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dictconfig.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/analysis/model/dictconfig.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2975">
-              <caret line="182" column="40" selection-start-line="182" selection-start-column="40" selection-end-line="182" selection-end-column="40" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="wordseg.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/wordsegment/wordseg.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1819">
-              <caret line="116" column="34" selection-start-line="116" selection-start-column="34" selection-end-line="116" selection-end-column="34" />
+            <state relative-caret-position="2964">
+              <caret line="165" column="49" selection-start-line="165" selection-start-column="49" selection-end-line="165" selection-end-column="49" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bilibilispider.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/spider/bilibilispider.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="filterwords.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/wordsegment/filterwords.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3933">
+              <caret line="210" column="26" selection-start-line="210" selection-start-column="26" selection-end-line="210" selection-end-column="26" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="emotion.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/analysis/model/emotion.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="380">
+              <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
               <folding>
-                <element signature="e#49#62#0" expanded="true" />
+                <marker date="1464687376799" expanded="true" signature="0:48" ph="..." />
+                <marker date="1464687376799" expanded="true" signature="50:83" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+                <marker date="1464687376799" expanded="true" signature="85:356" ph="import ..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="replace-dict.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/dict/replace-dict.txt">
+      <file leaf-file-name="emotion-extend-dict.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/dict/emotion-extend-dict.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2295">
-              <caret line="135" column="9" selection-start-line="135" selection-start-column="9" selection-end-line="135" selection-end-column="9" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="emotion-dict.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/dict/emotion-dict.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6120">
-              <caret line="360" column="7" selection-start-line="360" selection-start-column="7" selection-end-line="360" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="degree-adverb-dict.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/dict/degree-adverb-dict.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="negatives-dict.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/dict/negatives-dict.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="16" column="2" selection-start-line="16" selection-start-column="2" selection-end-line="16" selection-end-column="2" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="barrage-word-dict.txt" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/data/dict/barrage-word-dict.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19754">
-              <caret line="1162" column="11" selection-start-line="1162" selection-start-column="11" selection-end-line="1162" selection-end-column="11" />
+            <state relative-caret-position="1349">
+              <caret line="71" column="18" selection-start-line="71" selection-start-column="18" selection-end-line="71" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -149,57 +125,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/util/consoleutil.py" />
-        <option value="$PROJECT_DIR$/db/dao/videodao.py" />
-        <option value="$PROJECT_DIR$/db/dbutil.py" />
-        <option value="$PROJECT_DIR$/db/model/__init__.py" />
-        <option value="$PROJECT_DIR$/db/model/video.py" />
-        <option value="$PROJECT_DIR$/wordsegmente/__init__.py" />
-        <option value="$PROJECT_DIR$/wordsegmente/wordseg.py" />
-        <option value="$PROJECT_DIR$/data/local/9.txt" />
-        <option value="$PROJECT_DIR$/analysis/model/barrageinfo.py" />
-        <option value="$PROJECT_DIR$/db/dao/bilibili_xml_parser.py" />
-        <option value="$PROJECT_DIR$/data/dict/stopwords-dict.txt" />
-        <option value="$PROJECT_DIR$/analysis/model/not_accept.txt" />
-        <option value="$PROJECT_DIR$/data/dict/stopwords-en-dict.txt" />
-        <option value="$PROJECT_DIR$/data/dict/emotion-eng-dict.txt" />
-        <option value="$PROJECT_DIR$/data/dict/reject_punctuation_dict.txt" />
-        <option value="$PROJECT_DIR$/data/dict/accept-nominal-dict.txt" />
-        <option value="$PROJECT_DIR$/analysis/similarity/matrix.py" />
-        <option value="$PROJECT_DIR$/analysis/similarity/__init__.py" />
         <option value="$PROJECT_DIR$/db/dao/barragedao.py" />
         <option value="$PROJECT_DIR$/db/model/barrage.py" />
         <option value="$PROJECT_DIR$/spider/other/yanwenzi.py" />
         <option value="$PROJECT_DIR$/analysis/model/word-segment.log" />
         <option value="$PROJECT_DIR$/util/datetimeutil.py" />
-        <option value="$PROJECT_DIR$/spider/video-list.txt" />
         <option value="$PROJECT_DIR$/scripts/spider/run-bilibili-spider.sh" />
-        <option value="$PROJECT_DIR$/analysis/model/timewindow.py" />
-        <option value="$PROJECT_DIR$/analysis/model/zscore.py" />
         <option value="$PROJECT_DIR$/util/loggerutil.py" />
-        <option value="$PROJECT_DIR$/analysis/model/emotion.py" />
-        <option value="$PROJECT_DIR$/util/loader/dataloader.py" />
         <option value="$PROJECT_DIR$/spider/bilibilibarragespider.py" />
         <option value="$PROJECT_DIR$/spider/barrage-corpus.txt" />
         <option value="$PROJECT_DIR$/spider/video-url-spider.log" />
         <option value="$PROJECT_DIR$/spider/__init__.py" />
         <option value="$PROJECT_DIR$/analysis/corpus/word-segment.log" />
-        <option value="$PROJECT_DIR$/util/fileutil.py" />
-        <option value="$PROJECT_DIR$/spider/bilibilispider.py" />
         <option value="$PROJECT_DIR$/data/dict/accept-punctuation-dict.txt" />
         <option value="$PROJECT_DIR$/analysis/corpus/all-input-corpus.txt" />
-        <option value="$PROJECT_DIR$/analysis/corpus/barrage_train.py" />
         <option value="$PROJECT_DIR$/data/dict/reject-punctuation-dict.txt" />
         <option value="$PROJECT_DIR$/data/dict/emoji-dict.txt" />
         <option value="$PROJECT_DIR$/analysis/corpus/reject_word_info.txt" />
-        <option value="$PROJECT_DIR$/data/dict/replace-dict.txt" />
-        <option value="$PROJECT_DIR$/wordsegment/filterwords.py" />
-        <option value="$PROJECT_DIR$/wordsegment/wordseg.py" />
-        <option value="$PROJECT_DIR$/analysis/model/dictconfig.py" />
         <option value="$PROJECT_DIR$/data/dict/stopwords-zh-dict.txt" />
         <option value="$PROJECT_DIR$/data/dict/degree-adverb-dict.txt" />
         <option value="$PROJECT_DIR$/data/dict/negatives-dict.txt" />
+        <option value="$PROJECT_DIR$/util/fileutil.py" />
+        <option value="$PROJECT_DIR$/analysis/similarity/matrix.py" />
+        <option value="$PROJECT_DIR$/spider/video-list.txt" />
+        <option value="$PROJECT_DIR$/../dict/dataset_609004/data/generate_stop_words.py" />
+        <option value="$PROJECT_DIR$/../dict/wiki_process/read_file.py" />
+        <option value="$PROJECT_DIR$/../analysis_data/唐伯虎点秋香/merge_barrage.py" />
+        <option value="$PROJECT_DIR$/analysis/corpus/barrage_train.py" />
+        <option value="$PROJECT_DIR$/data/local/2065063.txt" />
+        <option value="$PROJECT_DIR$/../analysis_data/format-hc.py" />
+        <option value="$PROJECT_DIR$/wordsegment/filterwords.py" />
+        <option value="$PROJECT_DIR$/wordsegment/wordseg.py" />
+        <option value="$PROJECT_DIR$/analysis/model/timewindow.py" />
+        <option value="$PROJECT_DIR$/data/zscore/935527-high-emotion-clips.txt" />
+        <option value="$PROJECT_DIR$/data/dict/emotion-dict-another.txt" />
+        <option value="$PROJECT_DIR$/data/wordsegment/test-935527-seg-result.txt" />
+        <option value="$PROJECT_DIR$/data/dict/emotion-extend-dict.txt" />
         <option value="$PROJECT_DIR$/data/dict/barrage-word-dict.txt" />
+        <option value="$PROJECT_DIR$/analysis/model/dictconfig.py" />
+        <option value="$PROJECT_DIR$/data/dict/emotion-dict.txt" />
+        <option value="$PROJECT_DIR$/data/zscore/2065063-high-emotion-clips.txt" />
+        <option value="$PROJECT_DIR$/data/zscore/2065063-high-emotion-clips-lda.txt" />
+        <option value="$PROJECT_DIR$/util/loader/dataloader.py" />
+        <option value="$PROJECT_DIR$/data/zscore/2065063-high-emotion-clips-wf.txt" />
+        <option value="$PROJECT_DIR$/data/zscore/935527-high-emotion-clips-wf.txt" />
+        <option value="$PROJECT_DIR$/analysis/model/935527-emotion-result.txt" />
+        <option value="$PROJECT_DIR$/data/zscore/935527-high-emotion-clips-tfidf.txt" />
+        <option value="$PROJECT_DIR$/data/zscore/935527-high-emotion-clips-lda.txt" />
+        <option value="$PROJECT_DIR$/analysis/model/zscore.py" />
+        <option value="$PROJECT_DIR$/data/dict/replace-dict.txt" />
+        <option value="$PROJECT_DIR$/analysis/model/emotion.py" />
+        <option value="$PROJECT_DIR$/spider/bilibilispider.py" />
       </list>
     </option>
   </component>
@@ -212,8 +188,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1382" />
-    <option name="height" value="784" />
+    <option name="width" value="1378" />
+    <option name="height" value="780" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -241,6 +217,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -269,6 +246,42 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="zscore" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BarrageAyalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="wordsegment" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -286,40 +299,8 @@
               <option name="myItemId" value="data" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-          </PATH>
-          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="BarrageAyalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BarrageAyalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wordsegment" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BarrageAyalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BarrageAyalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dict" />
+              <option name="myItemId" value="local" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -334,24 +315,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="analysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BarrageAyalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BarrageAyalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="analysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="similarity" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -393,12 +356,11 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/util/loader/dataloader.py" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Python" />
     <property name="settings.editor.splitter.proportion" value="0.23212537" />
   </component>
@@ -406,31 +368,21 @@
     <option name="myUseBundledCoveragePy" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\zscore" />
-      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\spider\other" />
-      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data" />
-      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\dict" />
-      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\util\loader" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\AlphaGo" />
+      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\model" />
       <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\local" />
+      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\AlphaGo" />
       <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\scripts\spider" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\local" />
+      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\zscore" />
+      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\util\loader" />
+      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\data\dict" />
+      <recent name="E:\Workspace\PycharmProjects\BarrageAyalysis\spider\other" />
     </key>
   </component>
   <component name="RunManager" selected="Python.Unnamed">
-    <configuration default="true" type="BashConfigurationType" factoryName="Bash">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="INTERPRETER_PATH" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <module name="" />
-      <envs />
-      <method />
-    </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -646,13 +598,13 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="C:\Python27\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/wordsegment" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/util/loader" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="BarrageAyalysis" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/wordsegment/wordseg.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/util/loader/dataloader.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -850,7 +802,98 @@
       <option name="project" value="LOCAL" />
       <updated>1462637683680</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="optimization the barrage word dict.">
+      <created>1462671951641</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1462671951641</updated>
+    </task>
+    <task id="LOCAL-00027" summary="optimization the barrage word dict.">
+      <created>1462672486946</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1462672486946</updated>
+    </task>
+    <task id="LOCAL-00028" summary="add lda process flow.">
+      <created>1462717107302</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1462717107302</updated>
+    </task>
+    <task id="LOCAL-00029" summary="add emotion dict extend.">
+      <created>1462754314803</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1462754314803</updated>
+    </task>
+    <task id="LOCAL-00030" summary="delete the negatives in emotion dict and complete the barrage emotion degree and level calculate flow.">
+      <created>1462809929605</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1462809929605</updated>
+    </task>
+    <task id="LOCAL-00031" summary="optimilization the barrage divide into group rule.">
+      <created>1462842713095</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1462842713095</updated>
+    </task>
+    <task id="LOCAL-00032" summary="modify zscore calculate method.">
+      <created>1463219269184</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1463219269184</updated>
+    </task>
+    <task id="LOCAL-00033" summary="optimilization barrage calculate method. do not calc the empty barrage after filter words.">
+      <created>1463244967736</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1463244967736</updated>
+    </task>
+    <task id="LOCAL-00034" summary="add a addtional highlight slot found method.">
+      <created>1463456539873</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1463456539873</updated>
+    </task>
+    <task id="LOCAL-00035" summary="optimilization the emtion word found flow.">
+      <created>1463501391490</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1463501391490</updated>
+    </task>
+    <task id="LOCAL-00036" summary="fix bugs emotion clip calculation flow.">
+      <created>1463822855827</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1463822855828</updated>
+    </task>
+    <task id="LOCAL-00037" summary="fix bugs in __get_barrages_from_emotion_clip.">
+      <created>1463962550425</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1463962550425</updated>
+    </task>
+    <task id="LOCAL-00038" summary="add emotion clips data">
+      <created>1466053786856</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1466053786856</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TodoView">
@@ -863,47 +906,47 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1378" height="780" extended-state="0" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20877458" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32872504" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18649046" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32822084" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5453149" sideWeight="0.51059" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32872504" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32822084" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31343284" sideWeight="0.4969743" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32668713" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32668713" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2791411" sideWeight="0.4969743" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.65030676" sideWeight="0.4969743" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.75" sideWeight="0.48940998" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2734255" sideWeight="0.48940998" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31797236" sideWeight="0.4969743" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4739264" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39723927" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32872504" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32822084" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28725037" sideWeight="0.5030257" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5453149" sideWeight="0.51059" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32872504" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32822084" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35889572" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2791411" sideWeight="0.4969743" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19667171" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32668713" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32668713" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.50460124" sideWeight="0.48940998" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.65030676" sideWeight="0.4969743" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21482602" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3190184" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31490016" sideWeight="0.4969743" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5337423" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39723927" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -919,18 +962,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="false" />
-    <MESSAGE value="complete word segment working flow (save word segment result to file and load from file)." />
-    <MESSAGE value="fix bugs of save barrage error." />
-    <MESSAGE value="complete the alphago live barrage data read flow." />
-    <MESSAGE value="add emoji replace dict and add replace dict, complete emoji replace flow." />
-    <MESSAGE value="add some emoji to emoji dict. and finish the emoji generate flow in word segment flow." />
-    <MESSAGE value="modify some emoji meaning." />
-    <MESSAGE value="format some emoji and add some doct words." />
-    <MESSAGE value="modify consoleutil to loggerutil and add some emoji flag." />
-    <MESSAGE value="modify the segment sentence function -&gt; add cid as it ardument as the segment file name." />
-    <MESSAGE value="init zscore sort flow." />
-    <MESSAGE value="complete the high emotion clips find flow." />
-    <MESSAGE value="complete the emotion word and emotion dict match flow." />
     <MESSAGE value="complete collect barrage corpus flow." />
     <MESSAGE value="add restrictive condition for selecting accepted barrage corpus." />
     <MESSAGE value="complete cid find logic." />
@@ -944,29 +975,319 @@
     <MESSAGE value="record word's start position and end position in barrage txt in word segment flow." />
     <MESSAGE value="add degree adverb dict, negatives dict and add negatives to barrage word dict." />
     <MESSAGE value="optimization degree adverb weight." />
-    <option name="LAST_COMMIT_MESSAGE" value="optimization degree adverb weight." />
+    <MESSAGE value="optimization the barrage word dict." />
+    <MESSAGE value="add lda process flow." />
+    <MESSAGE value="add emotion dict extend." />
+    <MESSAGE value="delete the negatives in emotion dict and complete the barrage emotion degree and level calculate flow." />
+    <MESSAGE value="optimilization the barrage divide into group rule." />
+    <MESSAGE value="modify zscore calculate method." />
+    <MESSAGE value="optimilization barrage calculate method. do not calc the empty barrage after filter words." />
+    <MESSAGE value="add a addtional highlight slot found method." />
+    <MESSAGE value="optimilization the emtion word found flow." />
+    <MESSAGE value="fix bugs emotion clip calculation flow." />
+    <MESSAGE value="fix bugs in __get_barrages_from_emotion_clip." />
+    <MESSAGE value="add emotion clips data" />
+    <option name="LAST_COMMIT_MESSAGE" value="add emotion clips data" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="88" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/../analysis_data/format-hc.py</url>
+          <line>18</line>
+          <option name="timeStamp" value="127" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/analysis/model/zscore.py</url>
+          <line>64</line>
+          <option name="timeStamp" value="154" />
+        </line-breakpoint>
+      </breakpoints>
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="155" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/data/local/2065063.txt">
+    <entry file="file://$PROJECT_DIR$/util/loader/141901.txt" />
+    <entry file="file://$PROJECT_DIR$/data/local/141901.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-89978">
+        <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/loader/141901-sorted.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/local/1069669.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/local/2779182.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/zscore-result-wf-tbh.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/local/2453759.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-409346">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/zscore-result-tfidf-tbh.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/dict/emotion-dict-another.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="573">
+          <caret line="731" column="6" selection-start-line="731" selection-start-column="6" selection-end-line="731" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/wordsegment/935527-seg-result.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/wordsegment/test-935527-seg-result.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="30625" column="5" selection-start-line="30625" selection-start-column="5" selection-end-line="30625" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/935527-high-emotion-clips-lda.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="21" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/dict/emotion-dict.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="589">
+          <caret line="27464" column="13" selection-start-line="27464" selection-start-column="13" selection-end-line="27464" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/model/dictconfig.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="49" column="22" selection-start-line="49" selection-start-column="4" selection-end-line="49" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/zscore-result-lda-tbh.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-9831">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/model/2453759-adjust-zscore.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8534">
+          <caret line="502" column="5" selection-start-line="502" selection-start-column="5" selection-end-line="502" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/loader/2453758-sorted.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="33048">
+          <caret line="1944" column="110" selection-start-line="1944" selection-start-column="100" selection-end-line="1944" selection-end-column="110" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/local/2453758.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="363">
+          <caret line="451" column="76" selection-start-line="451" selection-start-column="76" selection-end-line="451" selection-end-column="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/model/2065063-adjust-zscore.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="53" selection-start-line="2" selection-start-column="53" selection-end-line="2" selection-end-column="53" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data/zscore/2065063-high-emotion-clips.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="37" column="63" selection-start-line="37" selection-start-column="63" selection-end-line="37" selection-end-column="63" />
+        <state relative-caret-position="272">
+          <caret line="16" column="70" selection-start-line="0" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/model/barrageinfo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="32" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/model/2065063-emotion-result.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="64" selection-start-line="12" selection-start-column="64" selection-end-line="12" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/loader/935527-sorted.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="3604" column="97" selection-start-line="3604" selection-start-column="97" selection-end-line="3604" selection-end-column="97" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/zscore-result-lda-tbh-1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/zscore-result-wf-tbh-1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/2065063-high-emotion-clips-wf.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="33" column="40" selection-start-line="33" selection-start-column="40" selection-end-line="33" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/935527-high-emotion-clips-wf.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="76" selection-start-line="3" selection-start-column="76" selection-end-line="3" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/2065063-high-emotion-clips-lda.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1343">
+          <caret line="79" column="74" selection-start-line="79" selection-start-column="74" selection-end-line="79" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/model/935527-adjust-zscore.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="12" column="3" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/zscore-result-tfidf-tbh-1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/935527-high-emotion-clips-tfidf.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="38" column="48" selection-start-line="0" selection-start-column="0" selection-end-line="46" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/model/935527-emotion-result.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="14" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/935527-high-emotion-clips-lda.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="51" selection-start-line="11" selection-start-column="51" selection-end-line="11" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/corpus/barrage_train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis/model/zscore.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4573">
+          <caret line="269" column="0" selection-start-line="269" selection-start-column="0" selection-end-line="269" selection-end-column="0" />
+          <folding>
+            <element signature="e#50#63#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/zscore/935527-high-emotion-clips.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="75" selection-start-line="22" selection-start-column="75" selection-end-line="22" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/local/2065063.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-13250">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/dict/replace-dict.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3927">
+          <caret line="231" column="19" selection-start-line="231" selection-start-column="19" selection-end-line="231" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/dict/emoji-dict.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="10" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/dict/barrage-word-dict.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="16609">
+          <caret line="977" column="11" selection-start-line="977" selection-start-column="11" selection-end-line="977" selection-end-column="11" />
         </state>
       </provider>
     </entry>
@@ -977,291 +1298,82 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/emotion/not-match-word.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9860">
-          <caret line="22" column="66" selection-start-line="22" selection-start-column="66" selection-end-line="22" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/emotion/2065063-emotion-match.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analysis/model/zscore.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="169" column="106" selection-start-line="169" selection-start-column="83" selection-end-line="169" selection-end-column="106" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/mysql/connector/network.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="89">
-          <caret line="465" column="67" selection-start-line="465" selection-start-column="67" selection-end-line="465" selection-end-column="67" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="1530" column="0" selection-start-line="1530" selection-start-column="0" selection-end-line="1530" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/local/6883711.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="74" selection-start-line="17" selection-start-column="74" selection-end-line="17" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/corpus/7314223.txt" />
-    <entry file="file://$PROJECT_DIR$/data/corpus/7314080.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-21088">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/corpus/7312307.txt" />
-    <entry file="file://$PROJECT_DIR$/util/loader/__init__.py">
+    <entry file="file://$PROJECT_DIR$/data/local/935527.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/corpus/7299578.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-13000">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/corpus/7311776.txt" />
-    <entry file="file://$PROJECT_DIR$/data/corpus/7272586.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-14207">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/corpus/7273639.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-22775">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/corpus/7285166.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="737" column="81" selection-start-line="737" selection-start-column="81" selection-end-line="737" selection-end-column="88" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/loggerutil.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="986">
-          <caret line="59" column="26" selection-start-line="59" selection-start-column="26" selection-end-line="59" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spider/video-url-spider.log" />
-    <entry file="file://$PROJECT_DIR$/spider/video-url-spider.log" />
-    <entry file="file://$PROJECT_DIR$/spider/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1989">
-          <caret line="123" column="11" selection-start-line="123" selection-start-column="11" selection-end-line="123" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spider/barrage-corpus.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="59" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spider/bilibilispider.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="394">
-          <caret line="68" column="33" selection-start-line="68" selection-start-column="33" selection-end-line="68" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analysis/model/word-segment.log" />
-    <entry file="file://$PROJECT_DIR$/util/loader/dataloader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-964">
-          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/wordsegment/word-segment.log" />
-    <entry file="file://$PROJECT_DIR$/analysis/corpus/word-segment.log" />
-    <entry file="file://$PROJECT_DIR$/analysis/corpus/all-input-corpus.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analysis/corpus/reject_word_info.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="216450" column="5" selection-start-line="216450" selection-start-column="5" selection-end-line="216450" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analysis/corpus/barrage_train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="969">
-          <caret line="66" column="0" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analysis/model/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/fileutil.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="32" column="15" selection-start-line="32" selection-start-column="15" selection-end-line="32" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/dict/reject-punctuation-dict.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1003">
-          <caret line="59" column="1" selection-start-line="59" selection-start-column="1" selection-end-line="59" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/wordsegment/test-2065063-seg-result.txt" />
-    <entry file="file://$PROJECT_DIR$/data/wordsegment/2065063-seg-result.json" />
-    <entry file="file://$PROJECT_DIR$/analysis/model/barrageinfo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-209">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/wordsegment/wordseg.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1819">
-          <caret line="116" column="34" selection-start-line="116" selection-start-column="34" selection-end-line="116" selection-end-column="34" />
-          <folding>
-            <element signature="e#49#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/dict/stopwords-zh-dict.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1212">
-          <caret line="13" column="1" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/dict/replace-dict.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2295">
-          <caret line="135" column="9" selection-start-line="135" selection-start-column="9" selection-end-line="135" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/analysis/model/dictconfig.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2975">
-          <caret line="182" column="40" selection-start-line="182" selection-start-column="40" selection-end-line="182" selection-end-column="40" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/analysis/model/timewindow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2120">
-          <caret line="168" column="49" selection-start-line="168" selection-start-column="49" selection-end-line="168" selection-end-column="49" />
+        <state relative-caret-position="307">
+          <caret line="113" column="63" selection-start-line="113" selection-start-column="63" selection-end-line="113" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/loader/dataloader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1006">
+          <caret line="74" column="0" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/dict/emotion-extend-dict.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1349">
+          <caret line="71" column="18" selection-start-line="71" selection-start-column="18" selection-end-line="71" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/analysis/model/emotion.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1436">
-          <caret line="97" column="60" selection-start-line="97" selection-start-column="60" selection-end-line="97" selection-end-column="60" />
+        <state relative-caret-position="380">
+          <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
+          <folding>
+            <marker date="1464687376799" expanded="true" signature="0:48" ph="..." />
+            <marker date="1464687376799" expanded="true" signature="50:83" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1464687376799" expanded="true" signature="85:356" ph="import ..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/analysis/similarity/matrix.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1054">
-          <caret line="68" column="95" selection-start-line="68" selection-start-column="88" selection-end-line="68" selection-end-column="95" />
-          <folding />
+        <state relative-caret-position="-65">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/wordsegment/filterwords.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="51" column="24" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="24" />
-          <folding>
-            <element signature="e#50#63#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/dict/emoji-dict.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2414">
-          <caret line="142" column="30" selection-start-line="142" selection-start-column="30" selection-end-line="142" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/dict/emotion-dict.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6120">
-          <caret line="360" column="7" selection-start-line="360" selection-start-column="7" selection-end-line="360" selection-end-column="7" />
+        <state relative-caret-position="3933">
+          <caret line="210" column="26" selection-start-line="210" selection-start-column="26" selection-end-line="210" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/dict/degree-adverb-dict.txt">
+    <entry file="file://$PROJECT_DIR$/wordsegment/wordseg.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
+        <state relative-caret-position="2964">
+          <caret line="165" column="49" selection-start-line="165" selection-start-column="49" selection-end-line="165" selection-end-column="49" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/dict/negatives-dict.txt">
+    <entry file="file://$PROJECT_DIR$/analysis/corpus/all-input-corpus.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="2" selection-start-line="16" selection-start-column="2" selection-end-line="16" selection-end-column="2" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/dict/barrage-word-dict.txt">
+    <entry file="file://$PROJECT_DIR$/spider/bilibilispider.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19754">
-          <caret line="1162" column="11" selection-start-line="1162" selection-start-column="11" selection-end-line="1162" selection-end-column="11" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
