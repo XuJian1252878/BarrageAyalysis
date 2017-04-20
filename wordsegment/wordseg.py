@@ -40,18 +40,20 @@ class WordSeg(object):
 
 # 记录一个弹幕的切词结果。
 class BarrageSeg(object):
-    def __init__(self, play_timestamp, sender_id, row_id):
+    def __init__(self, play_timestamp, sender_id, row_id, index=0):
         self.play_timestamp = float(play_timestamp)
         self.row_id = row_id
         self.sender_id = sender_id
         self.sentence_seg_list = []  # 弹幕切词结果列表，列表中的对象为__WordSeg。
+        self.index = index
 
     @staticmethod
     def dict2barrageseg(barrage_seg_dict):
         play_timestamp = float(barrage_seg_dict["play_timestamp"])
         row_id = barrage_seg_dict["row_id"]
         sender_id = barrage_seg_dict["sender_id"]
-        barrage_seg = BarrageSeg(play_timestamp, row_id, sender_id)
+        index = barrage_seg_dict["index"]
+        barrage_seg = BarrageSeg(play_timestamp, row_id, sender_id, index)
         sentence_seg_list = barrage_seg_dict["sentence_seg_list"]
         for word_seg_dict in sentence_seg_list:
             word_seg = WordSeg.dict2wordseg(word_seg_dict)
@@ -72,14 +74,20 @@ class BarrageSeg(object):
 # 返回：WordSeg 列表（包含弹幕的row_id, play_timestamp, sender_id）
 #      is_corpus 是否对语料库中的弹幕信息进行分词，True表示是，False表示对需要分析的弹幕文件进行分词
 def segment_barrages(barrages, cid=None, is_corpus=False):
+    if os.path.exists(FileUtil.get_word_segment_result_file_path(cid)):
+        # 如果存在切词保存结果文件，那么直接从切词文件中读取
+        return load_segment_barrages(cid)
+
+    index = 0
     barrage_seg_list = []
     for barrage in barrages:
-        barrage_seg = BarrageSeg(barrage.play_timestamp, barrage.sender_id, barrage.row_id)
+        barrage_seg = BarrageSeg(barrage.play_timestamp, barrage.sender_id, barrage.row_id, index)
         sentence_seg = __segment_sentence(barrage.content)  # 一条弹幕分词之后的结果
         if len(sentence_seg) <= 0:  # 对于其中的词语全部都被过滤的弹幕，不保存它的信息（防止影片末尾日期刷屏）
             continue
         barrage_seg.sentence_seg_list = sentence_seg
         barrage_seg_list.append(barrage_seg)
+        index += 1
     if is_corpus is False:
         # 将分词结果写入测试文件中，检查分词情况
         __save_segment_word_to_file(barrage_seg_list, cid)

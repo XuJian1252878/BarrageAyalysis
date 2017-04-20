@@ -312,7 +312,7 @@ class BilibiliSpider(BarrageSpider):
             self.start_spider_barrage(video_url=video_url, is_save_to_db=False, is_corpus=True)
 
 
-# 收集弹幕语料信息
+# 收集弹幕语料信息，收集弹幕的语料信息。
 def collect_barrage_corpus():
     bilibili_spider = BilibiliSpider()
     video_categories_url = []
@@ -324,7 +324,7 @@ def collect_barrage_corpus():
         bilibili_spider.start_collect_barrage_corpus(video_category_url)
 
 
-# 爬取弹幕的任务函数
+# 爬取弹幕的任务函数，爬取单个视频弹幕的函数。
 def grab_barrage_task(video_url):
     Logger.print_console_info(u"子进程id：%s，抓取网页：%s。开始……" % (os.getpid(), video_url))
     bili_spider = BilibiliSpider()
@@ -374,8 +374,8 @@ def scheme_main(interval_time=60):
 
 
 if __name__ == "__main__":
-    scheme_main(60)
-    # bilibili_spider = BilibiliSpider()
-    # # bilibili_spider.start_collect_barrage_corpus("http://www.bilibili.com/video/movie_japan_1.html")
+    # scheme_main(60)
+    bilibili_spider = BilibiliSpider()
+    bilibili_spider.start_collect_barrage_corpus("http://www.bilibili.com/video/movie_japan_1.html")
     # # collect_barrage_corpus()
     # bilibili_spider.start_spider_barrage("http://www.bilibili.com/video/av4252347/")

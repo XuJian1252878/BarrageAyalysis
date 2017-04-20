@@ -6,15 +6,15 @@
 """
 
 import codecs
-import gensim
 import os
+
+import gensim
 
 import wordsegment.wordseg as wordseg
 from analysis.model.dictconfig import DictConfig
 from analysis.model.timewindow import TimeWindow
 from util.fileutil import FileUtil
 from util.loggerutil import Logger
-from wordsegment.wordseg import WordSeg, BarrageSeg
 from zscore import Zscore
 
 logger = Logger(console_only=True).get_logger()
@@ -226,7 +226,10 @@ class Emotion(object):
     @classmethod
     def __mean_emotion_vector(cls, vector, time_window_count):
         for index in xrange(0, 7):
-            vector[index] /= time_window_count
+            # vector[index] /= time_window_count
+            vector[index] /= (
+            ((time_window_count - 1) * TimeWindow.get_slide_time_interval() + TimeWindow.get_time_window_size())
+            / TimeWindow.get_slide_time_interval())
         return vector
 
     # 获取情感片段中的弹幕切词信息
@@ -285,7 +288,7 @@ class Emotion(object):
 
 
 if __name__ == "__main__":
-    emotion = Emotion("935527")
+    emotion = Emotion("4547002")
     emotion.calc_emotion_clips_info()
     # emotion.extend_emotion_dict()
     # emotion.gen_clips_emotion()
