@@ -9,6 +9,7 @@ from gensim import corpora, models
 
 import util.loader.dataloader as dataloader
 import wordsegment.wordseg as wordseg
+from analysis.similarity.matrix import SimMatrix
 from util.datetimeutil import DateTimeUtil
 from util.fileutil import FileUtil
 
@@ -206,7 +207,7 @@ class TimeWindow(object):
 
 
 if __name__ == "__main__":
-    barrage_file_path = "../../data/local/935527.txt"
+    barrage_file_path = "../../data/local/4547002.txt"
     # "../../data/local/9.txt" "../../data/AlphaGo/bilibili/2016-03-09.txt" "../../data/local/2065063.txt"
     barrages = dataloader.get_barrage_from_txt_file(barrage_file_path)
     # barrages = dataloader.get_barrage_from_live_text_file(barrage_file_path)
@@ -237,3 +238,6 @@ if __name__ == "__main__":
 
     # time_window_list = TimeWindow.gen_user_token_tfidf_by_time_window(barrage_seg_list, cid)
     # SimMatrix.gen_cosine_sim_matrix(time_window_list, 2)
+
+    # time_window_list = TimeWindow.gen_user_topic_lda_by_time_window(barrage_seg_list, cid)
+    # SimMatrix.gen_cosine_sim_matrix(time_window_list, 3)

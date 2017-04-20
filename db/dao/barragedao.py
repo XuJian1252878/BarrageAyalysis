@@ -35,7 +35,7 @@ class BarrageDao(object):
                             font_color=barrage[3], unix_timestamp=barrage[4], pool=barrage[5], sender_id=barrage[6],
                             content=barrage[8], video=video)
                 # b.video = video
-                session.add(b)
+                session.merge(b)
             session.commit()
             return True
         except Exception as e:

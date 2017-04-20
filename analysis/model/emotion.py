@@ -6,8 +6,9 @@
 """
 
 import codecs
-import gensim
 import os
+
+import gensim
 
 import wordsegment.wordseg as wordseg
 from analysis.model.dictconfig import DictConfig
@@ -285,7 +286,7 @@ class Emotion(object):
 
 
 if __name__ == "__main__":
-    emotion = Emotion("935527")
+    emotion = Emotion("4547002")
     emotion.calc_emotion_clips_info()
     # emotion.extend_emotion_dict()
     # emotion.gen_clips_emotion()
