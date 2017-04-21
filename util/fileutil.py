@@ -96,14 +96,18 @@ class FileUtil(object):
             line_count = 0
             # 文件指针首先调到文件末尾。
             input_file.seek(0, 2)
-            # 从文件末尾向前seek，统计末尾内容的换行符数量。
-            while input_file.tell() > 0 and line_count < (last_n + 1):
-                seek_times += 1
-                input_file.seek(-seek_times * buffer_size, 2)
+            file_length = input_file.tell()
+            if file_length > buffer_size:
+                # 从文件末尾向前seek，统计末尾内容的换行符数量。
+                while input_file.tell() > 0 and line_count < (last_n + 1):
+                    seek_times += 1
+                    input_file.seek(-seek_times * buffer_size, 2)
+                    content = input_file.read(seek_times * buffer_size)
+                    input_file.seek(-seek_times * buffer_size, 2)
+                    line_count = content.count("\n")
                 content = input_file.read(seek_times * buffer_size)
-                input_file.seek(-seek_times * buffer_size, 2)
-                line_count = content.count("\n")
-            content = input_file.read(seek_times * buffer_size)
+            else:
+                content = input_file.read(file_length)
         # 得到文本的最后几行内容。
         last_lines = [line for line in content.split("\n") if line != ""]
         if len(last_lines) > last_n:

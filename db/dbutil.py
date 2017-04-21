@@ -19,7 +19,7 @@ __author__ = "htwxujian@gmail.com"
 class DBUtil(object):
     # 数据库连接字符串，由于弹幕中常常含有特殊的字符串，因此可能需要 ?charset=utf8mb4 来解决。
     # 参考链接：http://docs.sqlalchemy.org/en/latest/dialects/mysql.html#dialect-mysql
-    __CONN_STRING = "mysql+mysqlconnector://root:18817870106@localhost:3306/barragedb?charset=utf8mb4&use_unicode=0"
+    __CONN_STRING = "mysql+mysqlconnector://root:18817870106@localhost:3306/barragedb?charset=utf8mb4&use_unicode=1"
     # create a configured "Session" class
     __SESSION = None
     __ENGINE = None
