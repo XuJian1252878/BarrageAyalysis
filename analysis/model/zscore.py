@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import codecs
-import os
-
 import math
+import os
 
 import wordsegment.wordseg as wordseg
 from analysis.model.timewindow import TimeWindow
@@ -132,7 +131,7 @@ class Zscore(object):
     #      left_zscore_threshold 左边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      right_zscore_threshould 右边时间窗口与当前时间窗口的 zscore 差值 阈值
     #      其实直接遍历 self.zscore_list 就好，没必要这么复杂
-    def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.3, left_zscore_threshold=0.3,
+    def gen_possible_high_emotion_clips(self, global_zscore_threshold=0.5, left_zscore_threshold=0.3,
                                         right_zscore_threshould=0.3):
         high_emotion_clips = []  # 其中的元素为[时间窗口起始下标、结束下标、起始时间、结束时间、zscore值]
         # False 表示当前的zscore_tuple没有被选入 high_emotion_clips
@@ -159,7 +158,11 @@ class Zscore(object):
                 if left_flag is True:
                     # 说明这个片段已经被加入 high_emotion_clips 中，那么跳过。
                     break
-                if abs(zscore - left_zscore) <= left_zscore_threshold:
+
+                left_seconds_end = left_window_index * 10 + 30
+                left_border_seconds_start = left_border * 10
+
+                if left_border_seconds_start < left_seconds_end or abs(zscore - left_zscore) <= left_zscore_threshold:
                     left_border = left_window_index
                     my_zscore_dict[left_window_index][1] = True  # 该片段已经加入 high_emotion_clips 中
                     left_window_index -= 1
@@ -172,7 +175,12 @@ class Zscore(object):
                 if right_flag is True:
                     # 说明这个片段已经被加入 high_emotion_clips 中，那么跳过。
                     break
-                if abs(zscore - right_zscore) <= right_zscore_threshould:
+
+                right_seconds_start = right_window_index * 10
+                right_border_seconds_end = right_border * 10 + 30
+
+                if right_seconds_start < right_border_seconds_end or abs(
+                                zscore - right_zscore) <= right_zscore_threshould:
                     right_border = right_window_index
                     my_zscore_dict[right_window_index][1] = True  # 该片段已经加入 high_emotion_clips 中
                     right_window_index += 1
@@ -295,7 +303,7 @@ class Zscore(object):
 
 
 if __name__ == "__main__":
-    zscore = Zscore("4547002", os.path.join(FileUtil.get_zscore_dir(), "agzz-zscore-result-lda.txt"), 30, 10, 4)
+    zscore = Zscore("2171229", os.path.join(FileUtil.get_zscore_dir(), "hd-zscore-result-lda.txt"), 30, 10, 4)
     # zscore.gen_sorted_zscore_file(threshold_value=5)
     # # zscore.gen_possible_high_emotion_clips()
     high_emotion_clips = zscore.gen_possible_high_emotion_clips()
