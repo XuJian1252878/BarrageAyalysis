@@ -53,7 +53,7 @@ class BarrageSeg(object):
         row_id = barrage_seg_dict["row_id"]
         sender_id = barrage_seg_dict["sender_id"]
         index = barrage_seg_dict["index"]
-        barrage_seg = BarrageSeg(play_timestamp, row_id, sender_id, index)
+        barrage_seg = BarrageSeg(play_timestamp, sender_id, row_id, index)
         sentence_seg_list = barrage_seg_dict["sentence_seg_list"]
         for word_seg_dict in sentence_seg_list:
             word_seg = WordSeg.dict2wordseg(word_seg_dict)

@@ -12,7 +12,6 @@ from gensim import corpora
 from analysis.model.barrageinfo import BarrageInfo
 from analysis.model.dictconfig import DictConfig
 from db.model.barrage import Barrage
-from util.datetimeutil import DateTimeUtil
 from util.fileutil import FileUtil
 
 """
@@ -66,10 +65,13 @@ def gen_sorted_barrage_file(barrage_file_path):
     with codecs.open(sorted_file_name, "wb", "utf-8") as output_file:
         for barrage in barrages:
             play_time_stamp = unicode(str(float(barrage.play_timestamp)))
-            barrage_str = DateTimeUtil.format_barrage_play_timestamp(play_time_stamp) + u"\t" + play_time_stamp \
-                          + u"\t" + barrage.type + u"\t" + barrage.font_size + u"\t" + barrage.font_color + u"\t" \
-                          + barrage.unix_timestamp + u"\t" + barrage.pool + u"\t" + barrage.sender_id + u"\t" \
-                          + barrage.row_id + u"\t" + barrage.content + u"\n"
+            # barrage_str = DateTimeUtil.format_barrage_play_timestamp(play_time_stamp) + u"\t" + play_time_stamp \
+            #               + u"\t" + barrage.type + u"\t" + barrage.font_size + u"\t" + barrage.font_color + u"\t" \
+            #               + barrage.unix_timestamp + u"\t" + barrage.pool + u"\t" + barrage.sender_id + u"\t" \
+            #               + barrage.row_id + u"\t" + barrage.content + u"\n"
+            barrage_str = play_time_stamp + u"\t" + barrage.type + u"\t" + barrage.font_size + u"\t" \
+                          + barrage.font_color + u"\t" + barrage.unix_timestamp + u"\t" + barrage.pool + u"\t" \
+                          + barrage.sender_id + u"\t" + barrage.row_id + u"\t" + barrage.content + u"\n"
             output_file.write(barrage_str)
     return barrages
 
@@ -139,9 +141,9 @@ if __name__ == "__main__":
     #     print str(barrage_seg.play_timestamp), u"\t", u"\t".join([seg.word + u"\t" + seg.flag for seg
     #                                                               in barrage_seg.sentence_seg_list])
 
-    # gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "2171229.txt"))
+    gen_sorted_barrage_file(os.path.join(FileUtil.get_local_data_dir(), "2171229.txt"))
 
-    parse_barrage_xml_to_txt("4547002.xml")
+    # parse_barrage_xml_to_txt("4547002.xml")
 
     # barrages = get_barrage_from_live_text_file(os.path.join(FileUtil.get_project_root_path(), "data", "AlphaGo",
     #                                                         "bilibili", "2016-03-09.txt"))

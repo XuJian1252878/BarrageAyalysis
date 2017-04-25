@@ -33,6 +33,7 @@ class BarrageInfo(object):
     # 当用户id列表不存在，或者输入的用户id不在当前列表中，那么返回None。
     @classmethod
     def get_sender_id_index(cls, sender_id):
+        print cls.__ALL_SENDER_ID
         if cls.__ALL_SENDER_ID is None:
             return None
         try:

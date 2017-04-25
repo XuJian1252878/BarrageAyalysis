@@ -207,13 +207,13 @@ class TimeWindow(object):
 
 
 if __name__ == "__main__":
-    barrage_file_path = "../../data/local/935527.txt"
+    barrage_file_path = "../../data/local/9.txt"
     # "../../data/local/9.txt" "../../data/AlphaGo/bilibili/2016-03-09.txt" "../../data/local/2065063.txt"
     barrages = dataloader.get_barrage_from_txt_file(barrage_file_path)
     # barrages = dataloader.get_barrage_from_live_text_file(barrage_file_path)
     cid = FileUtil.get_cid_from_barrage_file_path(barrage_file_path)
     barrage_seg_list = wordseg.segment_barrages(barrages, cid)
-    # time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list)
+    # time_window_list = TimeWindow.gen_time_window_barrage_info(barrage_seg_list, cid)
     # for time_window in time_window_list:
     #     str_info = ''
     #     for barrage_seg in time_window.barrage_or_seg_list:
